@@ -14,10 +14,10 @@ from pathlib import Path
 from .config.custom import *
 from .config.log import *
 from .config.drf import *
+from .config.celery_settings import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -30,7 +30,6 @@ SECRET_KEY = 'django-insecure-t(3k&_edje&agpum2cn-^%d6$dt&qh==0qy*bb0hly_44$a^^1
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -42,6 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'django_celery_results',
+    'django_celery_beat',
     'apps.device.apps.DeviceConfig'
 ]
 
@@ -78,7 +79,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'django_server.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
@@ -88,7 +88,6 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -107,7 +106,6 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
