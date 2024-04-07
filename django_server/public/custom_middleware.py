@@ -1,9 +1,10 @@
-from rest_framework.authentication import BaseAuthentication
-from rest_framework.exceptions import AuthenticationFailed
+from django.utils.deprecation import MiddlewareMixin
+from django.http import HttpRequest, HttpResponse
+from django.core.handlers.wsgi import WSGIRequest
 from rest_framework.request import Request
 
 from utils.secret_key import check_token
-from public.status_code import TOKEN_Missing_Token
+# from public.status_code import TOKEN_Missing_Token
 
 
 # class JwtUrlAuthentication(BaseAuthentication):
@@ -21,26 +22,28 @@ from public.status_code import TOKEN_Missing_Token
 #         return "API"
 
 
-class JwtHeaderAuthentication(BaseAuthentication):
-    def authenticate(self, request: Request) -> tuple[dict, str]:
-        token: str = request.META.get("HTTP_AUTHORIZATION")
-        if not token:
-            raise AuthenticationFailed(TOKEN_Missing_Token)
-        user, status = check_token(token)
-        if not status:
-            raise AuthenticationFailed(user)
-        request.user_uuid = user.get("uuid", None)
-        return user, token
+# class JwtHeaderAuthentication(BaseAuthentication):
+#     def authenticate(self, request: Request) -> tuple[dict, str]:
+#         token: str = request.META.get("HTTP_AUTHORIZATION")
+#         if not token:
+#             raise AuthenticationFailed(TOKEN_Missing_Token)
+#         user, status = check_token(token)
+#         if not status:
+#             raise AuthenticationFailed(user)
+#         request.user_uuid = user.get("uuid", None)
+#         return user, token
+#
+#     def authenticate_header(self, request):
+#         return "API"
+#
+#
+# class NoAuthentication(BaseAuthentication):
+#     def authenticate(self, request: Request):
+#         token: str = request.META.get("HTTP_AUTHORIZATION")
+#         if not token:
+#             raise AuthenticationFailed(TOKEN_Missing_Token)
+#
+#     def authenticate_header(self, request):
+#         return "API"
 
-    def authenticate_header(self, request):
-        return "API"
 
-
-class NoAuthentication(BaseAuthentication):
-    def authenticate(self, request: Request):
-        token: str = request.META.get("HTTP_AUTHORIZATION")
-        if not token:
-            raise AuthenticationFailed(TOKEN_Missing_Token)
-
-    def authenticate_header(self, request):
-        return "API"

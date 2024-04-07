@@ -3,10 +3,10 @@ REST_FRAMEWORK = {
     "UNAUTHENTICATED_USER": None,
     "UNAUTHENTICATED_TOKEN": None,
     # 认证组件
-    "DEFAULT_AUTHENTICATION_CLASSES": [
-        "public.auth_middleware.JwtHeaderAuthentication",
-        "public.auth_middleware.NoAuthentication"
-    ],
+    # "DEFAULT_AUTHENTICATION_CLASSES": [
+    #     "public.auth_middleware.JwtHeaderAuthentication",
+    #     "public.auth_middleware.NoAuthentication"
+    # ],
 
     # 权限组件
     # 'DEFAULT_PERMISSION_CLASSES': [

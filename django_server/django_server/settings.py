@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from .config.custom import *
 from .config.log import *
+from .config.drf import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -53,6 +54,7 @@ MIDDLEWARE = [
     # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     # 'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'public.logMiddleware.ApiLogMiddleware'
 ]
 
 ROOT_URLCONF = 'django_server.urls'

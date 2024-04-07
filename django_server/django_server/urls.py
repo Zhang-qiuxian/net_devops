@@ -17,6 +17,20 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.request import Request
+
+from utils.logger import api_logger
+
+
+class TestApiView(APIView):
+    def get(self, request: Request):
+        return Response('ok')
+
+
 urlpatterns = [
     # path('admin/', admin.site.urls),
+    path('test/', TestApiView.as_view(), name='test'),
 ]
