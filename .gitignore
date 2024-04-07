@@ -137,3 +137,11 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+#database migrations
+**/migrations/*.py
+!**/migrations/__init__.py
+
+/media
+.idea
+dist/
+downloads/
