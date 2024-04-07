@@ -1,14 +1,13 @@
 import http
 
 from django.db import connections
-from django.http import Http404
+from django.http import Http404,HttpResponseNotFound,HttpResponseForbidden
 from django.conf import settings
 
 from rest_framework import exceptions
 from rest_framework.response import Response
 
 from typing import Union
-from public.status_code import API_ERROR
 
 
 def set_rollback():
@@ -29,8 +28,10 @@ def exception_handler(exc, context):
     """
     if isinstance(exc, Http404):
         exc = exceptions.NotFound()
+        return HttpResponseNotFound()
     elif isinstance(exc, exceptions.PermissionDenied):
         exc = exceptions.PermissionDenied()
+        return HttpResponseForbidden()
 
     if isinstance(exc, exceptions.APIException):
         headers = {}
@@ -43,7 +44,7 @@ def exception_handler(exc, context):
         if isinstance(exc.detail, (list, dict)):
             data = exc.detail
         elif isinstance(exc.detail, exceptions.ErrorDetail):
-            data: dict = {"code": API_ERROR, "status": "error", 'message': exc.detail}
+            data: dict = {"code": 400, "status": "error", 'message': exc.detail}
         set_rollback()
         return Response(data, status=exc.status_code, headers=headers)
     # elif isinstance(exc, Exception):
