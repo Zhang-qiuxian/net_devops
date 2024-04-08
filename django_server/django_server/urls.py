@@ -15,22 +15,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.request import Request
 
-from utils.logger import api_logger
-from apps.device.tasks import add
+from .urls_api import router, api_url
+
 
 class PingApiView(APIView):
     def get(self, request: Request):
-        add().delay()
         return Response({"code": 200, "message": "ok"})
 
 
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('ping', PingApiView.as_view(), name='ping'),
+    path('api/v1/', include(router.urls), name='api-v1'),
 ]
+urlpatterns += api_url

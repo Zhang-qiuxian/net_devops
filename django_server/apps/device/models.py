@@ -9,14 +9,15 @@ class Device(models.Model):
     """
     device_id = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name="设备id", db_comment="设备id")
     name = models.CharField(max_length=32, verbose_name="设备名称", db_comment="设备名称")
-    description = models.CharField(max_length=255, null=True, verbose_name="设备描述", db_comment="设备描述")
+    description = models.CharField(max_length=255, blank=True, null=True, verbose_name="设备描述",
+                                   db_comment="设备描述")
     hostname = models.CharField(unique=True, max_length=32, verbose_name="主机名", db_comment="主机名")
     ip = models.GenericIPAddressField(unique=True, verbose_name="设备ip", db_comment="设备ip")
     login = models.CharField(max_length=32, verbose_name="登录方式", db_comment="登录方式")
-    url = models.CharField(max_length=128, null=True, verbose_name="网址", db_comment="网址")
+    url = models.CharField(max_length=128, blank=True, null=True, verbose_name="网址", db_comment="网址")
     username = models.CharField(max_length=32, verbose_name="账号", db_comment="账号")
     password = models.CharField(max_length=64, verbose_name="密码", db_comment="密码")
-    remark = models.TextField(null=True, verbose_name="备注", db_comment="备注")
+    remark = models.TextField(blank=True, null=True, verbose_name="备注", db_comment="备注")
     snmp_id = models.IntegerField(default=1, verbose_name="snmp模板id", db_comment="snmp模板id")
     company_id = models.IntegerField(default=1, verbose_name="设备厂商id", db_comment="设备厂商id")
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间", db_comment="创建时间")
@@ -37,18 +38,23 @@ class SnmpTemplate(models.Model):
     """
     snmp模板
     """
-    name = models.CharField(max_length=32, verbose_name="模板名", db_comment="模板名")
+    name = models.CharField(unique=True, max_length=32, verbose_name="模板名", db_comment="模板名")
     version = models.IntegerField(default=2, verbose_name="版本", db_comment="版本")
     community = models.CharField(max_length=32, default="public", verbose_name="团体字", db_comment="团体字")
-    username = models.CharField(max_length=32, default="user", verbose_name="用户名", db_comment="用户名")
-    password = models.CharField(max_length=32, default="pass", verbose_name="密码", db_comment="密码")
-    auth_protocol = models.CharField(max_length=32, default="MD5", verbose_name="认证协议", db_comment="认证协议")
-    security_level = models.CharField(max_length=32, default="noAuthNoPriv", verbose_name="认证级别",
-                                      db_comment="认证级别")
-    privacy_protocol = models.CharField(max_length=32, default="DES", verbose_name="私有协议", db_comment="私有协议")
-    privacy_password = models.CharField(max_length=32, default="otherPass", verbose_name="私有密码",
-                                        db_comment="私有密码")
-    context = models.CharField(max_length=32, default="context", verbose_name="上下文", db_comment="上下文")
+    username = models.CharField(max_length=32, default="user", blank=True, null=True, verbose_name="用户名",
+                                db_comment="用户名")
+    password = models.CharField(max_length=32, default="pass", blank=True, null=True, verbose_name="密码",
+                                db_comment="密码")
+    auth_protocol = models.CharField(max_length=32, default="MD5", blank=True, null=True, verbose_name="认证协议",
+                                     db_comment="认证协议")
+    security_level = models.CharField(max_length=32, default="noAuthNoPriv", blank=True, null=True,
+                                      verbose_name="认证级别", db_comment="认证级别")
+    privacy_protocol = models.CharField(max_length=32, default="DES", blank=True, null=True, verbose_name="私有协议",
+                                        db_comment="私有协议")
+    privacy_password = models.CharField(max_length=32, default="otherPass", blank=True, null=True,
+                                        verbose_name="私有密码", db_comment="私有密码")
+    context = models.CharField(max_length=32, default="context", blank=True, null=True, verbose_name="上下文",
+                               db_comment="上下文")
 
     def __str__(self):
         return self.name
