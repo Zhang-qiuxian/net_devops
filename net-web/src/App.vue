@@ -1,87 +1,49 @@
 <script setup>
-// import { RouterLink, RouterView } from 'vue-router'
-// import '@devui-design/icons'
+import Aside from "@/views/Aside.vue";
+import Header from "@/views/Header.vue";
+import Main from "@/views/Main.vue";
+
 </script>
 
 <template>
-  <h1>Hello</h1>
-  <d-button>确定</d-button>
-  <d-button variant="solid" color="primary">
-    Primary
-  </d-button>
-  <d-button color="primary">
-    Primary
-  </d-button>
-  <d-button variant="text" color="primary">
-    Primary
-  </d-button>
-
-  <div class="demo-spacing">
-    <d-button variant="solid" color="secondary">
-      Secondary
-    </d-button>
-    <d-button color="secondary">
-      Secondary
-    </d-button>
-    <d-button variant="text" color="secondary">
-      Secondary
-    </d-button>
-  </div>
-
-  <div class="demo-spacing">
-    <d-button variant="solid" color="danger">
-      Danger
-    </d-button>
-    <d-button color="danger">
-      Danger
-    </d-button>
-    <d-button variant="text" color="danger">
-      Danger
-    </d-button>
-  </div>
-  <div>
-    <d-icon name="setting" operable>
-      <template #prefix>
-        <span>设置</span>
-      </template>
-    </d-icon>
-    <br />
-    <br />
-    <d-icon name="setting" operable>
-      <template #suffix>
-        <span>设置</span>
-      </template>
-    </d-icon>
-    <br />
-    <br />
-    <d-icon name="https://devui.design/components/assets/logo.svg" size="16px" operable>
-      <template #suffix>
-        <span>Logo</span>
-      </template>
-    </d-icon>
-    <br />
-    <br />
-    <d-icon name="refresh" rotate="infinite" operable>
-      <template #suffix>
-        <span>运行中</span>
-      </template>
-    </d-icon>
-    <br />
-    <br />
-    <d-icon name="edit" :rotate="180">
-      <template #suffix>
-        <span>编辑</span>
-      </template>
-    </d-icon>
-    <br />
-    <br />
-    <d-icon name="edit" disabled>
-      <template #suffix>
-        <span>无权编辑</span>
-      </template>
-    </d-icon>
-  </div>
+    <d-layout>
+      <d-aside class="daside"><Aside/></d-aside>
+      <d-layout>
+        <d-header class="dheader" style="flex:none">
+          <Header/>
+        </d-header>
+        <d-content class="main-content" style="min-height: 400px;">
+          <Main/>
+        </d-content>
+        <d-footer class="dfooter" style="line-height: 40px;">
+          <span>@Zhang.qiuxian</span>
+        </d-footer>
+      </d-layout>
+    </d-layout>
   <!-- <RouterView /> -->
 </template>
 
-<style scoped></style>
+<style lang="less">
+
+
+.daside {
+  background: #f8f8f8;
+  width: 200px;
+  //min-height: 200px;
+  //display: flex;
+  //align-items: center;
+  //justify-content: center;
+}
+
+.dheader, .dfooter {
+  background: #333854;
+  color: #fff;
+  text-align: center;
+  height: 40px;
+}
+
+.devui-layout__content {
+  height: calc(100vh - 80px);
+  text-align: center;
+}
+</style>

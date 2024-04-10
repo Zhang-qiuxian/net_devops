@@ -1,1 +1,3 @@
 @import './base.css';
+@import 'vue-devui/style.css';
+@import '@devui-design/icons/icomoon/devui-icon.css';
