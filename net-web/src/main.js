@@ -13,6 +13,7 @@ import router from './router'
 
 // ThemeServiceInit({ infinityTheme }, 'infinityTheme');
 
+
 const app = createApp(App)
 
 app.use(createPinia())

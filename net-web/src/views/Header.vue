@@ -4,17 +4,14 @@
 
 <template>
   <div class="header">
-    <h5>header</h5>
+    <span>自动化平台</span>
   </div>
 
 </template>
 
 <style scoped lang="less">
 .header{
-  //height: 40px;
-  h5{
-    height: 100%;
-  }
-
+  height: 40px;
+  line-height: 40px;
 }
 </style>

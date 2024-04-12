@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 
 import NotFound from '@/views/NotFound.vue'
-import HomeView from '@/App.vue'
+import HomeView from '@/views/Base.vue'
 
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes: [
         {
             path: '/',
             name: 'home',
-            redirect: { name: 'console-info' },
+            component: HomeView,
             children:[
                 {
                     path: '/console',

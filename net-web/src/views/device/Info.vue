@@ -1,58 +1,401 @@
 <template>
-    <div>
-        <div class="mb-2">
-            <d-button @click="handleClick" class="mr-1">Get CheckedRows</d-button>
-            <d-button @click="insertRow" class="mr-1">Insert Row</d-button>
-            <d-button @click="deleteRow" class="mr-1">Delete Row</d-button>
-            <d-button @click="toggleRow" class="mr-1">Toggle Row</d-button>
+    <div class="main">
+        <div class="form">
+            <div class="form-left">
+                <d-form :data="formModel" label-size="sm" label-align="align">
+                    <d-row :gutter="16">
+                        <d-col :span="7">
+                            <d-form-item field="设备名" label="Name" help-tips="请输入设备名">
+                                <d-input v-model="formModel.name" />
+                            </d-form-item>
+                        </d-col>
+                        <d-col :span="7">
+                            <d-form-item field="select" label="Select">
+                                <d-select v-model="formModel.select" :options="selectOptions" />
+                            </d-form-item>
+                        </d-col>
+                        <d-col :span="7">
+                            <d-form-item field="multiSelect" label="Multiple Select">
+                                <d-select v-model="formModel.multiSelect" :options="selectOptions" multiple />
+                            </d-form-item>
+                        </d-col>
+                    </d-row>
+                </d-form>
+            </div>
+            <div class="form-right">
+                <d-button variant="solid" color="primary" @click="test">新增</d-button>
+                <d-button color="primary">导出为excel</d-button>
+            </div>
         </div>
-        <d-table ref="tableRef" :data="data" :row-key="(item) => item.id" @cell-click="onCellClick"
-            @row-click="onRowClick" @check-change="checkChange" @check-all-change="checkAllChange">
-            <d-column type="checkable" width="40" :checkable="checkable" reserve-check></d-column>
-            <d-column field="firstName" header="First Name" width="200"></d-column>
-            <d-column field="lastName" header="Last Name" width="200" resizeable min-width="150" max-width="250"
-                @resize-start="onResizeStart" @resizing="onResizing" @resize-end="onResizeEnd"></d-column>
-            <d-column field="gender" header="Gender"></d-column>
-            <d-column field="date" header="Date of birth"></d-column>
-        </d-table>
+        <div class="table">
+            <d-table ref="tableRef" :data="data" :row-key="(item) => item.device_id" @cell-click="onCellClick"
+                @row-click="onRowClick" @check-change="checkChange" @check-all-change="checkAllChange"
+                table-layout='auto' table-height="100%" fix-header>
+                <d-column type="checkable" width="40" :checkable="checkable" reserve-check></d-column>
+                <d-column v-for="(v, k) in fileds" :field=k :header=v></d-column>
+                <d-column header="Operation" align="right">
+                    <template #default="scope">
+                        <d-button @click="handleClick1(scope.row)">编辑</d-button>
+                    </template>
+                </d-column>
+            </d-table>
+        </div>
+        <div class="page">
+            <d-pagination :total="pager.total" v-model:pageSize="pager.pageSize" v-model:pageIndex="pager.pageIndex"
+                :can-view-total="true" :can-change-page-size="true" :can-jump-page="true" :max-items="5" />
+        </div>
     </div>
 </template>
 
 <script setup>
 import { ref } from 'vue';
+import { getDeice } from '@/api/device';
 
+onMounted(() => {
+    getDeice()
 
+})
+
+function test(params) {
+    console.log(import.meta.env);
+    data = getDeice(params)
+    console.log(data);
+}
+
+const handleClick1 = (row) => {
+    console.log(row);
+};
+const selectOptions = reactive(['Options1', 'Options2', 'Options3']);
+let formModel = reactive({
+    name: '',
+    description: '',
+    select: 'Options2',
+    radio: '0',
+    switch: true,
+    executionDay: [],
+});
 const tableRef = ref();
 const data = ref([
     {
-        id: '0',
-        firstName: 'po',
-        lastName: 'Lang',
-        gender: 'Male',
-        date: '1990/01/15',
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
     },
     {
-        id: '1',
-        firstName: 'john',
-        lastName: 'Li',
-        gender: 'Female',
-        date: '1990/01/16',
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
     },
     {
-        id: '2',
-        firstName: 'peng',
-        lastName: 'Li',
-        gender: 'Male',
-        date: '1990/01/17',
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
     },
     {
-        id: '3',
-        firstName: 'Dale',
-        lastName: 'Yu',
-        gender: 'Female',
-        date: '1990/01/18',
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
     },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "1F-switch",
+        "ip": "10.10.10.1",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 08:42:35",
+        "update_time": "2024-04-08 08:42:35"
+    },
+    {
+        "device_id": "dce1b2ed-659c-4d30-83ee-f052580efdc5",
+        "snmp": "px",
+        "company": null,
+        "name": "1F交换机",
+        "description": "1F交换机",
+        "hostname": "2F-switch",
+        "ip": "10.10.10.2",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 09:03:32",
+        "update_time": "2024-04-08 09:03:32"
+    },
+    {
+        "device_id": "ac7a889d-1483-4ddb-994e-092c339a40d5",
+        "snmp": "px",
+        "company": null,
+        "name": "3F交换机",
+        "description": "3F交换机",
+        "hostname": "3F-switch",
+        "ip": "10.10.10.3",
+        "login": "ssh",
+        "url": "",
+        "username": "admin",
+        "password": "admin",
+        "remark": "",
+        "create_time": "2024-04-08 12:47:56",
+        "update_time": "2024-04-08 12:47:56"
+    }
 ]);
+
+const fileds = {
+    // "device_id": "设备id",
+    "name": "设备名",
+    "description": "设备描述",
+    "hostname": "主机名",
+    "ip": "设备ip",
+    "login": "登录方式",
+    "username": "账号",
+    "password": "密码",
+    "url": "网址",
+    "snmp": "snmp",
+    "company": "厂家",
+    "remark": "",
+    // "create_time": "创建时间",
+    "update_time": "更新时间",
+
+}
+
+console.log(fileds);
+
+const pager = shallowReactive({
+    total: 306,
+    pageIndex: 5,
+    pageSize: 10,
+    pageSizeOptions: [10, 20, 30, 40, 50],
+});
+
+const preLink = '<span class="icon-arrow-left"></span>';
+const nextLink = '<span class="icon-arrow-right"></span>';
+
 const handleClick = () => {
     console.log(tableRef.value.store.getCheckedRows());
 };
@@ -106,3 +449,30 @@ const onResizeEnd = (e) => {
 };
 
 </script>
+
+<style lang="less" scoped>
+.main {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.form {
+    height: 52px;
+    display: flex;
+    align-items: center;
+
+    .devui-button {
+        margin: 10px;
+    }
+}
+
+.table {
+    height: calc(100% - 84px);
+}
+
+.page {
+    height: 32px;
+}
+</style>
