@@ -15,6 +15,7 @@ class DeviceCompanyViewSet(ModelViewSet):
 
 
 class DeviceViewSet(ModelViewSet):
+
     queryset = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
 

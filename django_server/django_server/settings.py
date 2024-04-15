@@ -15,6 +15,7 @@ from .config.custom import *
 from .config.log import *
 from .config.drf import *
 from .config.celery_settings import *
+from .config.cors import *
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,7 +44,9 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_celery_results',
     'django_celery_beat',
-    'apps.device.apps.DeviceConfig'
+    'apps.device.apps.DeviceConfig',
+    "apps.ipam.apps.IpamConfig",
+    "apps.cron.apps.CronConfig"
 ]
 
 MIDDLEWARE = [

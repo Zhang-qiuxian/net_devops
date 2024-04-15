@@ -20,14 +20,20 @@ class DeviceSerializer(ModelSerializer):
     device_id = UUIDField(read_only=True)
     snmp = SerializerMethodField(read_only=True)
     company = SerializerMethodField(read_only=True)
+    snmp_id = IntegerField(write_only=True)
+    company_id = IntegerField(write_only=True)
 
     def get_snmp(self, obj: Device):
-        s: QuerySet = SnmpTemplate.objects.filter(id=obj.snmp_id).first()
-        return SnmpTemplateSerializer(instance=s).data
+        s: SnmpTemplate = SnmpTemplate.objects.filter(id=obj.snmp_id).first()
+        if s:
+            return s.name
+        return None
 
     def get_company(self, obj: Device):
-        d: QuerySet = DeviceCompany.objects.filter(id=obj.company_id).first()
-        return DeviceCompanySerializer(instance=d).data
+        d: DeviceCompany = DeviceCompany.objects.filter(id=obj.company_id).first()
+        if d:
+            return d.name
+        return None
 
     class Meta:
         model = Device
