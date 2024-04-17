@@ -25,12 +25,18 @@
         <span>定时任务详情</span>
       </d-menu-item>
     </d-sub-menu>
-    <d-sub-menu title="设备管理" key="device">
+    <d-sub-menu title="设备管理" key="/device">
       <template #icon>
         <i class="icon-clearup"></i>
       </template>
       <d-menu-item key="device-info" :route="{ name: 'device-info' }">
         <span>设备信息</span>
+      </d-menu-item>
+      <d-menu-item key="device-company" :route="{ name: 'device-company' }">
+        <span>厂商信息</span>
+      </d-menu-item>
+      <d-menu-item key="device-snmp" :route="{ name: 'device-snmp' }">
+        <span>snmp</span>
       </d-menu-item>
     </d-sub-menu>
     <d-sub-menu title="IP管理" key="ipam">

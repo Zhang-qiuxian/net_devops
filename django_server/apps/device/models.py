@@ -99,6 +99,8 @@ class DeviceIP(models.Model):
     ipAdEntAddr = models.GenericIPAddressField(verbose_name="IP地址", db_comment="IP地址")
     ipAdEntIfIndex = models.IntegerField(verbose_name="接口的索引值", db_comment="接口的索引值")
     ipAdEntNetMask = models.GenericIPAddressField(verbose_name="子网掩码", db_comment="子网掩码")
+    ifName = models.CharField(max_length=32, verbose_name="接口名", db_comment="接口名")
+    ifAlias = models.CharField(max_length=32, verbose_name="接口别名", db_comment="接口别名")
 
     def __str__(self):
         return self.ipAdEntAddr
@@ -136,12 +138,14 @@ class DeviceSerial(models.Model):
     设备系统信息
     """
     device_id = models.UUIDField(editable=False, verbose_name="设备id", db_comment="设备id")
-    entPhysicalSoftwareRev = models.CharField(max_length=128, verbose_name="软件版本号", db_comment="软件版本号")
-    entPhysicalSerialNum = models.CharField(max_length=128, verbose_name="序列号", db_comment="序列号")
     entPhysicalDescr = models.CharField(max_length=128, verbose_name="物理实体描述信息", db_comment="物理实体描述信息")
+    entPhysicalName = models.CharField(max_length=128, verbose_name="实体名字", db_comment="实体名字")
+    entPhysicalSerialNum = models.CharField(max_length=128, verbose_name="序列号", db_comment="序列号")
+    entPhysicalSoftwareRev = models.CharField(max_length=128, verbose_name="软件版本号", db_comment="软件版本号")
+    entPhysicalModelName = models.CharField(max_length=128, verbose_name="模型名称", db_comment="模型名称")
 
     def __str__(self):
-        return self.entPhysicalDescr
+        return self.entPhysicalName
 
     class Meta:
         db_table = 'device_serial'
@@ -157,7 +161,7 @@ class DeviceCompany(models.Model):
     """
     code = models.CharField(max_length=32, verbose_name="厂家代码", db_comment="厂家代码")
     name = models.CharField(max_length=32, verbose_name="厂家名称", db_comment="厂家名称")
-    model = models.CharField(max_length=32, verbose_name="设备型号", db_comment="设备型号")
+    model = models.CharField(max_length=32, unique=True, verbose_name="设备型号", db_comment="设备型号")
 
     def __str__(self):
         return self.code

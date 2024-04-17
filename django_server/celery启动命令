@@ -1,0 +1,4 @@
+定时任务
+celery -A django_server beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
+后台任务
+celery -A django_server worker -l INFO

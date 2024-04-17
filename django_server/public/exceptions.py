@@ -1,7 +1,7 @@
 import http
-
+from django.core.exceptions import ValidationError
 from django.db import connections
-from django.http import Http404,HttpResponseNotFound,HttpResponseForbidden
+from django.http import Http404, HttpResponseNotFound, HttpResponseForbidden
 from django.conf import settings
 
 from rest_framework import exceptions
@@ -32,6 +32,9 @@ def exception_handler(exc, context):
     elif isinstance(exc, exceptions.PermissionDenied):
         exc = exceptions.PermissionDenied()
         return HttpResponseForbidden()
+    elif isinstance(exc, ValidationError):
+        exc = exceptions.ValidationError()
+        return Response({"status": 400, 'message': "参数校验失败！"}, status=200)
 
     if isinstance(exc, exceptions.APIException):
         headers = {}

@@ -14,11 +14,6 @@
                                 <d-select v-model="formModel.select" :options="selectOptions" />
                             </d-form-item>
                         </d-col>
-                        <d-col :span="7">
-                            <d-form-item field="multiSelect" label="Multiple Select">
-                                <d-select v-model="formModel.multiSelect" :options="selectOptions" multiple />
-                            </d-form-item>
-                        </d-col>
                     </d-row>
                 </d-form>
             </div>
@@ -30,12 +25,13 @@
         <div class="table">
             <d-table ref="tableRef" :data="data" :row-key="(item) => item.device_id" @cell-click="onCellClick"
                 @row-click="onRowClick" @check-change="checkChange" @check-all-change="checkAllChange"
-                table-layout='auto' table-height="100%" fix-header>
+                table-height="100%" fix-header>
                 <d-column type="checkable" width="40" :checkable="checkable" reserve-check></d-column>
-                <d-column v-for="(v, k) in fileds" :field=k :header=v></d-column>
-                <d-column header="Operation" align="right">
+                <d-column v-for="(v, k) in fileds" :field=k :header=v align="center"></d-column>
+                <d-column header="操作" class="opera">
                     <template #default="scope">
-                        <d-button @click="handleClick1(scope.row)">编辑</d-button>
+                        <d-button @click="handleClick1(scope.row)" color="primary">编辑</d-button>
+                        <d-button @click="handleClick1(scope.row)">详细</d-button>
                     </template>
                 </d-column>
             </d-table>
@@ -58,7 +54,7 @@ onMounted(() => {
 
 function test(params) {
     console.log(import.meta.env);
-    data = getDeice(params)
+    let data = getDeice(params)
     console.log(data);
 }
 
@@ -67,12 +63,18 @@ const handleClick1 = (row) => {
 };
 const selectOptions = reactive(['Options1', 'Options2', 'Options3']);
 let formModel = reactive({
-    name: '',
-    description: '',
-    select: 'Options2',
-    radio: '0',
-    switch: true,
-    executionDay: [],
+    "name": '',
+    "description": '',
+    "hostname": '',
+    "ip": '',
+    "login": '',
+    "username": '',
+    "password": '',
+    "url": '',
+    "snmp": '',
+    "snmp_id": 1,
+    "company": '',
+    "company_id": 1
 });
 const tableRef = ref();
 const data = ref([
@@ -369,18 +371,18 @@ const data = ref([
 const fileds = {
     // "device_id": "设备id",
     "name": "设备名",
-    "description": "设备描述",
+    // "description": "设备描述",
     "hostname": "主机名",
     "ip": "设备ip",
     "login": "登录方式",
     "username": "账号",
     "password": "密码",
     "url": "网址",
-    "snmp": "snmp",
-    "company": "厂家",
-    "remark": "",
+    // "snmp": "snmp",
+    // "company": "厂家",
+    // "remark": "",
     // "create_time": "创建时间",
-    "update_time": "更新时间",
+    // "update_time": "更新时间",
 
 }
 
@@ -474,5 +476,14 @@ const onResizeEnd = (e) => {
 
 .page {
     height: 32px;
+}
+
+::v-deep(.header-container) {
+    justify-content: center;
+}
+
+.devui-table__cell>button {
+    margin: 4px;
+
 }
 </style>
