@@ -104,11 +104,7 @@ class DeviceDetailSerializer(ModelSerializer):
         return DeviceSerialSerializer(instance=s, many=False).data
 
     def get_system(self, obj: Device):
-        s: QuerySet = DeviceSystem.objects.filter(device_id=obj.device_id).all()
-        if not s:
-            return None
-        if len(s) > 1:
-            return DeviceSystemSerializer(instance=s, many=True).data
+        s: DeviceSystem = DeviceSystem.objects.get(device_id=obj.device_id)
         return DeviceSystemSerializer(instance=s, many=False).data
 
     def get_interface(self, obj: Device):

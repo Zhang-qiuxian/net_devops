@@ -42,9 +42,9 @@ class SnmpTemplate(models.Model):
     name = models.CharField(unique=True, max_length=32, verbose_name="模板名", db_comment="模板名")
     version = models.IntegerField(default=2, verbose_name="版本", db_comment="版本")
     community = models.CharField(max_length=32, default="public", verbose_name="团体字", db_comment="团体字")
-    username = models.CharField(max_length=32, default="user", blank=True, null=True, verbose_name="用户名",
+    security_username = models.CharField(max_length=32, default="user", blank=True, null=True, verbose_name="用户名",
                                 db_comment="用户名")
-    password = models.CharField(max_length=32, default="pass", blank=True, null=True, verbose_name="密码",
+    auth_password = models.CharField(max_length=32, default="pass", blank=True, null=True, verbose_name="密码",
                                 db_comment="密码")
     auth_protocol = models.CharField(max_length=32, default="MD5", blank=True, null=True, verbose_name="认证协议",
                                      db_comment="认证协议")
@@ -120,7 +120,7 @@ class DeviceSystem(models.Model):
     """
     device_id = models.UUIDField(editable=False, verbose_name="设备id", db_comment="设备id")
     sysDescr = models.CharField(max_length=128, verbose_name="系统的文字描述", db_comment="系统的文字描述")
-    sysUpTime = models.IntegerField(verbose_name="运行的时间", db_comment="运行的时间")
+    sysUpTime = models.CharField(max_length=32,verbose_name="运行的时间", db_comment="运行的时间")
     sysName = models.CharField(max_length=128, verbose_name="hostname", db_comment="hostname")
 
     def __str__(self):
