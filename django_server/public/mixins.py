@@ -17,7 +17,7 @@ class CreateModelMixin:
         if not serializer.is_valid():
             return ResponseError(message="校验失败!", data=serializer.errors)
         self.perform_create(serializer)
-
+        print("!!!!",serializer.data)
         return ResponseOK(message="创建成功!", data=serializer.data)
 
     def perform_create(self, serializer: Serializer):

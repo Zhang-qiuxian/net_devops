@@ -15,7 +15,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include,re_path
+from django.views.static import serve
+from django.conf import settings
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,5 +35,6 @@ urlpatterns = [
     # path('admin/', admin.site.urls),
     path('ping', PingApiView.as_view(), name='ping'),
     path('api/v1/', include(router.urls), name='api-v1'),
+    re_path(r"^media/(?P<path>.*)$", serve, {'document_root': settings.MEDIA_ROOT}, name='media'),
 ]
 urlpatterns += api_url

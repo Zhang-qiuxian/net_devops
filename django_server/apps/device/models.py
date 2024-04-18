@@ -22,6 +22,7 @@ class Device(models.Model):
     company_id = models.IntegerField(default=1, verbose_name="设备厂商id", db_comment="设备厂商id")
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间", db_comment="创建时间")
     update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间", db_comment="更新时间")
+    is_sync = models.BooleanField(default=0, verbose_name="是否同步", db_comment="是否同步")
 
     def __str__(self):
         return self.name
