@@ -1,9 +1,15 @@
+from datetime import datetime
+
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.response import Response
-from rest_framework.settings import api_settings
 from rest_framework.request import Request
 from rest_framework.serializers import Serializer
+from rest_framework.decorators import action
+
+from django.http import HttpResponse
 from django.db.models.query import QuerySet
+from openpyxl import Workbook
+
 from public.response import ResponseOK, ResponseError
 
 
@@ -109,3 +115,31 @@ class ReadOnlyModelViewSet(RetrieveModelMixin,
     A viewset that provides default `list()` and `retrieve()` actions.
     """
     pass
+
+
+class ExportImportMixin:
+    exclude_export: list[str] = []
+
+    @action(methods=['get'], detail=False)
+    def export_excel(self, request: Request, *args, **kwargs) -> Response:
+        meta = self.get_queryset()[0]._meta
+        exclude: list[str] = self.exclude_export
+        response: HttpResponse = HttpResponse(content_type='application/ms-excel')
+        response['Content-Disposition'] = f'attachment; filename=Export_{datetime.now()}.xlsx'
+        # field_names = [field.name for field in meta.fields]
+        excel_title = [field.verbose_name for field in meta.fields if field.name not in exclude]
+        field_names = [field.name for field in meta.fields if field.name not in exclude]
+        wb = Workbook()
+        ws = wb.active
+        ws.append(excel_title)
+        ws.append(field_names)
+        for obj in self.queryset:
+            data = [f'{getattr(obj, field)}' for field in field_names]
+            ws.append(data)
+        wb.save(response)
+        return response
+
+    def import_excel(self, request: Request, *args, **kwargs) -> Response:
+        #TODO:导入功能还未实现
+
+        pass

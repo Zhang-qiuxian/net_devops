@@ -1,3 +1,4 @@
+import json
 from warnings import warn
 from typing import Any
 
@@ -58,8 +59,8 @@ def run(*args, **kwargs) -> tuple[bool, dict[str, list | str]]:
         return True, result
     except Exception as e:
         if isinstance(e, EasySNMPError):
-            return False, {'error': "请检查SNMP配置"}
-        return False, {'error': str(e)}
+            return False, {'error': f"ip:{kwargs.get('hostname')} 请检查SNMP配置"}
+        return False, {'error': f"ip:{kwargs.get('hostname')} {str(e)}"}
 
 
 if __name__ == '__main__':

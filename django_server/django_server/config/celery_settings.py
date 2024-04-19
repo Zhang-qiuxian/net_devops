@@ -26,7 +26,7 @@ DJANGO_CELERY_BEAT_TZ_AWARE = False
 CELERY_RESULT_BACKEND = "django-db"  # Celery 任务执行结果保存到 django数据库中
 
 # celery内容等消息的格式设置，默认json
-CELERY_ACCEPT_CONTENT = ['application/json', ]
+CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 

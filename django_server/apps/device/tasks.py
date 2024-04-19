@@ -1,3 +1,4 @@
+import json
 import time
 from typing import Callable, Iterator
 from concurrent.futures import ThreadPoolExecutor, as_completed, Future
@@ -27,11 +28,11 @@ def update_snmp(device: Device, data: dict) -> dict:
     for key, value in data.items():
         obj = model_dict[key]
         obj_data: list[dict] = data.get(key)
-        objs: list[Model] = [obj(**d, device_id=device.device_id) for d in obj_data]
+        objs: list[Model] = [obj(**d, device_id=device.device_id,name=device.name,ip=device.ip) for d in obj_data]
         obj.objects.bulk_create(objs=objs)
         device.is_sync = True
         device.save()
-    return {"success": {"message": f"{device.device_id} 更新完成！"}}
+    return {"success": {"message": f"{device.ip} 更新完成！"}}
 
 
 def start_snmp(device: Device) -> dict:

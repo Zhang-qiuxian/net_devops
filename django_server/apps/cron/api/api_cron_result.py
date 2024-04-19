@@ -6,17 +6,17 @@ from apps.cron.serial import TaskResultSerializer, ChordCounterSerializer, Group
 
 
 class TaskResultViewSet(ModelViewSet):
-    queryset = TaskResult.objects.all()
+    queryset = TaskResult.objects.all().order_by('id')
     serializer_class = TaskResultSerializer
 
 
 class ChordCounterViewSet(ModelViewSet):
-    queryset = ChordCounter.objects.all()
+    queryset = ChordCounter.objects.all().order_by('id')
     serializer_class = ChordCounterSerializer
 
 
 class GroupResultViewSet(ModelViewSet):
-    queryset = GroupResult.objects.all()
+    queryset = GroupResult.objects.all().order_by('id')
     serializer_class = GroupResultSerializer
 
 
