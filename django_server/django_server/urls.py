@@ -31,6 +31,11 @@ from .urls_api import router, api_url
 
 class PingApiView(APIView):
     def get(self, request: Request):
+        """
+        测试接口
+        :param request:
+        :return:
+        """
         return Response({"code": 200, "message": "ok"})
 
 

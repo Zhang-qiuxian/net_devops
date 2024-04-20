@@ -3,8 +3,6 @@ import time
 from typing import Callable, Iterator
 from concurrent.futures import ThreadPoolExecutor, as_completed, Future
 
-POOL = 50
-
 from celery import shared_task
 from celery.app.task import Task
 
@@ -14,7 +12,8 @@ from apps.device.models import Device, DeviceIP, DeviceSystem, DeviceSerial, Dev
 from apps.device.api.seria import SnmpTemplateSerializer
 
 from tools.snmp.run import run
-from tools.common.utils import start_thread
+
+POOL = 50
 
 model_dict: dict[str, Model] = {
     'ip': DeviceIP,
@@ -28,7 +27,7 @@ def update_snmp(device: Device, data: dict) -> dict:
     for key, value in data.items():
         obj = model_dict[key]
         obj_data: list[dict] = data.get(key)
-        objs: list[Model] = [obj(**d, device_id=device.device_id,name=device.name,ip=device.ip) for d in obj_data]
+        objs: list[Model] = [obj(**d, device_id=device.device_id, name=device.name, ip=device.ip) for d in obj_data]
         obj.objects.bulk_create(objs=objs)
         device.is_sync = True
         device.save()
