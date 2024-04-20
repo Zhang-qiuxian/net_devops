@@ -28,6 +28,9 @@ class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     exclude_export: list[str] = ['id']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
+        """
+        根据设备的 **device_id** 获取单个设备接口的信息
+        """
         pk: str = kwargs.get('pk')
         if not pk:
             return ResponseError(message="请携带设备id！")
@@ -54,7 +57,6 @@ class DeviceSerialViewSet(ExportImportMixin, ReadOnlyModelViewSet):
         return ResponseOK(message="查询成功！", data=serializer.data)
 
 
-
 class DeviceIPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceIP.objects.all().order_by('id')
     serializer_class = DeviceIPSerializer
@@ -69,7 +71,6 @@ class DeviceIPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
             return ResponseError(message="设备id不存在！")
         serializer = self.serializer_class(d, many=True)
         return ResponseOK(message="查询成功！", data=serializer.data)
-
 
 
 class DeviceSystemViewSet(ExportImportMixin, ReadOnlyModelViewSet):

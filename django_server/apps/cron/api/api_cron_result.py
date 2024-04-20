@@ -1,21 +1,21 @@
-from public.mixins import ModelViewSet
+from public.mixins import ReadOnlyModelViewSet
 
 from django_celery_results.models import TaskResult, ChordCounter, GroupResult
 
 from apps.cron.serial import TaskResultSerializer, ChordCounterSerializer, GroupResultSerializer
 
 
-class TaskResultViewSet(ModelViewSet):
+class TaskResultViewSet(ReadOnlyModelViewSet):
     queryset = TaskResult.objects.all().order_by('id')
     serializer_class = TaskResultSerializer
 
 
-class ChordCounterViewSet(ModelViewSet):
+class ChordCounterViewSet(ReadOnlyModelViewSet):
     queryset = ChordCounter.objects.all().order_by('id')
     serializer_class = ChordCounterSerializer
 
 
-class GroupResultViewSet(ModelViewSet):
+class GroupResultViewSet(ReadOnlyModelViewSet):
     queryset = GroupResult.objects.all().order_by('id')
     serializer_class = GroupResultSerializer
 

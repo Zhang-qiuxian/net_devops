@@ -14,11 +14,10 @@ from public.response import ResponseOK, ResponseError
 
 
 class CreateModelMixin:
-    """
-    Create a model instance.
-    """
-
     def create(self, request: Request, *args, **kwargs) -> Response:
+        """
+        创建单个数据
+        """
         serializer: Serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return ResponseError(message="校验失败!", data=serializer.errors)
@@ -30,11 +29,10 @@ class CreateModelMixin:
 
 
 class ListModelMixin:
-    """
-    List a queryset.
-    """
-
     def list(self, request: Request, *args, **kwargs) -> Response:
+        """
+        获取多个数据
+        """
         queryset: QuerySet = self.filter_queryset(self.get_queryset())
         page = self.paginate_queryset(queryset)
         if page is not None:
@@ -46,22 +44,24 @@ class ListModelMixin:
 
 
 class RetrieveModelMixin:
-    """
-    Retrieve a model instance.
-    """
+
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
+        """
+        根据 **id** 获取单个数据
+        """
         instance = self.get_object()
         serializer = self.get_serializer(instance)
         return ResponseOK(message="查询成功！", data=serializer.data)
 
 
 class UpdateModelMixin:
-    """
-    Update a model instance.
-    """
 
     def update(self, request: Request, *args, **kwargs) -> Response:
+        """
+        更新数据
+        """
+
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         serializer: Serializer = self.get_serializer(instance, data=request.data, partial=partial)
@@ -86,11 +86,12 @@ class UpdateModelMixin:
 
 
 class DestroyModelMixin:
-    """
-    Destroy a model instance.
-    """
 
     def destroy(self, request: Request, *args, **kwargs) -> Response:
+        """
+        根据 **Id** 删除数据
+        """
+
         instance = self.get_object()
         self.perform_destroy(instance)
         return ResponseOK()
@@ -122,6 +123,13 @@ class ExportImportMixin:
 
     @action(methods=['get'], detail=False)
     def export_excel(self, request: Request, *args, **kwargs) -> Response:
+        """
+        导出为excel
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
         meta = self.get_queryset()[0]._meta
         exclude: list[str] = self.exclude_export
         response: HttpResponse = HttpResponse(content_type='application/ms-excel')
