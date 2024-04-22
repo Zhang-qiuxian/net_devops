@@ -18,8 +18,9 @@
                 </d-form>
             </div>
             <div class="form-right">
-                <d-button variant="solid" color="primary" @click="test">新增</d-button>
+                <d-button variant="solid" color="primary" @click="conter.increment()">新增</d-button>
                 <d-button color="primary">导出为excel</d-button>
+                {{ conter.count }}
             </div>
         </div>
         <div class="table">
@@ -46,9 +47,18 @@
 <script setup>
 import { ref } from 'vue';
 import { getDeice } from '@/api/device';
+import { useCounterStore } from '@/stores/counter.js'
+
+const conter = useCounterStore()
+
+console.log("count:::::",conter.count);
+console.log("count:::::",conter.count);
+
+
 
 onMounted(() => {
-    getDeice()
+    // getDeice()
+    // useCounterStore().increment()
 
 })
 
@@ -386,7 +396,7 @@ const fileds = {
 
 }
 
-console.log(fileds);
+// console.log(fileds);
 
 const pager = shallowReactive({
     total: 306,

@@ -7,6 +7,9 @@ export const useCounterStore = defineStore('counter', () => {
   function increment() {
     count.value++
   }
-
   return { count, doubleCount, increment }
-})
+},
+  {
+    //持久化存储到 localStorage 中
+    persist: true
+  })

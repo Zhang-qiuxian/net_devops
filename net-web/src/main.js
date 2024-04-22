@@ -6,8 +6,11 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-// devui
 
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
+
+const pinia = createPinia()
+pinia.use(piniaPluginPersistedstate)
 
 // import { ThemeServiceInit, infinityTheme } from 'devui-theme';
 
@@ -16,6 +19,6 @@ import router from './router'
 
 const app = createApp(App)
 
-app.use(createPinia())
+app.use(pinia)
 app.use(router)
 app.mount('#app')
