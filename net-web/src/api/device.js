@@ -25,4 +25,4 @@ async function removeDevice(params) {
     return
 }
 
-export { getDeice }
+export { getDeice,getOneDevice,addDevice }

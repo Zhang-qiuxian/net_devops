@@ -18,15 +18,16 @@
                 </d-form>
             </div>
             <div class="form-right">
-                <d-button variant="solid" color="primary" @click="conter.increment()">新增</d-button>
+                <d-button variant="solid" color="primary" @click="test">新增</d-button>
                 <d-button color="primary">导出为excel</d-button>
-                {{ conter.count }}
             </div>
         </div>
         <div class="table">
-            <d-table ref="tableRef" :data="data" :row-key="(item) => item.device_id" @cell-click="onCellClick"
+            <d-table ref="tableRef" :data="device" :row-key="(item) => item.device_id" @cell-click="onCellClick"
                 @row-click="onRowClick" @check-change="checkChange" @check-all-change="checkAllChange"
-                table-height="100%" fix-header>
+                table-height="100%">
+
+                <d-column type="index" width="40"></d-column>
                 <d-column type="checkable" width="40" :checkable="checkable" reserve-check></d-column>
                 <d-column v-for="(v, k) in fileds" :field=k :header=v align="center"></d-column>
                 <d-column header="操作" class="opera">
@@ -35,11 +36,15 @@
                         <d-button @click="handleClick1(scope.row)">详细</d-button>
                     </template>
                 </d-column>
+                <template #empty>
+                    <div style="text-align: center;">No Data</div>
+                </template>
             </d-table>
         </div>
         <div class="page">
-            <d-pagination :total="pager.total" v-model:pageSize="pager.pageSize" v-model:pageIndex="pager.pageIndex"
-                :can-view-total="true" :can-change-page-size="true" :can-jump-page="true" :max-items="5" />
+            <d-pagination :total="total" v-model:pageSize="pager.pageSize" v-model:pageIndex="pager.pageIndex"
+                :can-view-total="true" :can-change-page-size="true" :auto-fix-page-index="false" :auto-hide="true"
+                @page-index-change="pageIndexChange" @page-size-change="pageSizeChange" :max-items="5" />
         </div>
     </div>
 </template>
@@ -47,23 +52,34 @@
 <script setup>
 import { ref } from 'vue';
 import { getDeice } from '@/api/device';
-import { useCounterStore } from '@/stores/counter.js'
+import { useDeviceStore } from '@/stores/device.js'
+import { storeToRefs } from 'pinia';
 
-const conter = useCounterStore()
+const store = useDeviceStore()
 
-console.log("count:::::",conter.count);
-console.log("count:::::",conter.count);
+const { total, device } = storeToRefs(store)
 
+const pager = shallowReactive({
+    // total: total,
+    pageIndex: 1,
+    pageSize: 10,
+    pageSizeOptions: [10, 20, 30, 40, 50],
+});
 
 
 onMounted(() => {
     // getDeice()
     // useCounterStore().increment()
+    // store.get({
+    //     page: pager.pageIndex,
+    //     page_size: pager.pageSize
+    // })
+    console.log(store.total);
+
 
 })
 
 function test(params) {
-    console.log(import.meta.env);
     let data = getDeice(params)
     console.log(data);
 }
@@ -71,7 +87,6 @@ function test(params) {
 const handleClick1 = (row) => {
     console.log(row);
 };
-const selectOptions = reactive(['Options1', 'Options2', 'Options3']);
 let formModel = reactive({
     "name": '',
     "description": '',
@@ -87,296 +102,7 @@ let formModel = reactive({
     "company_id": 1
 });
 const tableRef = ref();
-const data = ref([
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "8b77c2f9-f035-45e2-a513-09c56563950e",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "1F-switch",
-        "ip": "10.10.10.1",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 08:42:35",
-        "update_time": "2024-04-08 08:42:35"
-    },
-    {
-        "device_id": "dce1b2ed-659c-4d30-83ee-f052580efdc5",
-        "snmp": "px",
-        "company": null,
-        "name": "1F交换机",
-        "description": "1F交换机",
-        "hostname": "2F-switch",
-        "ip": "10.10.10.2",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 09:03:32",
-        "update_time": "2024-04-08 09:03:32"
-    },
-    {
-        "device_id": "ac7a889d-1483-4ddb-994e-092c339a40d5",
-        "snmp": "px",
-        "company": null,
-        "name": "3F交换机",
-        "description": "3F交换机",
-        "hostname": "3F-switch",
-        "ip": "10.10.10.3",
-        "login": "ssh",
-        "url": "",
-        "username": "admin",
-        "password": "admin",
-        "remark": "",
-        "create_time": "2024-04-08 12:47:56",
-        "update_time": "2024-04-08 12:47:56"
-    }
-]);
+
 
 const fileds = {
     // "device_id": "设备id",
@@ -396,17 +122,6 @@ const fileds = {
 
 }
 
-// console.log(fileds);
-
-const pager = shallowReactive({
-    total: 306,
-    pageIndex: 5,
-    pageSize: 10,
-    pageSizeOptions: [10, 20, 30, 40, 50],
-});
-
-const preLink = '<span class="icon-arrow-left"></span>';
-const nextLink = '<span class="icon-arrow-right"></span>';
 
 const handleClick = () => {
     console.log(tableRef.value.store.getCheckedRows());
@@ -434,31 +149,24 @@ const checkable = (row, rowIndex) => {
     return row.lastName === 'Li' || false;
 };
 
-const insertRow = () => {
-    data.value.push({
-        id: `${data.value.length}`,
-        firstName: 'Jeff',
-        lastName: 'You',
-        gender: 'Male',
-        date: '1989/05/19',
-    });
+const pageSizeChange = (val) => {
+    pager.pageSize = val;
+    console.log(pager);
+    console.log("pageSize", val);
+    store.get({
+        page: pager.page,
+        page_size: pager.pageSize
+    })
+};
+const pageIndexChange = (val) => {
+    console.log("index", val);
+    pager.page
+    store.get({
+        page: pager.pageIndex,
+        page_size: pager.pageSize
+    })
 };
 
-const deleteRow = () => {
-    data.value.splice(0, 1);
-};
-
-const onResizeStart = (e) => {
-    console.log('resize start', e);
-};
-
-const onResizing = (e) => {
-    console.log('resizing', e);
-};
-
-const onResizeEnd = (e) => {
-    console.log('resize end', e);
-};
 
 </script>
 

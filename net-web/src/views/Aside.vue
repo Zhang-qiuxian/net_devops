@@ -2,14 +2,14 @@
   <div class="tietle">
     <span>网络devops后台</span>
   </div>
-  <d-menu mode="vertical" :default-select-keys="['home']" width="200px" :router="true">
+  <d-menu mode="vertical" :default-select-keys="meun.value" width="200px" :router="true" @select="select">
     <d-menu-item key="home" :route="{ path: '/' }">
       <template #icon>
         <i class="icon-homepage"></i>
       </template>
       <span>首页</span>
     </d-menu-item>
-    <d-sub-menu title="控制台" key="console" >
+    <d-sub-menu title="控制台" key="console">
       <template #icon>
         <i class="icon-deploy-store"></i>
       </template>
@@ -67,8 +67,22 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
 
+import { ref } from 'vue';
+import { useSettingsStore } from '@/stores/settings.js'
+import { storeToRefs } from 'pinia';
+
+const store = useSettingsStore()
+
+const { default_menu } = storeToRefs(store)
+
+const meun = ref(['cron-info'])
+
+const select = (e) => {
+  console.log(e.key);
+  store.updateMenu(e.key)
+  console.log(default_menu);
+};
 </script>
 
 <style lang="less" scoped>
