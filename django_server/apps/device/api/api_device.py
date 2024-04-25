@@ -1,3 +1,4 @@
+from datetime import datetime
 import pandas
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -6,7 +7,9 @@ from rest_framework.serializers import Serializer
 from rest_framework.utils.serializer_helpers import ReturnDict
 
 from django.core.files.uploadedfile import TemporaryUploadedFile
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Manager, Model
+
+from django.http import HttpResponse
 
 from public.response import ResponseOK, ResponseError
 from public.mixins import ModelViewSet, ReadOnlyModelViewSet, ExportImportMixin
@@ -15,10 +18,9 @@ from apps.device.models import Device, SnmpTemplate, DeviceCompany, DeviceSystem
     DeviceInterface
 from apps.device.api.seria import (DeviceSerializer, SnmpTemplateSerializer, DeviceCompanySerializer,
                                    DeviceDetailSerializer, DeviceSystemSerializer, DeviceIPSerializer,
-                                   DeviceSerialSerializer, DeviceInterfaceSerializer)
+                                   DeviceSerialSerializer, DeviceInterfaceSerializer, DeviceExportSerializer)
 
-from openpyxl import Workbook
-from openpyxl.worksheet.worksheet import Worksheet
+
 
 
 class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
@@ -59,7 +61,7 @@ class DeviceSerialViewSet(ExportImportMixin, ReadOnlyModelViewSet):
 class DeviceIPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceIP.objects.all().order_by('id')
     serializer_class = DeviceIPSerializer
-    exclude_export: list[str] = ['id']
+    exclude_export_fields: list[str] = ['id']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
         pk: str = kwargs.get('pk')
@@ -98,11 +100,13 @@ class DeviceCompanyViewSet(ModelViewSet):
     serializer_class = DeviceCompanySerializer
 
 
-class DeviceViewSet(ModelViewSet):
+class DeviceViewSet(ExportImportMixin,ModelViewSet):
     queryset: QuerySet[Device] = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
     serializer_detail = DeviceDetailSerializer
+    serializer_export = DeviceExportSerializer
     exclude_export: list[str] = ['id', 'is_sync']
+    export_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface]
 
     def perform_create(self, serializer: Serializer):
         serializer.save()
@@ -118,36 +122,11 @@ class DeviceViewSet(ModelViewSet):
         sa = self.serializer_detail(instance=d)
         return ResponseOK(data=sa.data)
 
-    @action(methods=['get'], detail=True)
-    def export(self, request: Request, *args, **kwargs) -> Response:
-        pk: str = kwargs.get('pk')
-        print(pk)
-        obj = self.get_queryset().filter(device_id=pk).first()
-        serializer = self.serializer_detail(obj, many=False)
-        data: ReturnDict = serializer.data
-        wb: Workbook = Workbook()
-        ws: Worksheet = wb.active
-        remove_fields: list[str] = []
-        add_sheet: list[dict] = []
-        for k, v in data.items():
-            if isinstance(v, list):
-                add_sheet.append({k: v})
-                remove_fields.append(k)
-        for field in remove_fields:
-            del data[field]
-        cell = [v for _, v in data.items()]
-        print("cell", cell)
-        title: list = list(data.keys())
-        ws.append(title)
-        ws.append(cell)
-        if add_sheet:
-            for sheet in add_sheet:
-                for t, c in sheet.items():
-                    wb.create_sheet(title=t)
-                    #TODO:未完成
-
-        print(add_sheet)
-        return Response()
+    # @action(methods=['get'], detail=True)
+    # def export(self, request: Request, *args, **kwargs) -> Response:
+    #     pk: str = kwargs.get('pk')
+    #     obj = self.get_queryset().filter(device_id=pk).first()
+    #     return response
 
     @action(methods=['post'], detail=False)
     def upload(self, request: Request, *args, **kwargs) -> Response:

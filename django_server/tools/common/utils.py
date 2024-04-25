@@ -15,3 +15,5 @@ def start_thread(data: list[dict]) -> str:
         res: Iterator[Future] = as_completed([p.submit(item['func'], **item['kwargs']) for item in data])
         response_data = [i.result() for i in res]
         return response_data
+
+

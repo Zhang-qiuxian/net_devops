@@ -148,3 +148,48 @@ class DeviceDetailSerializer(ModelSerializer):
     class Meta:
         model = Device
         exclude = ["id"]
+
+
+class DeviceExportSerializer(ModelSerializer):
+    ip_queryset: QuerySet[DeviceIP] = DeviceIP.objects.all().order_by('id')
+    system_queryset: QuerySet[DeviceSystem] = DeviceSystem.objects.all().order_by('id')
+    interface_queryset: QuerySet[DeviceInterface] = DeviceInterface.objects.all().order_by('id')
+    serial_queryset: QuerySet[DeviceSerial] = DeviceSerial.objects.all().order_by('id')
+    snmp_queryset: QuerySet[SnmpTemplate] = SnmpTemplate.objects.all().order_by('id')
+    company_queryset: QuerySet[DeviceCompany] = DeviceCompany.objects.all().order_by('id')
+
+    device_id = UUIDField(read_only=True, required=False)
+    snmp = SerializerMethodField(read_only=True)
+    company = SerializerMethodField(read_only=True)
+    ip = SerializerMethodField(read_only=True)
+    serial = SerializerMethodField(read_only=True)
+    system = SerializerMethodField(read_only=True)
+    interface = SerializerMethodField(read_only=True)
+
+    def get_snmp(self, obj: Device):
+        s: [SnmpTemplate] = [s for s in self.snmp_queryset if s.id == obj.snmp_id]
+        return s
+
+    def get_company(self, obj: Device):
+        d: [DeviceCompany] = [c for c in self.company_queryset if c.id == obj.company_id]
+        return d
+
+    def get_ip(self, obj: Device):
+        i: [QuerySet] = [i for i in self.ip_queryset if i.device_id == obj.device_id]
+        return i
+
+    def get_serial(self, obj: Device):
+        s: [QuerySet] = [s for s in self.serial_queryset if s.device_id == obj.device_id]
+        return s
+
+    def get_system(self, obj: Device):
+        s: [QuerySet] = [s for s in self.system_queryset if s.device_id == obj.device_id]
+        return s
+
+    def get_interface(self, obj: Device):
+        i: [QuerySet] = [i for i in self.interface_queryset if i.device_id == obj.device_id]
+        return i
+
+    class Meta:
+        model = Device
+        exclude = ["id"]

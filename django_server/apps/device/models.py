@@ -158,9 +158,9 @@ class DeviceSerial(models.Model):
 
     class Meta:
         db_table = 'device_serial'
-        verbose_name = '设备系统信息'
+        verbose_name = '设备序列号'
         verbose_name_plural = verbose_name
-        db_table_comment = '设备系统信息'
+        db_table_comment = '设备序列号'
         ordering = ['id']
 
 
