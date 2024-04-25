@@ -1,15 +1,11 @@
 import pandas
-import json
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from rest_framework.serializers import Serializer
+from rest_framework.utils.serializer_helpers import ReturnDict
 
 from django.core.files.uploadedfile import TemporaryUploadedFile
-from datetime import datetime
-
-from openpyxl import Workbook
-from django.http import HttpResponse, JsonResponse
 from django.db.models import QuerySet
 
 from public.response import ResponseOK, ResponseError
@@ -20,6 +16,9 @@ from apps.device.models import Device, SnmpTemplate, DeviceCompany, DeviceSystem
 from apps.device.api.seria import (DeviceSerializer, SnmpTemplateSerializer, DeviceCompanySerializer,
                                    DeviceDetailSerializer, DeviceSystemSerializer, DeviceIPSerializer,
                                    DeviceSerialSerializer, DeviceInterfaceSerializer)
+
+from openpyxl import Workbook
+from openpyxl.worksheet.worksheet import Worksheet
 
 
 class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
@@ -99,7 +98,7 @@ class DeviceCompanyViewSet(ModelViewSet):
     serializer_class = DeviceCompanySerializer
 
 
-class DeviceViewSet(ExportImportMixin, ModelViewSet):
+class DeviceViewSet(ModelViewSet):
     queryset: QuerySet[Device] = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
     serializer_detail = DeviceDetailSerializer
@@ -119,15 +118,53 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
         sa = self.serializer_detail(instance=d)
         return ResponseOK(data=sa.data)
 
+    @action(methods=['get'], detail=True)
+    def export(self, request: Request, *args, **kwargs) -> Response:
+        pk: str = kwargs.get('pk')
+        print(pk)
+        obj = self.get_queryset().filter(device_id=pk).first()
+        serializer = self.serializer_detail(obj, many=False)
+        data: ReturnDict = serializer.data
+        wb: Workbook = Workbook()
+        ws: Worksheet = wb.active
+        remove_fields: list[str] = []
+        add_sheet: list[dict] = []
+        for k, v in data.items():
+            if isinstance(v, list):
+                add_sheet.append({k: v})
+                remove_fields.append(k)
+        for field in remove_fields:
+            del data[field]
+        cell = [v for _, v in data.items()]
+        print("cell", cell)
+        title: list = list(data.keys())
+        ws.append(title)
+        ws.append(cell)
+        if add_sheet:
+            for sheet in add_sheet:
+                for t, c in sheet.items():
+                    wb.create_sheet(title=t)
+                    #TODO:未完成
+
+        print(add_sheet)
+        return Response()
+
     @action(methods=['post'], detail=False)
     def upload(self, request: Request, *args, **kwargs) -> Response:
         file: TemporaryUploadedFile = request.FILES.get('file')
-        file_type: list[str] = ['xlsx', 'csv', 'xls']
+        file_types: list[str] = ['xlsx', 'csv', 'xls']
         if not file:
             return ResponseError(message="添加失败,请上传文件。")
-        if file.name.split('.')[-1] not in file_type:
+        file_type: str = file.name.split('.')[-1]
+        if file_type not in file_types:
             return ResponseError(message="添加失败,文件格式不正确。请添加xlsx/csv/xls")
-        df = pandas.read_excel(file.read(), engine='openpyxl')
+        match file_type:
+            case 'xlsx':
+                df = pandas.read_excel(file.read(), engine='openpyxl')
+            case 'xls':
+                df = pandas.read_excel(file.read(), engine='openpyxl')
+            case 'csv':
+                df = pandas.read_csv(file.read())
         d_d: list[dict] = df.to_dict(orient='records')
         db_ip: list = []
         db_hostname: list = []

@@ -130,7 +130,10 @@ class ExportImportMixin:
         :param kwargs:
         :return:
         """
-        meta = self.get_queryset()[0]._meta
+        obj = self.get_queryset()
+        if not obj:
+            return ResponseError(message="没有数据可以导出！")
+        meta = obj[0]._meta
         exclude: list[str] = self.exclude_export
         response: HttpResponse = HttpResponse(content_type='application/ms-excel')
         response['Content-Disposition'] = f'attachment; filename=Export_{datetime.now()}.xlsx'
@@ -150,4 +153,4 @@ class ExportImportMixin:
     def import_excel(self, request: Request, *args, **kwargs) -> Response:
         #TODO:导入功能还未实现
 
-        pass
+        raise NotImplementedError("功能还没未实现")

@@ -29,6 +29,9 @@ const router = createRouter({
                         },
                         {
                             path: 'company', name: 'device-company', component: () => import('@/views/device/Company.vue'),
+                        },
+                        {
+                            path: 'preview', name: 'device-preview', component: () => import('@/views/device/Preview.vue'),
                         }
                     ],
                 },

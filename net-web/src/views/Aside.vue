@@ -29,6 +29,9 @@
       <template #icon>
         <i class="icon-clearup"></i>
       </template>
+      <d-menu-item key="device-preview" :route="{ name: 'device-preview' }">
+        <span>设备预览</span>
+      </d-menu-item>
       <d-menu-item key="device-info" :route="{ name: 'device-info' }">
         <span>设备信息</span>
       </d-menu-item>

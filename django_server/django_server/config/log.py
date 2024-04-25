@@ -69,10 +69,24 @@ LOGGING = {
         'api': {
             'level': 'INFO',
             'filename': '%s/api.log' % LOGS_DIRS,
-            'class': 'logging.handlers.RotatingFileHandler',
-            'formatter': 'api_log',
-            'maxBytes': 5 * 1024 * 1024,
-            'backupCount': 10
+            # 'class': 'logging.handlers.RotatingFileHandler',
+            # 'formatter': 'api_log',
+            # 'maxBytes': 5 * 1024 * 1024,
+            # 'backupCount': 10
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            # TimedRotatingFileHandler的参数
+            # 目前设定每天一个日志文件
+            # 'S'         |  秒
+            # 'M'         |  分
+            # 'H'         |  时
+            # 'D'         |  天
+            # 'W0'-'W6'   |  周一至周日
+            # 'midnight'  |  每天的凌晨
+            'when': 'D',  # 间间隔的类型，指定秒就不要在Windows上运行测试
+            'interval': 1,  # 时间间隔
+            'backupCount': 30,  # 能留几个日志文件;过数量就会丢弃掉老的日志文件
+            'encoding': 'utf-8',  # 日志文本编码
+            'formatter': 'api_log',  # 当前日志处理流程的日志格式
         },
     },
     'loggers': {  # 日志处理的命名空间
@@ -80,6 +94,11 @@ LOGGING = {
             'handlers': ['console', 'file'],  # 当基于django命名空间写入日志时，调用那几个日志处理流程
             'propagate': True,  # 是否在django命名空间对应的日志处理流程结束以后，冒泡通知其他的日志功能。True表示允许
         },
+        'django.db.backends': {
+                    'level': 'DEBUG',
+                    'handlers': ['console'],
+                    'propagate': False,
+                },
         'api': {
             'handlers': ['api'],
             'level': 'INFO',
