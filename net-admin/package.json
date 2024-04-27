@@ -1,0 +1,70 @@
+{
+	"name": "net_devops",
+	"version": "1.0",
+	"description": "模板引用vue-next-admin",
+	"author": "Zhangqiuxian",
+	"license": "MIT",
+	"scripts": {
+		"dev": "vite --force",
+		"build": "vite build",
+		"lint-fix": "eslint --fix --ext .js --ext .jsx --ext .vue src/"
+	},
+	"dependencies": {
+		"@element-plus/icons-vue": "^2.3.1",
+		"axios": "^1.6.8",
+		"echarts": "^5.5.0",
+		"element-plus": "^2.7.2",
+		"js-cookie": "^3.0.5",
+		"mitt": "^3.0.1",
+		"nprogress": "^0.2.0",
+		"pinia": "^2.1.7",
+		"qrcodejs2-fixes": "^0.0.2",
+		"screenfull": "^6.0.2",
+		"sortablejs": "^1.15.2",
+		"vue": "^3.4.25",
+		"vue-clipboard3": "^2.0.0",
+		"vue-demi": "^0.14.7",
+		"qs": "^6.12.1",
+		"vue-router": "^4.3.2"
+	},
+	"devDependencies": {
+		"@vitejs/plugin-vue": "^5.0.4",
+		"@vue/compiler-sfc": "^3.4.25",
+		"eslint": "^9.1.1",
+		"eslint-plugin-vue": "^9.25.0",
+		"prettier": "^3.2.5",
+		"sass": "^1.75.0",
+		"vite": "^5.2.10",
+		"vite-plugin-cdn-import": "^1.0.1",
+		"vite-plugin-compression": "^0.5.1",
+		"vite-plugin-vue-setup-extend-plus": "^0.1.0",
+		"vue-eslint-parser": "^9.4.2"
+	},
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not dead"
+	],
+	"bugs": {
+		"url": "https://gitee.com/lyt-top/vue-next-admin/issues"
+	},
+	"engines": {
+		"node": ">=16.0.0",
+		"npm": ">= 7.0.0"
+	},
+	"keywords": [
+		"vue",
+		"vue3",
+		"vuejs/vue-next",
+		"vuejs/vue-next-template",
+		"vuejs/vue-next-template-js",
+		"element-ui",
+		"element-plus",
+		"vue-next-admin",
+		"next-admin"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://gitee.com/lyt-top/vue-next-admin.git"
+	}
+}

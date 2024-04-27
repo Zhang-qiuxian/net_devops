@@ -10,7 +10,7 @@ export const useSettingsStore = defineStore('net_settings', () => {
     const default_menu = ref(['home'])
     function updateMenu(key) {
         console.log(default_menu.value);
-        if (default_menu.value = key) {
+        if (default_menu.value.includes(key)) {
             return default_menu.value
         } else {
             return default_menu.value = [key]

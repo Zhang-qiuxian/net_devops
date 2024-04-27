@@ -70,10 +70,10 @@ const pager = shallowReactive({
 onMounted(() => {
     // getDeice()
     // useCounterStore().increment()
-    // store.get({
-    //     page: pager.pageIndex,
-    //     page_size: pager.pageSize
-    // })
+    store.get({
+        page: pager.pageIndex,
+        page_size: pager.pageSize
+    })
     console.log(store.total);
 
 
