@@ -22,21 +22,8 @@ import { ref } from 'vue'
 import Aside from './aside.vue'
 import Header from './header.vue'
 
-import router from '@/router';
 
-let r = router.getRoutes().filter((item) => {if (item.children.length > 0) return item})
-// console.log(router.getRoutes());
-// r.filter((item) => {
-//     // console.log(item.path);
-//     if (item.children.length > 0) {
-//         // console.log(item.children);
-//         console.log(item);
-//         return item
-       
-//     }
-// }
-// )
-console.log(r);
+
 
 const item = {
     date: '2016-05-02',
@@ -56,6 +43,7 @@ const tableData = ref(Array.from({ length: 20 }).fill(item))
 .layout-container .el-aside {
     color: var(--el-text-color-primary);
     background: var(--el-color-primary-light-8);
+    border-right: solid 1px var(--el-color-info-light-7);
 }
 
 .layout-container .el-menu {

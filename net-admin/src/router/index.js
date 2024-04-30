@@ -5,9 +5,52 @@ import NotFound from '@/views/NotFound.vue'
 const deviceRouters = [
   {
     path: '/device',
-    name: 'device',
-    component: () => import('../views/device/index.vue'),
-    children: []
+    meta: {
+      title: '设备管理',
+      icon: 'Platform'
+    },
+    redirect: Layout,
+    children: [
+      {
+        path: 'device-preview',
+        name: 'devicePreview',
+        component: () => import('@/views/device/preview.vue'),
+        meta: {
+          title: '设备预览',
+        },
+      },
+      {
+        path: 'device-info',
+        name: 'deviceInfo',
+        component: () => import('@/views/device/info.vue'),
+        meta: {
+          title: '设备信息',
+          // icon: 'Platform'
+        },
+      },
+
+    ]
+  }
+]
+const cronRouters = [
+  {
+    path: '/cron',
+    meta: {
+      title: '定时任务',
+      icon: 'AlarmClock'
+    },
+    redirect: Layout,
+    children: [
+      {
+        path: 'cron-info',
+        name: 'cronInfo',
+        component: () => import('@/views/cron/info.vue'),
+        meta: {
+          title: '任务管理',
+          // icon: 'Platform'
+        },
+      },
+    ]
   }
 ]
 const routes = [
@@ -15,7 +58,7 @@ const routes = [
     path: '/',
     name: 'home',
     component: Layout,
-    children: [...deviceRouters]
+    children: [...deviceRouters, ...cronRouters]
   },
   { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },
   // {
@@ -30,7 +73,7 @@ const routes = [
 
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes
 })
 
