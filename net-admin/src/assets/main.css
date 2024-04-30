@@ -1,1 +1,10 @@
 /* @import './base.css'; */
+
+#app {
+    height: 100vh;
+    width: 100vw;
+}
+.el-container{
+    height: 100%;
+    width: 100%;
+}

@@ -6,6 +6,7 @@ import router from './router'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'normalize.css'
+import '@/assets/main.css'
 
 const app = createApp(App)
 
