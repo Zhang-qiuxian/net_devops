@@ -25,10 +25,40 @@ const deviceRouters = [
         component: () => import('@/views/device/info.vue'),
         meta: {
           title: '设备信息',
-          // icon: 'Platform'
         },
       },
-
+      {
+        path: 'device-interface',
+        name: 'deviceInterface',
+        component: () => import('@/views/device/interface.vue'),
+        meta: {
+          title: '接口管理',
+        },
+      },
+      {
+        path: 'device-ip',
+        name: 'deviceIp',
+        component: () => import('@/views/device/ip.vue'),
+        meta: {
+          title: 'IP管理',
+        },
+      },
+      {
+        path: 'device-serial',
+        name: 'deviceSerial',
+        component: () => import('@/views/device/serial.vue'),
+        meta: {
+          title: '序列号管理',
+        },
+      },
+      {
+        path: 'device-system',
+        name: 'deviceSystem',
+        component: () => import('@/views/device/system.vue'),
+        meta: {
+          title: '系统管理',
+        },
+      },
     ]
   }
 ]

@@ -1,5 +1,5 @@
 <template>
     <div>
-        <h1>设备ip</h1>
+        <h1>ip管理</h1>
     </div>
 </template>

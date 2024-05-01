@@ -1,16 +1,16 @@
 <template>
     <div class="title">
-        <span>net_devops管理系统</span>
+        <span>{{ title }}</span>
     </div>
     <el-scrollbar style="height: calc(100vh - 60px);">
-        <el-menu :default-openeds="['1', '3']" :router="true"  @open="handleOpen" @close="handleClose">
-            <el-menu-item index="/">
+        <el-menu :default-active="default_active" :router="true">
+            <el-menu-item index="/" @click="itemclick">
                 <el-icon>
                     <House />
                 </el-icon>
                 <span>首页</span>
             </el-menu-item>
-            <el-sub-menu :index="item.path" v-for="item in r" :key="item.path">
+            <el-sub-menu :index="item.path" v-for="item in routers" :key="item.path">
                 <template #title>
                     <el-icon>
                         <component :is="item.meta.icon"></component>
@@ -28,22 +28,20 @@
 
 <script setup>
 import { Menu as IconMenu } from '@element-plus/icons-vue'
-import router from '@/router';
+import { useSettingsStore } from '@/stores/settings.js'
+import { storeToRefs } from 'pinia';
+import { onMounted } from 'vue';
 
-console.log(router.getRoutes());
-let r = router.getRoutes().filter((item) => { if (item.children.length > 0 && item.path != '/') return item })
-for (let i = 0; i < r.length; i++) {
-    console.log(r[i]);
-}
-const handleOpen = (key, keyPath) => {
-  console.log(key, keyPath)
-}
-const handleClose = (key, keyPath) => {
-  console.log(key, keyPath)
-}
+const settingsStore = useSettingsStore()
+const { routers, default_active } = storeToRefs(settingsStore)
+const title = import.meta.env.VITE_APP_TITLE;
+
+onMounted(() => {
+    useSettingsStore().addRouter()
+})
 
 const itemclick = (item) => {
-    console.log(item);
+    settingsStore.setDefaultActive(item.index)
 }
 </script>
 
