@@ -1,10 +1,9 @@
 import instance from "../service";
 
 export const getAllDeiveApi = async (params) => {
-    return await instance.get({
-        url: "device/info/",
+     return await instance.get("device/info/",
         params
-    })
+    )
 }
 
 

@@ -5,7 +5,10 @@ import { getAllDeiveApi } from '@/api/device'
 
 
 export const useDeviceStore = defineStore('device', () => {
-  const devcie_info = ref([])
+  const devcie_info = ref({
+    total: 0,
+    data:[]
+  })
   const devcie_snmp = ref([])
   const page = ref({
     page: 1,
@@ -13,7 +16,9 @@ export const useDeviceStore = defineStore('device', () => {
   })
 
   const getDeviceInfo = (params) => {
-    devcie_info.value = getAllDeiveApi(params).then((res)=>res)
+    getAllDeiveApi(params).then(res => {
+      devcie_info.value = res
+    })
     console.log(devcie_info);
   }
 

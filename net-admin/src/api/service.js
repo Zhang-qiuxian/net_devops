@@ -2,6 +2,7 @@ import axios from 'axios';
 // import { Message } from 'element-ui';
 URL = import.meta.env.VITE_API_URL;
 
+
 const instance = axios.create({
     baseURL: URL,
     timeout: 5000,
@@ -30,33 +31,38 @@ instance.interceptors.response.use(
     (response) => {
         // 对响应数据做点什么
         const res = response.data;
+        console.log(res);
+        if (res.code && res.code === 200) {
+            return res.data;
+        }
         if (res.code && res.code !== 200) {
-            // `token` 过期或者账号已在别处登录
-            if (res.code === 401) {
-                window.location.href = '/'; // 去登录页
-                Message({
-                    type: 'error',
-                    message: '你已被登出，请重新登录'
-                });
-                ElMessageBox.alert('你已被登出，请重新登录', '提示', {})
-                    .then(() => { })
-                    .catch(() => { });
-            }
+            ElMessageBox.alert(res.message, '提示', {})
+                .then(() => { })
+                .catch(() => { });
             return Promise.reject(service.interceptors.response);
-        } else {
-            return res;
+            // `token` 过期或者账号已在别处登录
+            // if (res.code === 401) {
+            //     window.location.href = '/'; // 去登录页
+            //     // Message({
+            //     //     type: 'error',
+            //     //     message: '你已被登出，请重新登录'
+            //     // });
+
+            // }
+
         }
     },
     (error) => {
         // 对响应错误做点什么
+        console.log(error);
         if (error.message.indexOf('timeout') != -1) {
             ElMessage.error('网络超时');
         } else if (error.message == 'Network Error') {
             ElMessage.error('网络连接错误');
         } else {
-            if (error.response.data) this.$message({ type: 'error', message: '接口路径找不到' });
+            // if (error.response.data) this.$message({ type: 'error', message: '接口路径找不到' });
             // else ElMessage.error('接口路径找不到');
-            else this.$message({ type: 'error', message: '接口路径找不到' });
+            // else this.$message({ type: 'error', message: '接口路径找不到' });
         }
         return Promise.reject(error);
     }
