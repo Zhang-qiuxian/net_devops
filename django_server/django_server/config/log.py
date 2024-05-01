@@ -94,11 +94,11 @@ LOGGING = {
             'handlers': ['console', 'file'],  # 当基于django命名空间写入日志时，调用那几个日志处理流程
             'propagate': True,  # 是否在django命名空间对应的日志处理流程结束以后，冒泡通知其他的日志功能。True表示允许
         },
-        'django.db.backends': {
-                    'level': 'DEBUG',
-                    'handlers': ['console'],
-                    'propagate': False,
-                },
+        # 'django.db.backends': {
+        #             'level': 'DEBUG',
+        #             'handlers': ['console'],
+        #             'propagate': False,
+        #         },
         'api': {
             'handlers': ['api'],
             'level': 'INFO',
