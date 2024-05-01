@@ -1,20 +1,30 @@
 <template>
     <el-scrollbar>
         <el-row :gutter="20">
-            <el-col :span="6" v-for="i in 32" :key="i">
-                <el-card style="max-width: 480px">
+            <el-col :span="6" v-for="d in device_info.data" :key="d.device_id">
+                <el-card  shadow="hover">
                     <template #header>
                         <div class="card-header">
-                            <span>Card name</span>
+                            <span>{{ d.name }}</span>
                         </div>
                     </template>
                     <p v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</p>
-                    <template #footer>Footer content</template>
+                    <!-- <template #footer>Footer content</template> -->
                 </el-card>
             </el-col>
         </el-row>
     </el-scrollbar>
 </template>
+<script setup>
+import { useDeviceStore } from '@/stores/device/index.js';
+import { storeToRefs } from 'pinia';
+import { onMounted, ref, computed, reactive } from 'vue'
+const stores = useDeviceStore();
+const { device_info, pages } = storeToRefs(stores);
+console.log(device_info.value.data);
+
+
+</script>
 <style lang="scss" scoped>
 .el-row {
     margin-left: 0 !important;

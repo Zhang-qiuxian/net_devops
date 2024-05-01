@@ -28,6 +28,22 @@ const deviceRouters = [
         },
       },
       {
+        path: 'device-snmp',
+        name: 'deviceSnmp',
+        component: () => import('@/views/device/snmp.vue'),
+        meta: {
+          title: 'SNMP模板',
+        },
+      },
+      {
+        path: 'device-company',
+        name: 'deviceCompany',
+        component: () => import('@/views/device/company.vue'),
+        meta: {
+          title: '设备厂家',
+        },
+      },
+      {
         path: 'device-interface',
         name: 'deviceInterface',
         component: () => import('@/views/device/interface.vue'),
@@ -56,7 +72,7 @@ const deviceRouters = [
         name: 'deviceSystem',
         component: () => import('@/views/device/system.vue'),
         meta: {
-          title: '系统管理',
+          title: '系统信息',
         },
       },
     ]

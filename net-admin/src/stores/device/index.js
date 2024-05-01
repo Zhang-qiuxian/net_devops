@@ -5,24 +5,28 @@ import { getAllDeiveApi } from '@/api/device'
 
 
 export const useDeviceStore = defineStore('device', () => {
-  const devcie_info = ref({
+  const device_info = ref({
     total: 0,
-    data:[]
+    data: []
   })
-  const devcie_snmp = ref([])
-  const page = ref({
+  const device_snmp = ref({
+    total: 0,
+    data: []
+  })
+  const pages = ref({
     page: 1,
-    page_size: 10
+    page_size: 15
   })
-
-  const getDeviceInfo = (params) => {
-    getAllDeiveApi(params).then(res => {
-      devcie_info.value = res
+  const changePage = (page) => {
+    pages.value.page = page
+  }
+  const getDeviceInfo = () => {
+    getAllDeiveApi(pages.value).then(res => {
+      device_info.value = res
     })
-    console.log(devcie_info);
   }
 
-  return { devcie_info, devcie_snmp, page, getDeviceInfo }
+  return { device_info, device_snmp, pages, getDeviceInfo,changePage }
 },
   {
     // persist: {
@@ -33,7 +37,7 @@ export const useDeviceStore = defineStore('device', () => {
     persist: [
       {
         key: setLocalStore('device'),
-        paths: ['devcie_info', 'devcie_snmp', 'page']
+        paths: ['device_info', 'devcie_snmp', 'pages']
       }
     ],
   })
