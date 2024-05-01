@@ -28,7 +28,7 @@
 
 <script setup>
 import { Menu as IconMenu } from '@element-plus/icons-vue'
-import { useSettingsStore } from '@/stores/settings.js'
+import { useSettingsStore } from '@/stores/settings/settings.js'
 import { storeToRefs } from 'pinia';
 import { onMounted } from 'vue';
 
