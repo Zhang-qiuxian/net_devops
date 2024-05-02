@@ -39,7 +39,7 @@ def export_as_excel(self, request, queryset: QuerySet):
 def api_export_models(models: list[QuerySet[Model]], exclude: list[str] = None) -> HttpResponse:
     wb: Workbook = Workbook()
     response: HttpResponse = HttpResponse(content_type='application/ms-excel')
-    response['Content-Disposition'] = f'attachment; filename=Export_{datetime.now()}.xlsx'
+    response['Content-Disposition'] = f'attachment;filename=Export_{datetime.now()}.xlsx'
     for objs in models:
         meta: Options = objs[0]._meta
         ws: Worksheet = wb.create_sheet(title=meta.verbose_name)

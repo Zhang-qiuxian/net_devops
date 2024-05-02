@@ -1,10 +1,10 @@
 import axios from 'axios';
 // import { Message } from 'element-ui';
-URL = import.meta.env.VITE_API_URL;
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 const instance = axios.create({
-    baseURL: URL,
+    baseURL: API_URL,
     timeout: 5000,
     headers: {
         'Content-Type': 'application/json',
@@ -59,6 +59,7 @@ instance.interceptors.response.use(
             ElMessage.error('网络超时');
         } else if (error.message == 'Network Error') {
             ElMessage.error('网络连接错误');
+            // localStorage.clear()
         } else {
             // if (error.response.data) this.$message({ type: 'error', message: '接口路径找不到' });
             // else ElMessage.error('接口路径找不到');

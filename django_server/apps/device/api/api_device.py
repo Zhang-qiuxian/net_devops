@@ -21,8 +21,6 @@ from apps.device.api.seria import (DeviceSerializer, SnmpTemplateSerializer, Dev
                                    DeviceSerialSerializer, DeviceInterfaceSerializer, DeviceExportSerializer)
 
 
-
-
 class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceInterface.objects.all().order_by('id')
     serializer_class = DeviceInterfaceSerializer
@@ -100,12 +98,13 @@ class DeviceCompanyViewSet(ModelViewSet):
     serializer_class = DeviceCompanySerializer
 
 
-class DeviceViewSet(ExportImportMixin,ModelViewSet):
+class DeviceViewSet(ExportImportMixin, ModelViewSet):
     queryset: QuerySet[Device] = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
     serializer_detail = DeviceDetailSerializer
     serializer_export = DeviceExportSerializer
-    exclude_export: list[str] = ['id', 'is_sync']
+    # exclude_export: list[str] = ['id', 'is_sync']
+    exclude_export_fields: list[str] = ['id', 'is_sync']
     export_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface]
 
     def perform_create(self, serializer: Serializer):

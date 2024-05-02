@@ -1,5 +1,6 @@
 <template>
-    <el-scrollbar>
+    <el-empty description="没有数据，请先添加设备" v-if="!isData" style="height: 100%;"/>
+    <el-scrollbar v-else>
         <el-row :gutter="20">
             <el-col :span="6" v-for="d in device_info.data" :key="d.device_id">
                 <el-card  shadow="hover">
@@ -22,6 +23,14 @@ import { onMounted, ref, computed, reactive } from 'vue'
 const stores = useDeviceStore();
 const { device_info, pages } = storeToRefs(stores);
 console.log(device_info.value.data);
+
+const isData = computed(() => {
+    return device_info.value.data.length > 0 ? true : false;
+})
+
+onMounted(() => {
+    stores.getDeviceInfo();
+})
 
 
 </script>

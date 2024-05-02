@@ -1,8 +1,8 @@
 <template>
     <div class="container">
         <div class="from-container">
-            <el-button type="success" @click="drawer2 = true">添加设备</el-button>
-            <el-button type="info">导出设备</el-button>
+            <el-button type="success" @click="drawer = true">添加设备</el-button>
+            <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
         </div>
         <div class="table-container">
             <el-scrollbar>
@@ -35,7 +35,7 @@
                 :total="device_info.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
     </div>
-    <el-drawer v-model="drawer2" :direction="direction">
+    <el-drawer v-model="drawer" direction="rtl">
         <template #header>
             <h4>添加设备</h4>
         </template>
@@ -122,6 +122,8 @@
 import { useDeviceStore } from '@/stores/device/index.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, computed, reactive } from 'vue'
+import { exportDeiveApi } from '@/api/device/index.js';
+import { exportExcel } from '@/api/export-import';
 
 
 const stores = useDeviceStore();
@@ -156,7 +158,7 @@ const tableTitle = {
     create_time: "创建时间",
 }
 // 抽屉
-const drawer2 = ref(false)
+const drawer = ref(false)
 const handleClose = (done) => {
     ElMessageBox.confirm('Are you sure you want to close this?')
         .then(() => {
@@ -167,7 +169,7 @@ const handleClose = (done) => {
         })
 }
 function cancelClick() {
-    drawer2.value = false
+    drawer.value = false
 }
 function confirmClick() {
     ElMessageBox.confirm(`Are you confirm to chose ${radio1.value} ?`)
@@ -279,6 +281,21 @@ const options = Array.from({ length: 10000 }).map((_, idx) => ({
 }))
 
 
+// const exportExcel = () => {
+//     exportDeiveApi().then(res => {
+//         console.log(res)
+//         const blob = new Blob([res]);
+//         const fileName = '统计.xlsx';
+//         const elink = document.createElement('a');
+//         elink.download = fileName;
+//         elink.style.display = 'none';
+//         elink.href = window.URL.createObjectURL(blob);
+//         document.body.appendChild(elink);
+//         elink.click();
+//         window.URL.revokeObjectURL(elink.href); // 释放URL 对象
+//         document.body.removeChild(elink);
+//     })
+// }
 
 
 onMounted(() => {
@@ -305,7 +322,7 @@ onMounted(() => {
 }
 
 .table-container {
-    padding: 10px 20px 0 20px;
+    padding: 10px 10px 0 10px;
     flex: 1;
     overflow: auto;
 }

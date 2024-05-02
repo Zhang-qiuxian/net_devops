@@ -30,9 +30,9 @@ export const createOneDeiveApi = async (data) => {
 }
 
 export const exportDeiveApi = async () => {
-    return await instance.get({
-        url: `${infoApi}export_excel`,
-    })
+    return await instance.get(`${infoApi}export_excel/`,
+        // {responseType: 'blob'}
+    )
 }
 
 export const getAllInterfaceApi = async (params) => {
