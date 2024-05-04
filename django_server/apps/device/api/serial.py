@@ -2,7 +2,7 @@ from rest_framework.serializers import ModelSerializer, IntegerField, UUIDField,
 from django.db.models import QuerySet
 
 from apps.device.models import Device, SnmpTemplate, DeviceCompany, DeviceIP, DeviceSerial, DeviceSystem, \
-    DeviceInterface
+    DeviceInterface, DeviceARP
 
 
 class DeviceCompanySerializer(ModelSerializer):
@@ -38,6 +38,14 @@ class DeviceIPSerializer(ModelSerializer):
     class Meta:
         model = DeviceIP
         fields = '__all__'
+
+
+class DeviceArpSerializer(ModelSerializer):
+    a: QuerySet[DeviceARP] = DeviceARP.objects.all().order_by('id')
+
+    class Meta:
+        model = DeviceARP
+        exclude = ["id"]
 
 
 class DeviceSerialSerializer(ModelSerializer):

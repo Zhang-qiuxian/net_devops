@@ -4,8 +4,8 @@ from typing import Any
 
 from easysnmp.exceptions import EasySNMPError
 
-from tools.snmp.common import interface_oids, ip_oids, serial_oids, system_oids
-from tools.snmp.utils import start_snmp, handle_mac, handel_symbol_list
+from tools.snmp.common import standard_oids, arp_oids
+from tools.snmp.utils import start_snmp
 
 
 class SnmpRunner:
@@ -17,21 +17,29 @@ class SnmpRunner:
         return start_snmp(**self._get_att)
 
     @property
-    def ip(self) -> list[dict]:
-        return self.run(oids=ip_oids)
+    def run_standard(self) -> list[dict]:
+        result: list[dict] = []
+        for oid in standard_oids:
+            for k, v in oid.items():
+                result.append({k: self.run(oids=v)})
+        return result
 
-    @property
-    def interface(self) -> list[dict]:
-        return self.run(oids=interface_oids)
-
-    @property
-    def system(self) -> list[dict]:
-        return self.run(oids=system_oids)
-
-    @property
-    def serial(self) -> list[dict]:
-        data: list[dict] = self.run(oids=serial_oids)
-        return [i for i in data if i['entPhysicalSerialNum'] != '']
+    # @property
+    # def ip(self) -> list[dict]:
+    #     return self.run(oids=ip_oids)
+    #
+    # @property
+    # def interface(self) -> list[dict]:
+    #     return self.run(oids=interface_oids)
+    #
+    # @property
+    # def system(self) -> list[dict]:
+    #     return self.run(oids=system_oids)
+    #
+    # @property
+    # def serial(self) -> list[dict]:
+    #     data: list[dict] = self.run(oids=serial_oids)
+    #     return [i for i in data if i['entPhysicalSerialNum'] != '']
 
     def _get_oids(self, **kwargs) -> dict:
         oids: list[dict] | None = kwargs.get('oids')
@@ -47,15 +55,22 @@ class SnmpRunner:
             setattr(self, keyword, value)
 
 
-scan_list: list[str] = ['ip', 'interface', 'system', 'serial']
+# scan_list: list[str] = ['ip', 'interface', 'system', 'serial']
 
 
-def run(*args, **kwargs) -> tuple[bool, dict[str, list | str]]:
-    result: dict = {}
+def run(*args, **kwargs) -> tuple[bool, list[dict[str, list | str]] | dict]:
+    result: list[dict] = []
+    oids = kwargs.get('oids', None)
+    runner = SnmpRunner(*args, **kwargs)
     try:
-        runner = SnmpRunner(*args, **kwargs)
-        for scan in scan_list:
-            result[scan] = getattr(runner, scan)
+        if oids:
+            if isinstance(oids, list):
+                for oid in oids:
+                    if isinstance(oid, dict):
+                        for k, v in oid.items():
+                            result.append({k: runner.run(oids=v)})
+        else:
+            result = runner.run_standard
         return True, result
     except Exception as e:
         if isinstance(e, EasySNMPError):
@@ -79,7 +94,7 @@ if __name__ == '__main__':
     # s.serial
     # s.system
     # s.run()
-    temp: dict = {'version': 2, 'community': 'ch123', 'security_username': 'user', 'auth_password': 'pass',
+    temp: dict = {'version': 2, 'community': 'admin1234', 'security_username': 'user', 'auth_password': 'pass',
                   'auth_protocol': 'MD5', 'security_level': 'noAuthNoPriv', 'privacy_protocol': 'DES',
-                  'privacy_password': 'otherPass', 'context': 'context', 'hostname': '10.232.254.11'}
-    print(run(**temp))
+                  'privacy_password': 'otherPass', 'context': 'context', 'hostname': '10.10.10.1'}
+    print(run(**temp,oids=arp_oids))

@@ -15,10 +15,11 @@ from public.response import ResponseOK, ResponseError
 from public.mixins import ModelViewSet, ReadOnlyModelViewSet, ExportImportMixin
 
 from apps.device.models import Device, SnmpTemplate, DeviceCompany, DeviceSystem, DeviceIP, DeviceSerial, \
-    DeviceInterface
-from apps.device.api.seria import (DeviceSerializer, SnmpTemplateSerializer, DeviceCompanySerializer,
-                                   DeviceDetailSerializer, DeviceSystemSerializer, DeviceIPSerializer,
-                                   DeviceSerialSerializer, DeviceInterfaceSerializer, DeviceExportSerializer)
+    DeviceInterface, DeviceARP
+from apps.device.api.serial import (DeviceSerializer, SnmpTemplateSerializer, DeviceCompanySerializer,
+                                    DeviceDetailSerializer, DeviceSystemSerializer, DeviceIPSerializer,
+                                    DeviceSerialSerializer, DeviceInterfaceSerializer, DeviceExportSerializer,
+                                    DeviceArpSerializer)
 
 
 class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
@@ -103,6 +104,23 @@ class DeviceCompanyViewSet(ModelViewSet):
     serializer_class = DeviceCompanySerializer
 
 
+class DeviceARPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
+    queryset = DeviceARP.objects.all().order_by('id')
+    serializer_class = DeviceArpSerializer
+    filterset_fields = ['device_id', 'name', 'ip', 'ipAdEntAddr', 'ifName', 'atNetAddress']
+    exclude_export_fields: list[str] = ['id', 'device_id']
+
+    def retrieve(self, request: Request, *args, **kwargs) -> Response:
+        pk: str = kwargs.get('pk')
+        if not pk:
+            return ResponseError(message="请携带设备id！")
+        d: Device = self.queryset.filter(device_id=pk).all()
+        if not d:
+            return ResponseError(message="设备id不存在！")
+        serializer = self.serializer_class(d, many=True)
+        return ResponseOK(message="查询成功！", data=serializer.data)
+
+
 class DeviceViewSet(ExportImportMixin, ModelViewSet):
     queryset: QuerySet[Device] = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
@@ -169,3 +187,4 @@ device_ip = DeviceIPViewSet
 device_system = DeviceSystemViewSet
 device_serial = DeviceSerialViewSet
 device_interface = DeviceInterfaceViewSet
+device_arp = DeviceARPViewSet

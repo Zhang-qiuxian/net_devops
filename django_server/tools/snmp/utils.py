@@ -1,3 +1,4 @@
+from unittest import case
 from warnings import warn
 from typing import Any
 import pandas as pd
@@ -37,14 +38,21 @@ def handel_symbol_dict(data: dict) -> dict:
 
 def handel_result(data: Any = None, data_type: str = 'string') -> Any:
     if isinstance(data, list):
-        if data_type == 'string':
-            return handel_symbol_list(data)
-        elif data_type == 'int':
-            return handel_ints(data)
-        elif data_type == 'mac_address':
-            return handle_mac(data)
+        match data_type:
+            case 'string':
+                return handel_symbol_list(data)
+            case 'int':
+                return handel_ints(data)
+            case 'mac_address':
+                return handle_mac(data)
     elif isinstance(data, str):
-        return data.strip('"')
+        match data_type:
+            case 'string':
+                return data.strip('"')
+            case 'int':
+                return int(data)
+            case 'mac_address':
+                return data.strip('"').replace(" ", ":").lower()[:-1]
 
 
 def start_snmp(**kwargs) -> list[dict] | list:
@@ -88,7 +96,7 @@ ip_oids = [
     :param kwargs:
     :return:
     """
-    oids: list[dict] | None = kwargs.get('oids', None)
+    oids: list[dict[str, list[dict]]] | None = kwargs.get('oids', None)
     if not oids or not isinstance(oids, list) or len(oids) == 0:
         warn("oids格式不正确")
         return []
@@ -96,12 +104,14 @@ ip_oids = [
     t: dict = {}
     for oid in oids:
         res: list = bulk_walk(oids=oid['oid'], **kwargs)
-        data_type: str = oid['type']
+        data_type: str = oid.get('type')
         t[oid['dept']] = handel_result(data=res, data_type=data_type)
         index: list[dict] | None = oid.get('index', None)
         if index:
             for i in index:
-                t[i['dept']] = [get(oids=f"{i['oid']}.{j}", **kwargs) for j in res]
+                data_type: str = i.get('type')
+                t[i['dept']] = [handel_result(data=get(oids=f"{i['oid']}.{j}", **kwargs), data_type=data_type)
+                                for j in res]
         # print(res)
 
     dt: list[dict] = handle_tojson(t)
