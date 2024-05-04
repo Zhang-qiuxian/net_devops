@@ -55,7 +55,7 @@ export const useDeviceStore = defineStore('device', () => {
 
   const pages = ref({
     page: 1,
-    page_size: 15
+    page_size: 20
   })
 
   // const changePage = (page) => { pages.value.page = page }

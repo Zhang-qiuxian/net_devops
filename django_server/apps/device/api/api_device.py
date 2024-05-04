@@ -24,7 +24,8 @@ from apps.device.api.seria import (DeviceSerializer, SnmpTemplateSerializer, Dev
 class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceInterface.objects.all().order_by('id')
     serializer_class = DeviceInterfaceSerializer
-    exclude_export: list[str] = ['id']
+    exclude_export_fields: list[str] = ['id', 'device_id']
+    filterset_fields = ['device_id', 'name', 'ip']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
         """
@@ -43,7 +44,8 @@ class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
 class DeviceSerialViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceSerial.objects.all().order_by('id')
     serializer_class = DeviceSerialSerializer
-    exclude_export: list[str] = ['id']
+    filterset_fields = ['device_id', 'name', 'ip']
+    exclude_export_fields: list[str] = ['id', 'device_id']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
         pk: str = kwargs.get('pk')
@@ -59,7 +61,8 @@ class DeviceSerialViewSet(ExportImportMixin, ReadOnlyModelViewSet):
 class DeviceIPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceIP.objects.all().order_by('id')
     serializer_class = DeviceIPSerializer
-    exclude_export_fields: list[str] = ['id']
+    filterset_fields = ['device_id', 'name', 'ip', 'ipAdEntAddr', 'ifName']
+    exclude_export_fields: list[str] = ['id', 'device_id']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
         pk: str = kwargs.get('pk')
@@ -75,7 +78,8 @@ class DeviceIPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
 class DeviceSystemViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceSystem.objects.all().order_by('id')
     serializer_class = DeviceSystemSerializer
-    exclude_export: list[str] = ['id']
+    exclude_export_fields: list[str] = ['id', 'device_id']
+    filterset_fields = ['device_id', 'name', 'ip']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
         pk: str = kwargs.get('pk')
@@ -91,6 +95,7 @@ class DeviceSystemViewSet(ExportImportMixin, ReadOnlyModelViewSet):
 class SnmpTemplateViewSet(ModelViewSet):
     queryset = SnmpTemplate.objects.all().order_by('id')
     serializer_class = SnmpTemplateSerializer
+    filterset_fields = ['id', 'name']
 
 
 class DeviceCompanyViewSet(ModelViewSet):
@@ -103,9 +108,9 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
     serializer_class = DeviceSerializer
     serializer_detail = DeviceDetailSerializer
     serializer_export = DeviceExportSerializer
-    # exclude_export: list[str] = ['id', 'is_sync']
     exclude_export_fields: list[str] = ['id', 'is_sync']
     export_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface]
+    filterset_fields = ['device_id', 'name', 'ip']
 
     def perform_create(self, serializer: Serializer):
         serializer.save()

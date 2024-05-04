@@ -78,7 +78,7 @@ class DeviceInterface(models.Model):
     ifIndex = models.IntegerField(verbose_name="接口索引", db_comment="接口索引")
     ifDescr = models.CharField(max_length=32, verbose_name="描述接口的字符串", db_comment="描述接口的字符串")
     ifPhysAddress = models.CharField(max_length=32, verbose_name="MAC地址", db_comment="MAC地址")
-    ifOperStatus = models.IntegerField(verbose_name="接口当前的状态", db_comment="接口当前的状态")
+    ifOperStatus = models.IntegerField(default=1, verbose_name="接口当前的状态", db_comment="接口当前的状态")
     ifName = models.CharField(max_length=32, verbose_name="接口名", db_comment="接口名")
     ifAlias = models.CharField(max_length=32, verbose_name="接口别名", db_comment="接口别名")
     ifHighSpeed = models.IntegerField(verbose_name="接口当前带宽", db_comment="接口当前带宽")
@@ -106,6 +106,7 @@ class DeviceIP(models.Model):
     ipAdEntNetMask = models.GenericIPAddressField(verbose_name="子网掩码", db_comment="子网掩码")
     ifName = models.CharField(max_length=32, verbose_name="接口名", db_comment="接口名")
     ifAlias = models.CharField(max_length=32, verbose_name="接口别名", db_comment="接口别名")
+    ifOperStatus = models.IntegerField(default=1, verbose_name="接口当前的状态", db_comment="接口当前的状态")
 
     def __str__(self):
         return self.ipAdEntAddr
@@ -115,6 +116,31 @@ class DeviceIP(models.Model):
         verbose_name = '设备ip'
         verbose_name_plural = verbose_name
         db_table_comment = '设备ip'
+        ordering = ['id']
+
+
+class DeviceARP(models.Model):
+    """
+    设备arp
+    """
+    device_id = models.UUIDField(editable=False, verbose_name="设备id", db_comment="设备id")
+    name = models.CharField(max_length=32, verbose_name="设备名称", db_comment="设备名称")
+    ip = models.GenericIPAddressField(verbose_name="设备ip", db_comment="设备ip")
+    ipAdEntIfIndex = models.IntegerField(verbose_name="接口的索引值", db_comment="接口的索引值")
+    atPhysAddress = models.CharField(max_length=32, verbose_name="MAC地址", db_comment="MAC地址")
+    atNetAddress = models.GenericIPAddressField(verbose_name="IP地址", db_comment="IP地址")
+    ifName = models.CharField(max_length=32, verbose_name="接口名称", db_comment="接口名称")
+    ifAlias = models.CharField(max_length=32, verbose_name="接口别名", db_comment="接口别名")
+    ifOperStatus = models.IntegerField(default=1, verbose_name="接口当前的状态", db_comment="接口当前的状态")
+
+    def __str__(self):
+        return self.atNetAddress
+
+    class Meta:
+        db_table = 'device_arp'
+        verbose_name = '设备ARP'
+        verbose_name_plural = verbose_name
+        db_table_comment = '设备arp'
         ordering = ['id']
 
 

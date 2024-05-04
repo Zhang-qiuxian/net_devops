@@ -18,6 +18,10 @@ REST_FRAMEWORK = {
     "EXCEPTION_HANDLER": "public.exceptions.exception_handler",
     "DATE_FORMAT": "%Y-%m-%d",
     "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
+    # 过滤器默认后端
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
     # 接口文档
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
 }

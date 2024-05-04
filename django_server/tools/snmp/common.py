@@ -63,6 +63,12 @@ ip_oids = [
                 "func": "接口别名",
                 "type": "string"
             },
+            {
+                "dept": "ifOperStatus",
+                "oid": "1.3.6.1.2.1.2.2.1.8",
+                "func": "接口运行状态",
+                "type": "int"
+            },
         ]
     },
 
@@ -132,4 +138,47 @@ interface_oids = [
         "func": "接口当前带宽",
         "type": "int"
     },
+]
+
+arp_oids = [
+    {
+        "dept": "atIfIndex",
+        "oid": "1.3.6.1.2.1.3.1.1.1",
+        "func": "接口索引",
+        "type": "int",
+        "index": [
+            {
+                "dept": "ifName",
+                "oid": "1.3.6.1.2.1.31.1.1.1.1",
+                "func": "接口名字",
+                "type": "string"
+            },
+            {
+                "dept": "ifAlias",
+                "oid": "1.3.6.1.2.1.31.1.1.1.18",
+                "func": "接口别名",
+                "type": "string"
+            },
+            {
+                "dept": "ifOperStatus",
+                "oid": "1.3.6.1.2.1.2.2.1.8",
+                "func": "接口运行状态",
+                "type": "int"
+            },
+        ]
+    },
+    {
+        "dept": "atNetAddress",
+        "oid": "1.3.6.1.2.1.3.1.1.3",
+        "func": "IP地址",
+        "type": "string"
+    },
+    {
+        "dept": "atPhysAddress",
+        "oid": "1.3.6.1.2.1.3.1.1.2",
+        "func": "MAC地址",
+        "type": "mac_address"
+    },
+
+
 ]

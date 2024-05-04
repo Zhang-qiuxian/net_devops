@@ -31,7 +31,7 @@
         </div>
         <div class="page-container">
             <el-pagination v-model:current-page="pages.page" v-model:page-size="pages.page_size"
-                :page-sizes="[15, 30, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
+                :page-sizes="[20, 40, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
                 :total="device_info.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
     </div>

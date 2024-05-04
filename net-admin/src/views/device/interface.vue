@@ -1,8 +1,13 @@
 <template>
     <div class="container">
         <div class="from-container">
-            <el-button type="success" @click="drawer = true">添加设备</el-button>
-            <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
+            <div class="from-left">
+                <el-text type="danger">接口信息通过SNMP同步获取，暂不支持修改！</el-text>
+            </div>
+            <div class="from-right">
+                <!-- <el-button type="success" @click="drawer = true">添加设备</el-button> -->
+                <el-button type="info" @click="exportExcel('device/interface/export_excel/')">导出接口</el-button>
+            </div>
         </div>
         <div class="table-container">
             <el-scrollbar>
@@ -16,22 +21,12 @@
                             <el-tag type="danger" v-else>未启用</el-tag>
                         </template>
                     </el-table-column>
-                    <!-- <el-table-column label="操作" align="center">
-                        <template #default="scope">
-                            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
-                                <span>编辑</span>
-                            </el-button>
-                            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
-                                <span>删除</span>
-                            </el-button>
-                        </template>
-                    </el-table-column> -->
                 </el-table>
             </el-scrollbar>
         </div>
         <div class="page-container">
             <el-pagination v-model:current-page="pages.page" v-model:page-size="pages.page_size"
-                :page-sizes="[15, 30, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
+                :page-sizes="[20, 40, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
                 :total="device_interface.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
     </div>
