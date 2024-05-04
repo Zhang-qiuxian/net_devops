@@ -122,7 +122,6 @@
 import { useDeviceStore } from '@/stores/device/index.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, computed, reactive } from 'vue'
-import { exportDeiveApi } from '@/api/device/index.js';
 import { exportExcel } from '@/api/export-import';
 
 

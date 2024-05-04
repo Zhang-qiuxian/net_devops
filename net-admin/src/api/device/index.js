@@ -9,115 +9,74 @@ const companyApi = "device/company/"
 const snmpApi = "device/snmp/"
 
 export const getAllDeiveApi = async (params) => {
-    console.log(params);
-    return await instance.get(`${infoApi}`,
-        { params }
-    )
+    return await instance.get(infoApi, { params })
 }
 
 export const getOneDeiveApi = async (id) => {
-    return await instance.get({
-        url: `"${infoApi}${id}/"`,
-    })
+    return await instance.get(`"${infoApi}${id}/"`)
 }
-
 
 export const createOneDeiveApi = async (data) => {
-    return await instance.post({
-        url: `${infoApi}`,
-        data
-    })
+    return await instance.post(infoApi, { data })
 }
 
-export const exportDeiveApi = async () => {
-    return await instance.get(`${infoApi}export_excel/`,
-        // {responseType: 'blob'}
-    )
-}
+// export const exportDeiveApi = async () => {
+//     return await instance.get(`${infoApi}export_excel/`,
+//         // {responseType: 'blob'}
+//     )
+// }
 
 export const getAllInterfaceApi = async (params) => {
-    return await instance.get(`${interfaceApi}`,
-        { params }
-    )
+    return await instance.get(interfaceApi, { params })
 }
 
 export const getOneInterfaceApi = async (id) => {
-    return await instance.get({
-        url: `"${interfaceApi}${id}/"`,
-    })
+    return await instance.get(`"${interfaceApi}${id}/"`)
 }
 
-
 export const getAllSystemApi = async (params) => {
-    return await instance.get(`${systemApi}`,
-        { params }
-    )
+    return await instance.get(systemApi, { params })
 }
 
 export const getOneSystemApi = async (id) => {
-    return await instance.get({
-        url: `"${systemApi}${id}/"`,
-    })
+    return await instance.get(`"${systemApi}${id}/"`)
 }
 
-
 export const getAllSerialApi = async (params) => {
-    return await instance.get(`${serialApi}`,
-        { params }
-    )
+    return await instance.get(serialApi, { params })
 }
 
 export const getOneSerialApi = async (id) => {
-    return await instance.get({
-        url: `"${serialApi}${id}/"`,
-    })
+    return await instance.get(`"${serialApi}${id}/"`)
 }
 
 export const getAllIplApi = async (params) => {
-    return await instance.get(`${ipApi}`,
-        { params }
-    )
+    return await instance.get(ipApi, { params })
 }
 
 export const getOneIpApi = async (id) => {
-    return await instance.get({
-        url: `"${ipApi}${id}/"`,
-    })
+    return await instance.get(`"${ipApi}${id}/"`)
 }
 
 export const getAllCompanyApi = async (params) => {
-    return await instance.get(`${companyApi}`,
-        { params }
-    )
+    return await instance.get(companyApi, { params })
 }
 
 export const getOneCompanyApi = async (id) => {
-    return await instance.get({
-        url: `"${companyApi}${id}/"`,
-    })
+    return await instance.get(`"${companyApi}${id}/"`)
 }
 export const createOneCompanyApi = async (data) => {
-    return await instance.post({
-        url: `${companyApi}`,
-        data
-    })
+    return await instance.post(companyApi, { data })
 }
 
-
 export const getAllSnmpApi = async (params) => {
-    return await instance.get(`${snmpApi}`,
-        params
-    )
+    return await instance.get(snmpApi, { params })
 }
 
 export const getOneSnmpApi = async (id) => {
-    return await instance.get({
-        url: `"${snmpApi}${id}/"`,
-    })
+    return await instance.get(`"${snmpApi}${id}/"`)
 }
+
 export const createOneSnmpApi = async (data) => {
-    return await instance.post({
-        url: `${snmpApi}`,
-        data
-    })
+    return await instance.post(snmpApi, { data })
 }
