@@ -19,6 +19,11 @@ import {
   getAllSnmpApi,
   getOneSnmpApi,
   createOneSnmpApi,
+  createOneDeviceApi,
+  updateOneDeiveApi,
+  updateOneSnmpApi,
+  deleteOneDeiveApi,
+  deleteOneSnmpApi,
 
 } from '@/api/device/index.js'
 
@@ -69,13 +74,23 @@ export const useDeviceStore = defineStore('device', () => {
   const getCompany = () => { getAllCompanyApi(pages.value).then(res => { device_company.value = res }) }
 
   // 新增
-  const addSnmp = (data) => { createOneSnmpApi(data).then(res => res) }
+  const addSnmp = async (data) => createOneSnmpApi(data)
+  const addDevice = async (data) => createOneDeiveApi(data)
 
+  // 修改
+  const updateSnmp = async (id, data) => updateOneSnmpApi(id, data)
+  const updateDevice = async (id, data) => updateOneDeiveApi(id, data)
+
+  // 删除
+  const deleteSnmp = async (id) => deleteOneSnmpApi(id)
+  const deleteDevice = async (id) => deleteOneDeiveApi(id)
   return {
     pages,
     device_info, device_snmp, device_interface, device_ip, device_system, device_serial, device_company,
     getDeviceInfo, getSnmp, getInterface, getIp, getSystem, getSerial, getCompany,
-    addSnmp,
+    addSnmp, addDevice,
+    updateSnmp, updateDevice,
+    deleteSnmp, deleteDevice
   }
 },
   {

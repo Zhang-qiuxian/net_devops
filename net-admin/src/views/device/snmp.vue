@@ -1,23 +1,30 @@
 <template>
     <div class="container">
         <div class="from-container">
-            <el-button type="success" @click="drawer = true">添加设备</el-button>
-            <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
+            <el-button type="success" @click="drawer = true">添加SNMP模板</el-button>
+            <!-- <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button> -->
         </div>
         <div class="table-container">
             <el-scrollbar>
                 <el-table :data="device_snmp.data" border table-layout="auto" style="width: 100%">
-                    <el-table-column type="selection" width="50" />
+                    <!-- <el-table-column type="selection" width="50" /> -->
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
                     </el-table-column>
-                    <el-table-column label="操作" align="center">
+                    <el-table-column label="操作" align="center" width="150">
                         <template #default="scope">
-                            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+                            <el-button size="small" @click="handleEdit(scope.row)">
                                 <span>编辑</span>
                             </el-button>
-                            <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
-                                <span>删除</span>
-                            </el-button> -->
+                            <el-popconfirm title="确认删除吗？" @confirm="handleDelete(scope.row)">
+                                <template #reference>
+                                    <el-button size="small" type="danger">
+                                        <span>删除</span>
+                                    </el-button>
+                                </template>
+                            </el-popconfirm>
+                            <!-- // <el-button size="small" type="danger" @click="handleDelete(scope.row)">
+                            //     <span>删除</span>
+                            // </el-button> -->
                         </template>
                     </el-table-column>
                 </el-table>
@@ -34,101 +41,185 @@
             <h4>添加设备</h4>
         </template>
         <template #default>
-            <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules" label-width="auto"
-                :size="formSize" status-icon>
-                <el-form-item label="Activity name" prop="name">
-                    <el-input v-model="ruleForm.name" />
-                </el-form-item>
-                <el-form-item label="Activity zone" prop="region">
-                    <el-select v-model="ruleForm.region" placeholder="Activity zone">
-                        <el-option label="Zone one" value="shanghai" />
-                        <el-option label="Zone two" value="beijing" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="Activity count" prop="count">
-                    <el-select-v2 v-model="ruleForm.count" placeholder="Activity count" :options="options" />
-                </el-form-item>
-                <el-form-item label="Activity time" required>
-                    <el-col :span="11">
-                        <el-form-item prop="date1">
-                            <el-date-picker v-model="ruleForm.date1" type="date" label="Pick a date"
-                                placeholder="Pick a date" style="width: 100%" />
+            <div class="form-drawer">
+                <div class="form-text">
+                    <el-text type="danger">注意！ v1和v2c只需要填写三项。v3需要根据实际填写。推荐v2c</el-text>
+                </div>
+                <div class="form-content">
+                    <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules"
+                        label-width="auto" status-icon>
+                        <el-form-item label="版本" prop="version">
+                            <el-select v-model="ruleForm.version" placeholder="请选择" style="width: 240px">
+                                <!-- <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" /> -->
+                                <el-option v-for="item in versionOptions" :key="item.value" :label="item.label"
+                                    :value="item.value" />
+                            </el-select>
                         </el-form-item>
-                    </el-col>
-                    <el-col class="text-center" :span="2">
-                        <span class="text-gray-500">-</span>
-                    </el-col>
-                    <el-col :span="11">
-                        <el-form-item prop="date2">
-                            <el-time-picker v-model="ruleForm.date2" label="Pick a time" placeholder="Pick a time"
-                                style="width: 100%" />
+                        <el-form-item :label="v" :prop="k" v-for="(v, k) in ruleFields" :key="k">
+                            <el-input v-model="ruleForm[k]" />
                         </el-form-item>
-                    </el-col>
-                </el-form-item>
-                <el-form-item label="Instant delivery" prop="delivery">
-                    <el-switch v-model="ruleForm.delivery" />
-                </el-form-item>
-                <el-form-item label="Activity location" prop="location">
-                    <el-segmented v-model="ruleForm.location" :options="locationOptions" />
-                </el-form-item>
-                <el-form-item label="Activity type" prop="type">
-                    <el-checkbox-group v-model="ruleForm.type">
-                        <el-checkbox value="Online activities" name="type">
-                            Online activities
-                        </el-checkbox>
-                        <el-checkbox value="Promotion activities" name="type">
-                            Promotion activities
-                        </el-checkbox>
-                        <el-checkbox value="Offline activities" name="type">
-                            Offline activities
-                        </el-checkbox>
-                        <el-checkbox value="Simple brand exposure" name="type">
-                            Simple brand exposure
-                        </el-checkbox>
-                    </el-checkbox-group>
-                </el-form-item>
-                <el-form-item label="Resources" prop="resource">
-                    <el-radio-group v-model="ruleForm.resource">
-                        <el-radio value="Sponsorship">Sponsorship</el-radio>
-                        <el-radio value="Venue">Venue</el-radio>
-                    </el-radio-group>
-                </el-form-item>
-                <el-form-item label="Activity form" prop="desc">
-                    <el-input v-model="ruleForm.desc" type="textarea" />
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm(ruleFormRef)">
-                        Create
-                    </el-button>
-                    <el-button @click="resetForm(ruleFormRef)">Reset</el-button>
-                </el-form-item>
-            </el-form>
-        </template>
-        <template #footer>
-            <div style="flex: auto">
-                <el-button @click="cancelClick">cancel</el-button>
-                <el-button type="primary" @click="confirmClick">confirm</el-button>
+                        <el-form-item style="">
+                            <el-button @click="cancelClick">关闭</el-button>
+                            <el-button type="primary" @click="confirmClick(ruleFormRef)">提交</el-button>
+                        </el-form-item>
+                    </el-form>
+                </div>
             </div>
         </template>
     </el-drawer>
+    <el-dialog v-model="dialogTableVisible" title="修改SNMP模板" :width="600">
+        <el-form ref="ruleFormRef" style="max-width: 600px" :model="editForm" :rules="rules" label-width="auto"
+            status-icon>
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item label="版本" prop="version">
+                        <el-select v-model="editForm.version" placeholder="请选择" style="width: 240px">
+                            <el-option v-for="item in versionOptions" :key="item.value" :label="item.label"
+                                :value="item.value" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12" v-for="(v, k) in ruleFields" :key="k">
+                    <el-form-item :label="v" :prop="k">
+                        <el-input v-model="editForm[k]" />
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <el-row justify="end">
+                <el-col>
+                    <el-form-item>
+                        <el-button @click="closeClick">关闭</el-button>
+                        <el-button type="primary" @click="editSnmp(ruleFormRef)">提交</el-button>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+
+        </el-form>
+    </el-dialog>
 </template>
 <script setup>
 import { useDeviceStore } from '@/stores/device/index.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, computed, reactive } from 'vue'
-import { exportExcel } from '@/api/export-import';
+import { ElMessage } from 'element-plus';
 
 
 const stores = useDeviceStore();
 const { device_snmp, pages } = storeToRefs(stores);
 
-console.log(device_snmp.value);
-
-const handleEdit = (index, row) => {
-    console.log(index, row)
+// 表单
+const ruleFormRef = ref()
+const ruleForm = reactive({
+    name: "public",
+    version: 2,
+    community: "public",
+    security_username: "user",
+    auth_password: "pass",
+    auth_protocol: "MD5",
+    security_level: "noAuthNoPriv",
+    privacy_protocol: "EDS",
+    privacy_password: "otherPass",
+    context: "context",
+})
+// 控制表单渲染
+const ruleFields = {
+    // version: "版本",
+    name: "模板名称",
+    community: "团体字",
+    security_username: "用户名(v3)",
+    auth_password: "密码(v3)",
+    auth_protocol: "认证协议(v3)",
+    security_level: "认证级别(v3)",
+    privacy_protocol: "私有协议(v3)",
+    privacy_password: "私有密码(v3)",
+    context: "上下文(v3)",
 }
-const handleDelete = (index, row) => {
-    console.log(index, row)
+
+const versionOptions = [
+    {
+        label: 'v1',
+        value: 1,
+    },
+    {
+        label: 'v2c',
+        value: 2,
+    },
+    {
+        label: 'v3',
+        value: 3,
+    },
+]
+
+const editForm=reactive({})
+
+const rules = reactive({
+    version: [{ required: true, message: '必选项', trigger: 'blur' },],
+    name: [{ required: true, message: '必选项', trigger: 'blur' },],
+    community: [{ required: true, message: '必填项', trigger: 'change', },],
+})
+// 添加表单
+async function confirmClick(formEl) {
+    if (!formEl) return
+    await formEl.validate((valid, fields) => {
+        if (valid) {
+            stores.addSnmp(ruleForm).then((res) => {
+                // console.log(res);
+                stores.getSnmp();
+                ElMessage.success('添加成功')
+                ruleFormRef.value.resetFields()
+                drawer.value = false
+            }).catch((err) => {
+                console.log(err);
+                ElMessage.error('添加失败')
+            })
+
+        } else {
+            console.log('error submit!', fields)
+        }
+    })
+}
+
+// 修改表单
+const dialogTableVisible = ref(false)
+const handleEdit = (row) => {
+    // console.log(row)
+    dialogTableVisible.value = true
+    // ruleFormRef.value.resetFields()
+    editForm.id = row.id
+    editForm.version = row.version
+    editForm.name = row.name
+    editForm.community = row.community
+    editForm.security_username = row.security_username
+    editForm.auth_password = row.auth_password
+    editForm.auth_protocol = row.auth_protocol
+    editForm.security_level = row.security_level
+    editForm.privacy_protocol = row.privacy_protocol
+}
+const handleDelete = (row) => {
+    stores.deleteSnmp(row.id).then(() => {
+        ElMessage.success('删除成功')
+        stores.getSnmp();
+    })
+}
+const closeClick = () => {
+    ruleFormRef.value.resetFields()
+    dialogTableVisible.value = false
+}
+const editSnmp = async (formEl) => {
+    if (!formEl) return
+    await formEl.validate((valid, fields) => {
+        if (valid) {
+            stores.updateSnmp(editForm.id, editForm).then(() => {
+                stores.getSnmp();
+                ElMessage.success('修改成功')
+                ruleFormRef.value.resetFields()
+                dialogTableVisible.value = false
+            })
+
+        } else {
+            console.log('error submit!', fields)
+        }
+    })
 }
 // 处理分页
 const handleSizeChange = (val) => {
@@ -141,7 +232,7 @@ const handleCurrentChange = (val) => {
 }
 // 控制表格字段
 const tableTitle = {
-    id: "",
+    id: "序号",
     name: "模板名称",
     version: "版本",
     community: "团体字",
@@ -155,126 +246,11 @@ const tableTitle = {
 }
 // 抽屉
 const drawer = ref(false)
-const handleClose = (done) => {
-    ElMessageBox.confirm('Are you sure you want to close this?')
-        .then(() => {
-            done()
-        })
-        .catch(() => {
-            // catch error
-        })
-}
+
 function cancelClick() {
     drawer.value = false
+    ruleFormRef.value.resetFields()
 }
-function confirmClick() {
-    ElMessageBox.confirm(`Are you confirm to chose ${radio1.value} ?`)
-        .then(() => {
-            drawer2.value = false
-        })
-        .catch(() => {
-            // catch error
-        })
-}
-
-// 表单
-const ruleFormRef = ref()
-const ruleForm = reactive({
-    name: 'Hello',
-    region: '',
-    count: '',
-    date1: '',
-    date2: '',
-    delivery: false,
-    location: '',
-    type: [],
-    resource: '',
-    desc: '',
-})
-const locationOptions = ['Home', 'Company', 'School']
-
-const rules = reactive({
-    name: [
-        { required: true, message: 'Please input Activity name', trigger: 'blur' },
-        { min: 3, max: 5, message: 'Length should be 3 to 5', trigger: 'blur' },
-    ],
-    region: [
-        {
-            required: true,
-            message: 'Please select Activity zone',
-            trigger: 'change',
-        },
-    ],
-    count: [
-        {
-            required: true,
-            message: 'Please select Activity count',
-            trigger: 'change',
-        },
-    ],
-    date1: [
-        {
-            type: 'date',
-            required: true,
-            message: 'Please pick a date',
-            trigger: 'change',
-        },
-    ],
-    date2: [
-        {
-            type: 'date',
-            required: true,
-            message: 'Please pick a time',
-            trigger: 'change',
-        },
-    ],
-    location: [
-        {
-            required: true,
-            message: 'Please select a location',
-            trigger: 'change',
-        },
-    ],
-    type: [
-        {
-            type: 'array',
-            required: true,
-            message: 'Please select at least one activity type',
-            trigger: 'change',
-        },
-    ],
-    resource: [
-        {
-            required: true,
-            message: 'Please select activity resource',
-            trigger: 'change',
-        },
-    ],
-    desc: [
-        { required: true, message: 'Please input activity form', trigger: 'blur' },
-    ],
-})
-
-const submitForm = async (formEl) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
-        if (valid) {
-            console.log('submit!')
-        } else {
-            console.log('error submit!', fields)
-        }
-    })
-}
-
-const resetForm = (formEl) => {
-    if (!formEl) return
-    formEl.resetFields()
-}
-
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-    value: `${idx + 1}`,
-    label: `${idx + 1}`,
-}))
 
 
 
@@ -313,5 +289,30 @@ onMounted(() => {
     justify-content: flex-end;
     align-items: center;
     padding-right: 20px;
+}
+
+.form-drawer {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .form-text {
+        margin-bottom: 20px;
+    }
+
+    .form-content {
+        flex: 1;
+        overflow: auto;
+    }
+
+    .el-form {
+        height: 100%;
+    }
+}
+</style>
+
+<style lang="scss">
+.el-drawer__body {
+    padding: 0 20px;
 }
 </style>

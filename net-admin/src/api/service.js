@@ -31,7 +31,7 @@ instance.interceptors.response.use(
     (response) => {
         // 对响应数据做点什么
         const res = response.data;
-        console.log(res);
+        // console.log(res);
         if (res.code && res.code === 200) {
             return res.data;
         }
@@ -39,7 +39,7 @@ instance.interceptors.response.use(
             ElMessageBox.alert(res.message, '提示', {})
                 .then(() => { })
                 .catch(() => { });
-            return Promise.reject(service.interceptors.response);
+            return Promise.reject(instance.interceptors.response);
             // `token` 过期或者账号已在别处登录
             // if (res.code === 401) {
             //     window.location.href = '/'; // 去登录页

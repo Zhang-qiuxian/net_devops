@@ -107,7 +107,7 @@ class DeviceCompanyViewSet(ModelViewSet):
 class DeviceARPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceARP.objects.all().order_by('id')
     serializer_class = DeviceArpSerializer
-    filterset_fields = ['device_id', 'name', 'ip', 'ipAdEntAddr', 'ifName', 'atNetAddress']
+    filterset_fields = ['device_id', 'name', 'ip',  'ifName', 'atNetAddress']
     exclude_export_fields: list[str] = ['id', 'device_id']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:

@@ -41,8 +41,6 @@ class DeviceIPSerializer(ModelSerializer):
 
 
 class DeviceArpSerializer(ModelSerializer):
-    a: QuerySet[DeviceARP] = DeviceARP.objects.all().order_by('id')
-
     class Meta:
         model = DeviceARP
         exclude = ["id"]
