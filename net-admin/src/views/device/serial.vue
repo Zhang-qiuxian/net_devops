@@ -5,21 +5,20 @@
                 <el-text type="danger">序列号信息通过SNMP同步获取，暂不支持修改！</el-text>
             </div>
             <div class="from-right">
-                <!-- <el-button type="success" @click="drawer = true">添加设备</el-button> -->
                 <el-button type="info" @click="exportExcel('device/serial/export_excel/')">导出序列号</el-button>
             </div>
         </div>
         <div class="table-container">
             <el-scrollbar>
                 <el-table :data="device_serial.data" border table-layout="auto" style="width: 100%">
-                    <el-table-column type="selection" width="50" />
+                    <!-- <el-table-column type="selection" width="50" /> -->
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
                     </el-table-column>
                 </el-table>
             </el-scrollbar>
         </div>
         <div class="page-container">
-            <el-pagination v-model:current-page="pages.page" v-model:page-size="pages.page_size"
+            <el-pagination v-model:current-page="device_serial.page" v-model:page-size="device_serial.page_size"
                 :page-sizes="[20, 40, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
                 :total="device_serial.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
@@ -33,24 +32,20 @@ import { exportExcel } from '@/api/export-import';
 
 
 const stores = useDeviceStore();
-const { device_serial, pages } = storeToRefs(stores);
-
-console.log(device_serial.value);
-console.log(pages.value);
-
+const { device_serial } = storeToRefs(stores);
 
 // 处理分页
 const handleSizeChange = (val) => {
-    pages.page_size = val
+    device_serial.page_size = val
     stores.getSerial()
 }
 const handleCurrentChange = (val) => {
-    pages.page = val
+    device_serial.page = val
     stores.getSerial();
 }
 // 控制表格字段
 const tableTitle = {
-    id: "",
+    id: "序号",
     name: "设备名称",
     ip: "设备ip",
     entPhysicalDescr: "物理实体描述",

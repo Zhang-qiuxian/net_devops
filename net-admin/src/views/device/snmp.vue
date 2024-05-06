@@ -2,7 +2,6 @@
     <div class="container">
         <div class="from-container">
             <el-button type="success" @click="drawer = true">添加SNMP模板</el-button>
-            <!-- <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button> -->
         </div>
         <div class="table-container">
             <el-scrollbar>
@@ -38,7 +37,7 @@
     </div>
     <el-drawer v-model="drawer" direction="rtl">
         <template #header>
-            <h4>添加设备</h4>
+            <h4>添加SNMP模板</h4>
         </template>
         <template #default>
             <div class="form-drawer">
@@ -150,7 +149,7 @@ const versionOptions = [
     },
 ]
 
-const editForm=reactive({})
+const editForm = reactive({})
 
 const rules = reactive({
     version: [{ required: true, message: '必选项', trigger: 'blur' },],
@@ -308,11 +307,5 @@ onMounted(() => {
     .el-form {
         height: 100%;
     }
-}
-</style>
-
-<style lang="scss">
-.el-drawer__body {
-    padding: 0 20px;
 }
 </style>

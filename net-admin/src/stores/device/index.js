@@ -31,47 +31,98 @@ import {
 export const useDeviceStore = defineStore('device', () => {
   const device_info = ref({
     total: 0,
-    data: []
+    data: [],
+    page: 1,
+    page_size: 20
   })
   const device_snmp = ref({
     total: 0,
-    data: []
+    data: [],
+    page: 1,
+    page_size: 20
   })
   const device_interface = ref({
     total: 0,
-    data: []
+    data: [],
+    page: 1,
+    page_size: 20
   })
   const device_ip = ref({
     total: 0,
-    data: []
+    data: [],
+    page: 1,
+    page_size: 20
   })
   const device_system = ref({
     total: 0,
-    data: []
+    data: [],
+    page: 1,
+    page_size: 20
   })
   const device_serial = ref({
     total: 0,
-    data: []
+    data: [],
+    page: 1,
+    page_size: 20
   })
   const device_company = ref({
     total: 0,
-    data: []
-  })
-
-  const pages = ref({
+    data: [],
     page: 1,
     page_size: 20
   })
 
-  // const changePage = (page) => { pages.value.page = page }
+  const pages = ref({
+    page: 1,
+    page_size: 20,
+    page: 1,
+    page_size: 20
+  })
+
+  // const changePage = (page) => { { page: device_info.value.page, page_size: device_info.value.page_size }.page = page }
   // 查询
-  const getDeviceInfo = () => { getAllDeiveApi(pages.value).then(res => { device_info.value = res }) }
-  const getSnmp = () => { getAllSnmpApi(pages.value).then(res => { device_snmp.value = res }) }
-  const getInterface = () => { getAllInterfaceApi(pages.value).then(res => { device_interface.value = res }) }
-  const getIp = () => { getAllIplApi(pages.value).then(res => { device_ip.value = res }) }
-  const getSystem = () => { getAllSystemApi(pages.value).then(res => { device_system.value = res }) }
-  const getSerial = () => { getAllSerialApi(pages.value).then(res => { device_serial.value = res }) }
-  const getCompany = () => { getAllCompanyApi(pages.value).then(res => { device_company.value = res }) }
+  const getDeviceInfo = () => {
+    getAllDeiveApi({ page: device_info.value.page, page_size: device_info.value.page_size }).then(res => {
+      device_info.value.total = res.total
+      device_info.value.data = res.data
+    })
+  }
+  const getSnmp = () => {
+    getAllSnmpApi({ page: device_snmp.value.page, page_size: device_snmp.value.page_size }).then(res => {
+      device_snmp.value.total = res.total
+      device_snmp.value.data = res.data
+    })
+  }
+  const getInterface = () => {
+    getAllInterfaceApi({ page: device_interface.value.page, page_size: device_interface.value.page_size }).then(res => {
+      device_interface.value.total = res.total
+      device_interface.value.data = res.data
+    })
+  }
+  const getIp = () => {
+    getAllIplApi({ page: device_ip.value.page, page_size: device_ip.value.page_size }).then(res => {
+      device_ip.value.total = res.total
+      device_ip.value.data = res.data
+    })
+  }
+  const getSystem = () => {
+    getAllSystemApi({ page: device_system.value.page, page_size: device_system.value.page_size }).then(res => {
+      device_system.value.total = res.total
+      device_system.value.data = res.data
+    })
+  }
+  const getSerial = () => {
+    getAllSerialApi({ page: device_serial.value.page, page_size: device_serial.value.page_size }).then(res => {
+      device_serial.value.total = res.total
+      device_serial.value.data = res.data
+    })
+  }
+  const getCompany = () => {
+    getAllCompanyApi({ page: device_company.value.page, page_size: device_company.value.page_size }).then(res => {
+      device_company.value.total = res.total
+      device_company.value.data = res.data
+    })
+  }
 
   // 新增
   const addSnmp = async (data) => createOneSnmpApi(data)

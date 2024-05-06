@@ -5,7 +5,6 @@
                 <el-text type="danger">设备系统信息通过SNMP同步获取，暂不支持修改！</el-text>
             </div>
             <div class="from-right">
-                <!-- <el-button type="success" @click="drawer = true">添加设备</el-button> -->
                 <el-button type="info" @click="exportExcel('device/system/export_excel/')">导出系统信息</el-button>
             </div>
         </div>
@@ -19,7 +18,7 @@
             </el-scrollbar>
         </div>
         <div class="page-container">
-            <el-pagination v-model:current-page="pages.page" v-model:page-size="pages.page_size"
+            <el-pagination v-model:current-page="device_system.page" v-model:page-size="device_system.page_size"
                 :page-sizes="[20, 40, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
                 :total="device_system.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
@@ -33,24 +32,20 @@ import { exportExcel } from '@/api/export-import';
 
 
 const stores = useDeviceStore();
-const { device_system, pages } = storeToRefs(stores);
-
-console.log(device_system.value);
-console.log(pages.value);
-
+const { device_system } = storeToRefs(stores);
 
 // 处理分页
 const handleSizeChange = (val) => {
-    pages.page_size = val
+    device_system.page_size = val
     stores.getSystem()
 }
 const handleCurrentChange = (val) => {
-    pages.page = val
+    device_system.page = val
     stores.getSystem();
 }
 // 控制表格字段
 const tableTitle = {
-    id: "",
+    id: "序号",
     name: "设备名称",
     ip: "设备ip",
     sysName: "设备名称",
