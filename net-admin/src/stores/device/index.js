@@ -81,58 +81,75 @@ export const useDeviceStore = defineStore('device', () => {
 
   // const changePage = (page) => { { page: device_info.value.page, page_size: device_info.value.page_size }.page = page }
   // 查询
-  const getDeviceInfo = () => {
-    getAllDeiveApi({ page: device_info.value.page, page_size: device_info.value.page_size })
-    .then(res => {
+  const getDeviceInfo = async () => {
+    return await getAllDeiveApi({ page: device_info.value.page, page_size: device_info.value.page_size }).then(res => {
       device_info.value.total = res.total
       device_info.value.data = res.data
-      return ture
-    })
-    .catch(err => {
+      return true
+    }).catch(err => {
       return false
     })
   }
-  const getSnmp = () => {
-    getAllSnmpApi({ page: device_snmp.value.page, page_size: device_snmp.value.page_size }).then(res => {
+
+  const getSnmp = async () => {
+    return await getAllSnmpApi({ page: device_snmp.value.page, page_size: device_snmp.value.page_size }).then(res => {
       device_snmp.value.total = res.total
       device_snmp.value.data = res.data
-      return ture
+      return true
+    }).catch(err => {
+      return false
     })
   }
-  const getInterface = () => {
-    getAllInterfaceApi({ page: device_interface.value.page, page_size: device_interface.value.page_size }).then(res => {
+
+  const getInterface = async () => {
+    return await getAllInterfaceApi({ page: device_interface.value.page, page_size: device_interface.value.page_size }).then(res => {
       device_interface.value.total = res.total
       device_interface.value.data = res.data
-      return ture
+      return true
+    }).catch(err => {
+      return false
     })
   }
-  const getIp = () => {
-    getAllIplApi({ page: device_ip.value.page, page_size: device_ip.value.page_size }).then(res => {
+
+  const getIp = async () => {
+    return await getAllIplApi({ page: device_ip.value.page, page_size: device_ip.value.page_size }).then(res => {
       device_ip.value.total = res.total
       device_ip.value.data = res.data
-      return ture
+      return true
+    }).catch(err => {
+      return false
     })
   }
-  const getSystem = () => {
-    getAllSystemApi({ page: device_system.value.page, page_size: device_system.value.page_size }).then(res => {
+  const getSystem = async () => {
+    return await getAllSystemApi({ page: device_system.value.page, page_size: device_system.value.page_size }).then(res => {
       device_system.value.total = res.total
       device_system.value.data = res.data
-      return ture
+      return true
+    }).catch(err => {
+      return false
     })
   }
-  const getSerial = () => {
-    getAllSerialApi({ page: device_serial.value.page, page_size: device_serial.value.page_size }).then(res => {
+
+  const getSerial = async () => {
+    return await getAllSerialApi({ page: device_serial.value.page, page_size: device_serial.value.page_size }).then(res => {
       device_serial.value.total = res.total
       device_serial.value.data = res.data
-      return ture
+      return true
+    }).catch(err => {
+      return false
     })
+
   }
-  const getCompany = () => {
-    getAllCompanyApi({ page: device_company.value.page, page_size: device_company.value.page_size }).then(res => {
+
+  const getCompany = async () => {
+    return await getAllCompanyApi({ page: device_company.value.page, page_size: device_company.value.page_size }).then(res => {
       device_company.value.total = res.total
       device_company.value.data = res.data
-      return ture
+      return true
+    }).catch(err => {
+      return false
     })
+
   }
 
   // 新增

@@ -30,7 +30,12 @@ def update_model(device: Device) -> list[dict]:
     for data in datas:
         for key, value in data.items():
             obj = model_dict[key]
-            objs: list[Model] = [obj(**d, device_id=device.device_id, name=device.name, ip=device.ip) for d in value]
+            if key == 'serial':
+                objs: list[Model] = [obj(**d, device_id=device.device_id, name=device.name, ip=device.ip)
+                                     for d in value if d['entPhysicalSerialNum'] != '']
+            else:
+                objs: list[Model] = [obj(**d, device_id=device.device_id, name=device.name, ip=device.ip) for d in
+                                     value]
             obj.objects.bulk_create(objs=objs)
         device.is_sync = True
         device.save()

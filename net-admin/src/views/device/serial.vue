@@ -74,6 +74,7 @@ const tableTitle = {
 
 onMounted(() => {
     stores.getSerial();
+    stores.getSerial().then(res => { console.log(res) });
 })
 
 

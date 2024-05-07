@@ -105,14 +105,15 @@ ip_oids = [
     for oid in oids:
         res: list = bulk_walk(oids=oid['oid'], **kwargs)
         data_type: str = oid.get('type')
-        t[oid['dept']] = handel_result(data=res, data_type=data_type)
+        dept: str = oid.get('dept')
+        t[dept] = handel_result(data=res, data_type=data_type)
         index: list[dict] | None = oid.get('index', None)
         if index:
             for i in index:
                 data_type: str = i.get('type')
-                t[i['dept']] = [handel_result(data=get(oids=f"{i['oid']}.{j}", **kwargs), data_type=data_type)
-                                for j in res]
+                dept: str = i.get('dept')
+                t[dept] = [handel_result(data=get(oids=f"{i['oid']}.{j}", **kwargs), data_type=data_type)
+                           for j in res]
         # print(res)
-
     dt: list[dict] = handle_tojson(t)
     return dt
