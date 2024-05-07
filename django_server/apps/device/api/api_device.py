@@ -1,4 +1,5 @@
 from datetime import datetime
+from io import BytesIO
 import pandas
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -159,11 +160,12 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
         file_type: str = file.name.split('.')[-1]
         if file_type not in file_types:
             return ResponseError(message="添加失败,文件格式不正确。请添加xlsx/csv/xls")
+        io_file = BytesIO(file.read())
         match file_type:
             case 'xlsx':
-                df = pandas.read_excel(file.read(), engine='openpyxl')
+                df = pandas.read_excel(io_file, engine='openpyxl')
             case 'xls':
-                df = pandas.read_excel(file.read(), engine='openpyxl')
+                df = pandas.read_excel(io_file, engine='openpyxl')
             case 'csv':
                 df = pandas.read_csv(file.read())
         d_d: list[dict] = df.to_dict(orient='records')

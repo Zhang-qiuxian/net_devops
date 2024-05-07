@@ -47,7 +47,9 @@ def update_arp(device: Device, datas: list[dict]) -> dict:
 
 
 def start_snmp(device: Device, oids: list[dict] = None) -> tuple[bool, list[dict]]:
-    snmp = SnmpTemplate.objects.get(id=device.snmp_id)
+    snmp = SnmpTemplate.objects.filter(id=device.snmp_id).first()
+    if not snmp:
+        return False, [{"success": {"message": f"{device.ip} SNMP模板关联失败！"}}]
     s_data: dict = SnmpTemplateSerializer(snmp).data
     del_key: list[str] = ['id', 'name']
     s_data: dict = {k: v for k, v in s_data.items() if k not in del_key}
