@@ -4,7 +4,8 @@
             <el-button type="success" @click="drawer = true">添加SNMP模板</el-button>
         </div>
         <div class="table-container">
-            <el-scrollbar>
+            <el-empty description="没有数据，请先添加SNMP模板或刷新页面" v-if="!isData" style="height: 100%;" />
+            <el-scrollbar v-else>
                 <el-table :data="device_snmp.data" border table-layout="auto" style="width: 100%">
                     <!-- <el-table-column type="selection" width="50" /> -->
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
@@ -105,6 +106,10 @@ import { ElMessage } from 'element-plus';
 
 const stores = useDeviceStore();
 const { device_snmp, pages } = storeToRefs(stores);
+
+const isData = computed(() => {
+    return device_snmp.value.data.length > 0 ? true : false;
+})
 
 // 表单
 const ruleFormRef = ref()

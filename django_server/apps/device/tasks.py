@@ -23,32 +23,32 @@ model_dict: dict[str, Any] = {
 }
 
 
-def update_model(device: Device, datas: list[dict]) -> dict:
+def update_model(device: Device) -> list[dict]:
+    b, datas = start_snmp(device=device)
+    if not b:
+        return datas
     for data in datas:
         for key, value in data.items():
             obj = model_dict[key]
             objs: list[Model] = [obj(**d, device_id=device.device_id, name=device.name, ip=device.ip) for d in value]
             obj.objects.bulk_create(objs=objs)
-            device.is_sync = True
-            device.save()
-        return {"success": {"message": f"{device.ip} 更新完成！"}}
+        device.is_sync = True
+        device.save()
+    return [{"success": {"message": f"{device.ip} 更新完成！"}}]
 
 
 def update_arp(device: Device, datas: list[dict]) -> dict:
     raise ImportError("未实现")
 
 
-def start_snmp(device: Device, func: Callable = None, oids: None = None) -> dict:
+def start_snmp(device: Device, oids: list[dict] = None) -> tuple[bool, list[dict]]:
     snmp = SnmpTemplate.objects.get(id=device.snmp_id)
     s_data: dict = SnmpTemplateSerializer(snmp).data
     del_key: list[str] = ['id', 'name']
     s_data: dict = {k: v for k, v in s_data.items() if k not in del_key}
     s_data['hostname'] = device.ip
     s_data['oids'] = oids
-    b, r = run(**s_data)
-    if not b:
-        return r
-    return func(device=device, data=r)
+    return run(**s_data)
 
 
 @shared_task
@@ -65,7 +65,7 @@ def start_sync(*args, **kwargs) -> Task:
         return {"success": True, "message": "所有设备都已同步！"}
 
     with ThreadPoolExecutor(max_workers=POOL) as executor:
-        res: Iterator[Future] = as_completed([executor.submit(fn=start_snmp, device=d, func=update_model) for d in d_s])
+        res: Iterator[Future] = as_completed([executor.submit(update_model, device=d) for d in d_s])
         response = [i.result() for i in res]
         return response
 

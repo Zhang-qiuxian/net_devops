@@ -9,7 +9,8 @@
             </div>
         </div>
         <div class="table-container">
-            <el-scrollbar>
+            <el-empty description="没有数据，请先添加设备或刷新页面" v-if="!isData" style="height: 100%;" />
+            <el-scrollbar v-else>
                 <el-table :data="device_interface.data" border table-layout="auto" style="width: 100%">
                     <!-- <el-table-column type="selection" width="50" /> -->
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
@@ -40,12 +41,10 @@ import { exportExcel } from '@/api/export-import';
 const stores = useDeviceStore();
 const { device_interface } = storeToRefs(stores);
 
-const handleEdit = (index, row) => {
-    console.log(index, row)
-}
-const handleDelete = (index, row) => {
-    console.log(index, row)
-}
+const isData = computed(() => {
+    return device_interface.value.data.length > 0 ? true : false;
+})
+
 // 处理分页
 const handleSizeChange = (val) => {
     device_interface.page_size = val

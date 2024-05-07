@@ -58,7 +58,7 @@ class SnmpRunner:
 # scan_list: list[str] = ['ip', 'interface', 'system', 'serial']
 
 
-def run(*args, **kwargs) -> tuple[bool, list[dict[str, list | str]] | dict]:
+def run(*args, **kwargs) -> tuple[bool, list[dict[str, list | str]]]:
     result: list[dict] = []
     oids = kwargs.get('oids', None)
     runner = SnmpRunner(*args, **kwargs)
@@ -74,8 +74,8 @@ def run(*args, **kwargs) -> tuple[bool, list[dict[str, list | str]] | dict]:
         return True, result
     except Exception as e:
         if isinstance(e, EasySNMPError):
-            return False, {'error': f"ip:{kwargs.get('hostname')} 请检查SNMP配置"}
-        return False, {'error': f"ip:{kwargs.get('hostname')} {str(e)}"}
+            return False, [{'error': f"ip:{kwargs.get('hostname')} 请检查SNMP配置"}]
+        return False, [{'error': f"ip:{kwargs.get('hostname')} {str(e)}"}]
 
 
 if __name__ == '__main__':
@@ -94,7 +94,7 @@ if __name__ == '__main__':
     # s.serial
     # s.system
     # s.run()
-    temp: dict = {'version': 2, 'community': 'admin1234', 'security_username': 'user', 'auth_password': 'pass',
+    temp: dict = {'version': 2, 'community': 'zwy_123', 'security_username': 'user', 'auth_password': 'pass',
                   'auth_protocol': 'MD5', 'security_level': 'noAuthNoPriv', 'privacy_protocol': 'DES',
-                  'privacy_password': 'otherPass', 'context': 'context', 'hostname': '10.10.10.1'}
-    print(run(**temp,oids=arp_oids))
+                  'privacy_password': 'otherPass', 'context': 'context', 'hostname': '10.254.11.11'}
+    print(run(**temp, oids=standard_oids))

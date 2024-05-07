@@ -5,7 +5,8 @@
             <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
         </div>
         <div class="table-container">
-            <el-scrollbar>
+            <el-empty description="没有数据，请先添加设备或刷新页面" v-if="!isData" style="height: 100%;" />
+            <el-scrollbar v-else>
                 <el-table :data="device_info.data" border table-layout="auto" style="width: 100%">
                     <el-table-column type="selection" width="50" />
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
@@ -56,16 +57,16 @@
                             <el-col :span="12">
                                 <el-form-item prop="snmp_id" label="SNMP模板">
                                     <el-select v-model="ruleForm.snmp_id">
-                                        <el-option v-for="item in snmpOptions" :key="item.value"
-                                            :label="item.label" :value="item.value" />
+                                        <el-option v-for="item in snmpOptions" :key="item.value" :label="item.label"
+                                            :value="item.value" />
                                     </el-select>
                                 </el-form-item>
                             </el-col>
                             <el-col :span="12">
                                 <el-form-item prop="company_id" label="设备厂家">
                                     <el-select v-model="ruleForm.company_id">
-                                        <el-option v-for="item in companyOptions" :key="item.value"
-                                            :label="item.label" :value="item.value" />
+                                        <el-option v-for="item in companyOptions" :key="item.value" :label="item.label"
+                                            :value="item.value" />
                                     </el-select>
                                 </el-form-item>
                             </el-col>
@@ -115,10 +116,21 @@ import { useDeviceStore } from '@/stores/device/index.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, computed, reactive } from 'vue'
 import { exportExcel } from '@/api/export-import';
+import { ElLoading } from 'element-plus'
 
 
 const stores = useDeviceStore();
-const { device_info, device_snmp,device_company } = storeToRefs(stores);
+const { device_info, device_snmp, device_company } = storeToRefs(stores);
+
+const isData = computed(() => {
+    return device_info.value.data.length > 0 ? true : false;
+})
+
+// const loading = ElLoading.service({
+//     lock: true,
+//     text: '正在加载...',
+//     background: 'rgba(0, 0, 0, 0.7)',
+// })
 
 // 抽屉
 const drawer = ref(false)
@@ -281,10 +293,12 @@ const editDevice = async (formEl) => {
 const handleSizeChange = (val) => {
     device_info.page_size = val
     stores.getDeviceInfo();
+    loading.close()
 }
 const handleCurrentChange = (val) => {
     device_info.page = val
     stores.getDeviceInfo();
+    loading.close()
 }
 // 控制表格字段
 const tableTitle = {
@@ -323,47 +337,11 @@ function cancelClick() {
 // }
 
 
-const submitForm = async (formEl) => {
-    if (!formEl) return
-    await formEl.validate((valid, fields) => {
-        if (valid) {
-            console.log('submit!')
-        } else {
-            console.log('error submit!', fields)
-        }
-    })
-}
 
-const resetForm = (formEl) => {
-    if (!formEl) return
-    formEl.resetFields()
-}
-
-const options = Array.from({ length: 10000 }).map((_, idx) => ({
-    value: `${idx + 1}`,
-    label: `${idx + 1}`,
-}))
-
-
-// const exportExcel = () => {
-//     exportDeiveApi().then(res => {
-//         console.log(res)
-//         const blob = new Blob([res]);
-//         const fileName = '统计.xlsx';
-//         const elink = document.createElement('a');
-//         elink.download = fileName;
-//         elink.style.display = 'none';
-//         elink.href = window.URL.createObjectURL(blob);
-//         document.body.appendChild(elink);
-//         elink.click();
-//         window.URL.revokeObjectURL(elink.href); // 释放URL 对象
-//         document.body.removeChild(elink);
-//     })
-// }
 
 
 onMounted(() => {
-    stores.getDeviceInfo();
+    stores.getDeviceInfo()
 })
 
 
