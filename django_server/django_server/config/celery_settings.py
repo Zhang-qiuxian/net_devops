@@ -46,7 +46,13 @@ CELERY_BEAT_SCHEDULE = {
     # },
     'sync_snmp': {
         'task': 'apps.device.tasks.start_sync',  # 任务
-        'schedule': timedelta(seconds=30),  # 每10秒执行mul函数
+        'schedule': timedelta(seconds=30),  # 每30秒执行mul函数
         # 'args': ()  # 运行参数
-    }
+    },
+    'sync_arp': {
+        'task': 'apps.device.tasks.start_sync_arp',  # 任务
+        'schedule': timedelta(seconds=10),  # 每10秒执行mul函数
+        # 'args': ()  # 运行参数
+    },
+
 }

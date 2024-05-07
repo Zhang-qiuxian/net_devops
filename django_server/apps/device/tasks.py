@@ -8,10 +8,11 @@ from celery.app.task import Task
 
 from django.db.models import Model, QuerySet
 
-from apps.device.models import Device, DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface, SnmpTemplate
+from apps.device.models import Device, DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface, SnmpTemplate, DeviceARP
 from apps.device.api.serial import SnmpTemplateSerializer
 
 from tools.snmp.run import run
+from tools.snmp.common import arp_oids
 
 POOL = 50
 
@@ -42,8 +43,10 @@ def update_model(device: Device) -> list[dict]:
     return [{"success": {"message": f"{device.ip} 更新完成！"}}]
 
 
-def update_arp(device: Device, datas: list[dict]) -> dict:
-    raise ImportError("未实现")
+def update_arp(device: Device) -> tuple[bool, list[dict]]:
+    # b, datas = start_snmp(device=device, oids=arp_oids)
+    return start_snmp(device=device, oids=arp_oids)
+    # return [{"success": {"message": f"{device.ip} 更新完成！"}}]
 
 
 def start_snmp(device: Device, oids: list[dict] = None) -> tuple[bool, list[dict]]:
@@ -75,6 +78,15 @@ def start_sync(*args, **kwargs) -> Task:
         res: Iterator[Future] = as_completed([executor.submit(update_model, device=d) for d in d_s])
         response = [i.result() for i in res]
         return response
+
+
+@shared_task
+def start_sync_arp(*args, **kwargs) -> Task:
+    d_s: QuerySet[Device] = Device.objects.all()
+    with ThreadPoolExecutor(max_workers=POOL) as executor:
+        res: Iterator[Future] = as_completed([executor.submit(update_arp, device=d) for d in d_s])
+        response = [i.result() for i in res]
+    return response
 
 
 if __name__ == '__main__':

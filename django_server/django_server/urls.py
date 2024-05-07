@@ -26,7 +26,15 @@ from rest_framework.request import Request
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
 
+from apps.device.models import Device
 from .urls_api import router, api_url
+
+
+class TestApiView(APIView):
+    def get(self, request):
+        # Device.objects.create(ip='10.10.10.1', description='test', name='test', login='ssh', username='root',
+        #                       password='root')
+        return Response({"code": 200, "message": "ok"})
 
 
 class PingApiView(APIView):
@@ -55,6 +63,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     # path('admin/', admin.site.urls),
     path('ping', PingApiView.as_view(), name='ping'),
+    path('test', TestApiView.as_view(), name='test'),
     path('api/v1/', include(router.urls), name='api-v1'),
     path('swagger<format>/', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
