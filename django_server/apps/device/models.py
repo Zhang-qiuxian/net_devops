@@ -126,7 +126,7 @@ class DeviceARP(models.Model):
     device_id = models.UUIDField(editable=False, verbose_name="设备id", db_comment="设备id")
     name = models.CharField(max_length=32, verbose_name="设备名称", db_comment="设备名称")
     ip = models.GenericIPAddressField(verbose_name="设备ip", db_comment="设备ip")
-    ipAdEntIfIndex = models.IntegerField(verbose_name="接口的索引值", db_comment="接口的索引值")
+    atIfIndex = models.IntegerField(verbose_name="接口的索引值", db_comment="接口的索引值")
     atPhysAddress = models.CharField(max_length=32, verbose_name="MAC地址", db_comment="MAC地址")
     atNetAddress = models.GenericIPAddressField(verbose_name="IP地址", db_comment="IP地址")
     ifName = models.CharField(max_length=32, verbose_name="接口名称", db_comment="接口名称")

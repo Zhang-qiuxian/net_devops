@@ -3,7 +3,7 @@ from warnings import warn
 from typing import Any
 import pandas as pd
 
-from tools.snmp.scan import bulk_walk, get
+from tools.snmp.scan import bulk_walk, get, bulk_walk_by_index
 
 
 def handle_tojson(data: dict[str, list]) -> list[dict]:
@@ -107,13 +107,16 @@ ip_oids = [
         data_type: str = oid.get('type')
         dept: str = oid.get('dept')
         t[dept] = handel_result(data=res, data_type=data_type)
-        index: list[dict] | None = oid.get('index', None)
-        if index:
-            for i in index:
-                data_type: str = i.get('type')
-                dept: str = i.get('dept')
-                t[dept] = [handel_result(data=get(oids=f"{i['oid']}.{j}", **kwargs), data_type=data_type)
-                           for j in res]
+        indexs: list[dict] | None = oid.get('index', None)
+        if indexs:
+            for index in indexs:
+                data_type1: str = index.get('type')
+                dept1: str = index.get('dept')
+                i, v = bulk_walk_by_index(oids=index['oid'], **kwargs)
+                temp_index: list = handel_result(data=i, data_type=data_type)
+                temp_value: list = handel_result(data=v, data_type=data_type1)
+                temp_dict: dict = dict(zip(temp_index, temp_value))
+                t[dept1] = [temp_dict.get(index) for index in t[dept]]
         # print(res)
     dt: list[dict] = handle_tojson(t)
     return dt
