@@ -22,6 +22,8 @@ from apps.device.api.serial import (DeviceSerializer, SnmpTemplateSerializer, De
                                     DeviceSerialSerializer, DeviceInterfaceSerializer, DeviceExportSerializer,
                                     DeviceArpSerializer)
 
+from utils.export_excel import api_export_templates
+
 
 class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceInterface.objects.all().order_by('id')
@@ -108,7 +110,7 @@ class DeviceCompanyViewSet(ModelViewSet):
 class DeviceARPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
     queryset = DeviceARP.objects.all().order_by('id')
     serializer_class = DeviceArpSerializer
-    filterset_fields = ['device_id', 'name', 'ip',  'ifName', 'atNetAddress']
+    filterset_fields = ['device_id', 'name', 'ip', 'ifName', 'atNetAddress']
     exclude_export_fields: list[str] = ['id', 'device_id']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
@@ -128,7 +130,9 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
     serializer_detail = DeviceDetailSerializer
     serializer_export = DeviceExportSerializer
     exclude_export_fields: list[str] = ['id', 'is_sync']
-    export_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface]
+    # export_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface]
+    templates_model = Device
+    exclude_import_fields: list[str] = ['id', 'is_sync', 'create_time', 'update_time', 'device_id']
     filterset_fields = ['device_id', 'name', 'ip']
 
     def perform_create(self, serializer: Serializer):
@@ -145,11 +149,43 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
         sa = self.serializer_detail(instance=d)
         return ResponseOK(data=sa.data)
 
-    # @action(methods=['get'], detail=True)
-    # def export(self, request: Request, *args, **kwargs) -> Response:
-    #     pk: str = kwargs.get('pk')
-    #     obj = self.get_queryset().filter(device_id=pk).first()
-    #     return response
+    def update(self, request: Request, *args, **kwargs) -> Response:
+        """
+        更新数据
+        """
+        pk: str = kwargs.get('pk')
+        partial = kwargs.pop('partial', False)
+        instance = self.queryset.filter(device_id=pk).first()
+        serializer: Serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if not serializer.is_valid():
+            return ResponseError(message="更新失败!", data=serializer.errors)
+
+        self.perform_update(serializer)
+
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+
+        return ResponseOK(message="更新成功!", data=serializer.data)
+
+    # @action(methods=['get'], detail=False)
+    # def export_excel_templates(self, request: Request, *args, **kwargs) -> HttpResponse:
+    #     """
+    #     导出export_model和本models为excel
+    #     要在类中定义exclude_export_fields，排除不需要导出的字段
+    #     export_models，需要导出的modle
+    #     :param request:
+    #     :param args:
+    #     :param kwargs:
+    #     :return:
+    #     """
+    #     obj: QuerySet[Model] = self.get_queryset()
+    #     if not obj:
+    #         return ResponseError(message="没有数据可以导出！")
+    #     if not self.export_models:
+    #         response: HttpResponse = api_export_templates(model=Device)
+    #         return response
 
     @action(methods=['post'], detail=False)
     def upload(self, request: Request, *args, **kwargs) -> Response:

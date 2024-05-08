@@ -30,16 +30,30 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         // 对响应数据做点什么
+        console.log(response);
         const res = response.data;
         // console.log(res);
         if (res.code && res.code === 200) {
             return res.data;
         }
         if (res.code && res.code !== 200) {
-            ElMessageBox.alert(res.message, '提示', {})
-                .then(() => { })
-                .catch(() => { });
-            return Promise.reject(instance.interceptors.response);
+            // ElMessage({
+            //     message: res.message,
+            //     type: 'warning',
+            //   })
+            if (res.data) {
+                return Object.keys(res.data).forEach(key => {
+                    ElNotification({
+                        title: res.message,
+                        message: `${key} ${res.data[key]}`,
+                        type: 'warning'
+                    })
+                })
+            }
+            // ElMessageBox.alert(res.message, '提示', {})
+            //     .then(() => { })
+            //     .catch(() => { });
+            return Promise.reject(response);
             // `token` 过期或者账号已在别处登录
             // if (res.code === 401) {
             //     window.location.href = '/'; // 去登录页

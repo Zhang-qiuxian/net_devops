@@ -84,7 +84,7 @@ export const createOneDeviceApi = async (data) => {
 }
 // 修改
 export const updateOneDeiveApi = async (id, data) => {
-    return await instance.put(`"${infoApi}${id}/"`, data )
+    return await instance.put(`${infoApi}${id}/`, data )
 }
 
 export const updateOneSnmpApi = async (id, data) => {

@@ -1,4 +1,5 @@
 import axios from "axios"
+
 //点击导出，导出数据表格
 function exportTableAPI(url, data, params) {
     return axios({
@@ -13,11 +14,25 @@ function exportTableAPI(url, data, params) {
     })
 }
 
+//点击导入，导入数据表格
+function importTableAPI(url, data, params) {
+    return axios({
+        url: `${import.meta.env.VITE_API_URL}${url}`,
+        method: "post",
+        data: data,
+        params: params,
+        responseType: 'blob',
+        headers: {
+
+        }
+    })
+}
+
 export function exportExcel(url, data, params) {
     exportTableAPI(url, data, params).then(res => {
         let blob = new Blob([res.data]);
         //从response的headers中获取filename, 后端response.setHeader("Content-disposition", "attachment; filename=xxxx.docx") 设置的文件名;
-        let contentDisposition = res.headers['content-disposition'];  
+        let contentDisposition = res.headers['content-disposition'];
         let patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
         let result = patt.exec(contentDisposition);
         let filename = result[1];
@@ -33,6 +48,9 @@ export function exportExcel(url, data, params) {
     })
 }
 
+export function importExcel(url, data, params) {
+
+}
 
 //用于导出excel表格
 // export const exportExcel = ({ method = 'get', url, data = {}, fileName }) => {

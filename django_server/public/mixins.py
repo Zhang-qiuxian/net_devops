@@ -13,7 +13,7 @@ from django.db.models.options import Options
 from openpyxl import Workbook
 
 from public.response import ResponseOK, ResponseError
-from utils.export_excel import api_export_models
+from utils.export_excel import api_export_models, api_export_templates
 
 
 class CreateModelMixin:
@@ -122,7 +122,9 @@ class ReadOnlyModelViewSet(RetrieveModelMixin,
 
 class ExportImportMixin:
     exclude_export_fields: list[str] = []
+    exclude_import_fields: list[str] = []
     export_models: list[QuerySet[Model]] = []
+    templates_model: Model = None
 
     # @action(methods=['get'], detail=True)
     # def export_excel(self, request: Request, *args, **kwargs) -> HttpResponse:
@@ -163,6 +165,20 @@ class ExportImportMixin:
             return response
         models: list[QuerySet[Model]] = [m.objects.all().order_by('id') for m in self.export_models]
         response: HttpResponse = api_export_models(models=[*models, obj], exclude=self.exclude_export_fields)
+        return response
+
+    @action(methods=['get'], detail=False)
+    def export_excel_templates(self, request: Request, *args, **kwargs) -> HttpResponse:
+        """
+        导出model批量导入模板
+        要在类中定义exclude_import_fields，排除不需要导入的字段
+        :param request:
+        :param args:
+        :param kwargs:
+        :return:
+        """
+        obj: QuerySet[Model] = self.get_queryset()
+        response: HttpResponse = api_export_templates(model=obj[0], exclude=self.exclude_import_fields)
         return response
 
     @action(methods=['post'], detail=False)

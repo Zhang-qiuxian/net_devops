@@ -1,6 +1,8 @@
 <template>
     <div class="container">
         <div class="from-container">
+            <el-button @click="exportExcel('device/info/export_excel_templates/')">导入设备模板</el-button>
+            <el-button type="primary" @click="importExcel('device/info/import_excel/')">批量导入设备</el-button>
             <el-button type="success" @click="drawer = true">添加设备</el-button>
             <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
         </div>
@@ -19,7 +21,7 @@
                     </el-table-column>
                     <el-table-column label="操作" align="center">
                         <template #default="scope">
-                            <el-button size="small" @click="handleEdit(scope.$index, scope.row)">
+                            <el-button size="small" @click="handleEdit(scope.row)">
                                 <span>编辑</span>
                             </el-button>
                             <!-- <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
@@ -48,7 +50,7 @@
                 <div class="form-content">
                     <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules"
                         label-width="auto" status-icon>
-                        <el-row :gutter="20">
+                        <el-row :gutter="20" style="margin:0px;">
                             <el-col :span="12" v-for="(v, k) in ruleFields">
                                 <el-form-item :prop="k" :key="k" :label="v">
                                     <el-input v-model="ruleForm[k]" />
@@ -81,21 +83,29 @@
             </div>
         </template>
     </el-drawer>
-    <el-dialog v-model="dialogTableVisible" title="修改SNMP模板" :width="600">
+    <el-dialog v-model="dialogTableVisible" title="修改设备信息" :width="600">
         <el-form ref="ruleFormRef" style="max-width: 600px" :model="editForm" :rules="rules" label-width="auto"
             status-icon>
             <el-row>
-                <!-- <el-col :span="12">
-                    <el-form-item label="版本" prop="version">
-                        <el-select v-model="editForm.version" placeholder="请选择" style="width: 240px">
-                            <el-option v-for="item in versionOptions" :key="item.value" :label="item.label"
-                                :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                </el-col> -->
                 <el-col :span="12" v-for="(v, k) in ruleFields" :key="k">
                     <el-form-item :label="v" :prop="k">
                         <el-input v-model="editForm[k]" />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item prop="snmp_id" label="SNMP模板">
+                        <el-select v-model="editForm.snmp_id">
+                            <el-option v-for="item in snmpOptions" :key="item.value" :label="item.label"
+                                :value="item.value" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item prop="company_id" label="设备厂家">
+                        <el-select v-model="editForm.company_id">
+                            <el-option v-for="item in companyOptions" :key="item.value" :label="item.label"
+                                :value="item.value" />
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -103,7 +113,7 @@
                 <el-col>
                     <el-form-item>
                         <el-button @click="closeClick">关闭</el-button>
-                        <el-button type="primary" @click="editSnmp(ruleFormRef)">提交</el-button>
+                        <el-button type="primary" @click="editDevice(ruleFormRef)">提交</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -143,13 +153,16 @@ const ruleForm = reactive({
     description: "",
     hostname: "",
     ip: "",
-    login: "",
+    login: "ssh",
     url: "-",
-    username: "",
-    password: "",
+    username: "root",
+    password: "root",
     snmp_id: 1,
     company_id: 1,
 })
+
+const editForm = reactive({})
+
 // 控制表单渲染
 const ruleFields = {
     name: "设备名称",
@@ -166,24 +179,15 @@ const ruleFields = {
 // {
 //     "device_id": "0d37703e-a77c-4420-baec-7a5fd6216c54",
 //     "system": [
-//         {
-//             "id": 56,
-//             "device_id": "0d37703e-a77c-4420-baec-7a5fd6216c54",
-//             "name": "浦西办公网核心-s7506x",
-//             "ip": "10.254.11.249",
-//             "sysDescr": "H3C Comware Platform Software, Software Version 7.1.070, Release 7595P02\r\nH3C S7506X\r\nCopyright (c) 2004-2020 New H3C Technologies Co., Ltd. All rights reserved.",
-//             "sysUpTime": "13:11:42:18.99",
-//             "sysName": "Zwy_cs7506x-4f"
-//         }
 //     ],
-//     "name": "浦西办公网核心-s7506x",
+//     "name": "办公网核心-s7506x",
 //     "description": "核心交换机",
-//     "hostname": "Zwy_cs7506x-4f",
-//     "ip": "10.254.11.249",
+//     "hostname": "cs7506x-4f",
+//     "ip": "10.1.1.2",
 //     "login": "ssh",
 //     "url": "-",
-//     "username": "Zwy_7506",
-//     "password": "hxSW_7506_Zwy@20231222",
+//     "username": "root",
+//     "password": "xxx",
 //     "remark": null,
 //     "create_time": "2024-04-19 10:32:38",
 //     "update_time": "2024-04-19 10:33:07",
@@ -203,7 +207,7 @@ const companyOptions = computed(() => {
 })
 
 
-const editForm = reactive({})
+
 
 const rules = reactive({
     name: [{ required: true, message: '必选项', trigger: 'blur' },],
@@ -222,12 +226,17 @@ async function confirmClick(formEl) {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            stores.addSnmp(ruleForm).then((res) => {
+            stores.addDevice(ruleForm).then((res) => {
                 // console.log(res);
-                stores.getSnmp();
-                ElMessage.success('添加成功')
-                ruleFormRef.value.resetFields()
-                drawer.value = false
+                if (res) {
+                    stores.getDeviceInfo();
+                    ElMessage.success('添加成功')
+                    ruleFormRef.value.resetFields()
+                    drawer.value = false
+                } else {
+                    ElMessage.error('添加失败')
+                }
+
             }).catch((err) => {
                 console.log(err);
                 ElMessage.error('添加失败')
@@ -241,8 +250,9 @@ async function confirmClick(formEl) {
 
 // 修改表单
 const dialogTableVisible = ref(false)
+
 const handleEdit = (row) => {
-    // console.log(row)
+    console.log(row)
     dialogTableVisible.value = true
     // ruleFormRef.value.resetFields()
     editForm.device_id = row.device_id
@@ -254,6 +264,8 @@ const handleEdit = (row) => {
     editForm.url = row.url
     editForm.username = row.username
     editForm.password = row.password
+    editForm.snmp_id = row.snmp_id
+    editForm.company_id = row.company_id
 
 }
 const handleDelete = (row) => {
@@ -271,7 +283,7 @@ const editDevice = async (formEl) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            stores.updateDevice(editForm.id, editForm).then(() => {
+            stores.updateDevice(editForm.device_id, editForm).then(() => {
                 stores.getDeviceInfo();
                 ElMessage.success('修改成功')
                 ruleFormRef.value.resetFields()
@@ -293,12 +305,12 @@ const editDevice = async (formEl) => {
 const handleSizeChange = (val) => {
     device_info.page_size = val
     stores.getDeviceInfo();
-    loading.close()
+    // loading.close()
 }
 const handleCurrentChange = (val) => {
     device_info.page = val
     stores.getDeviceInfo();
-    loading.close()
+    // loading.close()
 }
 // 控制表格字段
 const tableTitle = {
@@ -326,17 +338,6 @@ const handleClose = (done) => {
 function cancelClick() {
     drawer.value = false
 }
-// function confirmClick() {
-//     ElMessageBox.confirm(`Are you confirm to chose ${radio1.value} ?`)
-//         .then(() => {
-//             drawer.value = false
-//         })
-//         .catch(() => {
-//             // catch error
-//         })
-// }
-
-
 
 
 

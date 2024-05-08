@@ -20,8 +20,6 @@ class SnmpTemplateSerializer(ModelSerializer):
 class DeviceSerializer(ModelSerializer):
     system_queryset: QuerySet[DeviceSystem] = DeviceSystem.objects.all().order_by('id')
     device_id = UUIDField(read_only=True)
-    snmp_id = IntegerField(write_only=True)
-    company_id = IntegerField(write_only=True)
     system = SerializerMethodField(read_only=True, required=False)
 
     def get_system(self, obj: Device):
