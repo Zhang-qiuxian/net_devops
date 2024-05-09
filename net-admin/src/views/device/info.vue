@@ -1,11 +1,24 @@
 <template>
     <div class="container">
         <div class="from-container">
-            <el-button @click="exportExcel('device/info/export_excel_templates/')">导入设备模板</el-button>
-            <el-button type="primary" @click="importExcel('device/info/import_excel/')">批量导入设备</el-button>
-            <el-button type="success" @click="drawer = true">添加设备</el-button>
-            <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
+            <div class="from-button">
+                <el-button @click="exportExcel('device/info/export_excel_templates/')">导入设备模板</el-button>
+            </div>
+            <div class="from-button">
+                <el-button type="primary" @click="dialogUploadVisible = true">批量导入设备</el-button>
+                <!-- <el-button type="primary" @click="importExcel('device/info/import_excel/')">批量导入设备</el-button> -->
+            </div>
+            <div class="from-button">
+                <el-button type="success" @click="drawer = true">添加设备</el-button>
+            </div>
+            <div class="from-button">
+                <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
+            </div>
+            <!-- <el-button type="primary" @click="importExcel('device/info/import_excel/')">批量导入设备</el-button> -->
+            <!-- <el-button type="success" @click="drawer = true">添加设备</el-button> -->
+
         </div>
+        <!-- 表格 -->
         <div class="table-container">
             <el-empty description="没有数据，请先添加设备或刷新页面" v-if="!isData" style="height: 100%;" />
             <el-scrollbar v-else>
@@ -32,12 +45,14 @@
                 </el-table>
             </el-scrollbar>
         </div>
+        <!-- 分页 -->
         <div class="page-container">
             <el-pagination v-model:current-page="device_info.page" v-model:page-size="device_info.page_size"
                 :page-sizes="[20, 40, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
                 :total="device_info.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
     </div>
+    <!-- 添加设备 -->
     <el-drawer v-model="drawer" direction="rtl">
         <template #header>
             <h4>添加设备</h4>
@@ -83,6 +98,7 @@
             </div>
         </template>
     </el-drawer>
+    <!-- 修改设备弹窗 -->
     <el-dialog v-model="dialogTableVisible" title="修改设备信息" :width="600">
         <el-form ref="ruleFormRef" style="max-width: 600px" :model="editForm" :rules="rules" label-width="auto"
             status-icon>
@@ -120,6 +136,13 @@
 
         </el-form>
     </el-dialog>
+    <!-- 上传弹窗 -->
+    <el-dialog v-model="dialogUploadVisible" title="批量导入设备" width="800">
+        <el-upload :action=uploadUrl :on-preview="handlePreview" :limit="1" name="file" accept=".xlsx, .xls, .csv"
+            :on-success="handleUpload">
+            <el-button type="primary">选择文件</el-button>
+        </el-upload>
+    </el-dialog>
 </template>
 <script setup>
 import { useDeviceStore } from '@/stores/device/index.js';
@@ -136,11 +159,37 @@ const isData = computed(() => {
     return device_info.value.data.length > 0 ? true : false;
 })
 
-// const loading = ElLoading.service({
-//     lock: true,
-//     text: '正在加载...',
-//     background: 'rgba(0, 0, 0, 0.7)',
-// })
+// 上传文件
+const dialogUploadVisible = ref(false)
+
+const uploadUrl = ref(import.meta.env.VITE_API_URL + "device/info/upload/")
+
+const handleUpload = (response, files, uploadFiles) => {
+    if (response.code == 200) {
+        ElMessage.success(response.message)
+        dialogUploadVisible.value = false
+        stores.getDeviceInfo()
+    } else {
+        ElMessage.error(response.message)
+        dialogUploadVisible.value = false
+        for (let item of response.data) {
+            setTimeout(() => {
+                ElNotification({
+                    title: '导入失败',
+                    message: `'name:${item.name},ip:${item.ip}'`,
+                    type: 'error',
+                    duration: 0
+                })
+            }, 500)
+        }
+    }
+    //   ElMessage.warning(
+    //     `The limit is 3, you selected ${files.length} files this time, add up to ${
+    //       files.length + uploadFiles.length
+    //     } totally`
+    //   )
+    console.log(response, files, uploadFiles);
+}
 
 // 抽屉
 const drawer = ref(false)
@@ -362,6 +411,10 @@ onMounted(() => {
     align-items: center;
     border-bottom: 1px solid #ccc;
     padding-right: 20px;
+
+    .from-button {
+        margin: 0px 5px 0px 5px;
+    }
 }
 
 .table-container {

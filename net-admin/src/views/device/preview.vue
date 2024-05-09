@@ -11,7 +11,7 @@
                     </template>
                     <!-- <p v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</p> -->
                     <!-- <template #footer>Footer content</template> -->
-                    {{ d.system[0].sysName }}
+                    <!-- {{ d.system[0].sysName }} -->
                 </el-card>
             </el-col>
         </el-row>

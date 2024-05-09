@@ -169,30 +169,13 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
 
         return ResponseOK(message="更新成功!", data=serializer.data)
 
-    # @action(methods=['get'], detail=False)
-    # def export_excel_templates(self, request: Request, *args, **kwargs) -> HttpResponse:
-    #     """
-    #     导出export_model和本models为excel
-    #     要在类中定义exclude_export_fields，排除不需要导出的字段
-    #     export_models，需要导出的modle
-    #     :param request:
-    #     :param args:
-    #     :param kwargs:
-    #     :return:
-    #     """
-    #     obj: QuerySet[Model] = self.get_queryset()
-    #     if not obj:
-    #         return ResponseError(message="没有数据可以导出！")
-    #     if not self.export_models:
-    #         response: HttpResponse = api_export_templates(model=Device)
-    #         return response
 
     @action(methods=['post'], detail=False)
     def upload(self, request: Request, *args, **kwargs) -> Response:
         file: TemporaryUploadedFile = request.FILES.get('file')
-        file_types: list[str] = ['xlsx', 'csv', 'xls']
         if not file:
             return ResponseError(message="添加失败,请上传文件。")
+        file_types: list[str] = ['xlsx', 'csv', 'xls']
         file_type: str = file.name.split('.')[-1]
         if file_type not in file_types:
             return ResponseError(message="添加失败,文件格式不正确。请添加xlsx/csv/xls")
@@ -205,16 +188,26 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
             case 'csv':
                 df = pandas.read_csv(file.read())
         d_d: list[dict] = df.to_dict(orient='records')
+        if len(d_d) == 0:
+            return ResponseError(message="添加失败！请检查模板文件格式是否错误！")
         db_ip: list = []
         db_hostname: list = []
         for d in self.queryset:
             db_ip.append(d.ip)
             db_hostname.append(d.hostname)
-        is_eq: list = [e for e in d_d if e['ip'] in db_ip or e['hostname'] in db_hostname]
-        if not is_eq:
-            objs: [Device] = [Device(**d) for d in d_d]
+        is_eq: list[dict] = []
+        is_not_eq: list[dict] = []
+        for e in d_d:
+            if e['ip'] in db_ip or e['hostname'] in db_hostname:
+                is_eq.append(e)
+            else:
+                is_not_eq.append(e)
+        if is_not_eq:
+            objs: [Device] = [Device(**d) for d in is_not_eq]
             Device.objects.bulk_create(objs=objs)
-            return ResponseOK(message=f"添加成功,添加了{len(d_d)}台设备")
+            return ResponseOK(message=f"添加成功,添加了{len(is_not_eq)}台设备")
+        print(is_eq)
+        print(d_d)
         return ResponseError(message="添加失败,请删除重复设备后再添加", data=is_eq)
 
 
