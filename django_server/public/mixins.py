@@ -147,6 +147,7 @@ class ExportMixin:
 
 
 class ExportTemplateMixin:
+    templates_model: Model = None
     exclude_import_fields: list[str] = []
     templates_tip_list: list | None = []
 
@@ -160,10 +161,9 @@ class ExportTemplateMixin:
         :param kwargs:
         :return:
         """
-        obj: QuerySet[Model] = self.get_queryset()
         if len(self.templates_tip_list) == 0:
             self.templates_tip_list = None
-        response: HttpResponse = api_export_templates(model=obj[0], exclude=self.exclude_import_fields,
+        response: HttpResponse = api_export_templates(model=self.templates_model, exclude=self.exclude_import_fields,
                                                       templates_tip_list=self.templates_tip_list)
         return response
 
