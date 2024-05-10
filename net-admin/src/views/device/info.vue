@@ -229,9 +229,9 @@ const ruleFields = {
 //     "device_id": "0d37703e-a77c-4420-baec-7a5fd6216c54",
 //     "system": [
 //     ],
-//     "name": "办公网核心-s7506x",
+//     "name": "s7506x",
 //     "description": "核心交换机",
-//     "hostname": "cs7506x-4f",
+//     "hostname": "cs7506x",
 //     "ip": "10.1.1.2",
 //     "login": "ssh",
 //     "url": "-",

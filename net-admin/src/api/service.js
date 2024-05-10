@@ -73,7 +73,7 @@ instance.interceptors.response.use(
             ElMessage.error('网络超时');
         } else if (error.message == 'Network Error') {
             ElMessage.error('网络连接错误');
-            // localStorage.clear()
+            localStorage.clear()
         } else {
             // if (error.response.data) this.$message({ type: 'error', message: '接口路径找不到' });
             // else ElMessage.error('接口路径找不到');

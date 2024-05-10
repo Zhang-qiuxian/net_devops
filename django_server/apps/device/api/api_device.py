@@ -134,6 +134,7 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
     templates_model = Device
     exclude_import_fields: list[str] = ['id', 'is_sync', 'create_time', 'update_time', 'device_id']
     filterset_fields = ['device_id', 'name', 'ip']
+    templates_tip_list = ["导入时务必将**第一行**和**第二行**删除之后再导入！snmp_id和company_id要和snmp模板，设备厂家的序号对应得上，否则同步失败如果有空值请填写 * 或者 -"]
 
     def perform_create(self, serializer: Serializer):
         serializer.save()
@@ -192,23 +193,24 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
             return ResponseError(message="添加失败！请检查模板文件格式是否错误！")
         db_ip: list = []
         db_hostname: list = []
-        for d in self.queryset:
-            db_ip.append(d.ip)
-            db_hostname.append(d.hostname)
-        is_eq: list[dict] = []
-        is_not_eq: list[dict] = []
-        for e in d_d:
-            if e['ip'] in db_ip or e['hostname'] in db_hostname:
-                is_eq.append(e)
-            else:
-                is_not_eq.append(e)
-        if is_not_eq:
-            objs: [Device] = [Device(**d) for d in is_not_eq]
-            Device.objects.bulk_create(objs=objs)
-            return ResponseOK(message=f"添加成功,添加了{len(is_not_eq)}台设备")
-        print(is_eq)
-        print(d_d)
-        return ResponseError(message="添加失败,请删除重复设备后再添加", data=is_eq)
+        try:
+            for d in self.queryset:
+                db_ip.append(d.ip)
+                db_hostname.append(d.hostname)
+            is_eq: list[dict] = []
+            is_not_eq: list[dict] = []
+            for e in d_d:
+                if e['ip'] in db_ip or e['hostname'] in db_hostname:
+                    is_eq.append(e)
+                else:
+                    is_not_eq.append(e)
+            if is_not_eq:
+                objs: [Device] = [Device(**d) for d in is_not_eq]
+                Device.objects.bulk_create(objs=objs)
+                return ResponseOK(message=f"添加成功,添加了{len(is_not_eq)}台设备")
+            return ResponseError(message="添加失败,请删除重复设备后再添加", data=is_eq)
+        except Exception as e:
+            return ResponseError(message=f"添加失败，详细错误{str(e)}")
 
 
 device = DeviceViewSet

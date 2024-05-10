@@ -62,11 +62,11 @@ const tableTitle = {
 // {
 //     "id": 932,
 //     "device_id": "0d37703e-a77c-4420-baec-7a5fd6216c54",
-//     "name": "浦西办公网核心-s7506x",
-//     "ip": "10.254.11.249",
+//     "name": "s7506x",
+//     "ip": "10.1.1.1",
 //     "entPhysicalDescr": "GigabitEthernet0/0/22",
 //     "entPhysicalName": "GigabitEthernet0/0/22",
-//     "entPhysicalSerialNum": "210231A961X2090002ZM",
+//     "entPhysicalSerialNum": "2xxxxxxxxxxxxxxxx",
 //     "entPhysicalSoftwareRev": "",
 //     "entPhysicalModelName": "SFP-GE-SX-MM850-D"
 // }

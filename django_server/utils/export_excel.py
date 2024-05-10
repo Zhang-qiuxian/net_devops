@@ -61,7 +61,7 @@ def api_export_models(models: list[QuerySet[Model]], exclude: list[str] = None) 
     return response
 
 
-def api_export_templates(model: Model, exclude: list[str] = None) -> HttpResponse:
+def api_export_templates(model: Model, exclude: list[str] = None, templates_tip_list: list[str] = None) -> HttpResponse:
     if exclude is None:
         exclude: list = []
     wb: Workbook = Workbook()
@@ -77,15 +77,9 @@ def api_export_templates(model: Model, exclude: list[str] = None) -> HttpRespons
         if f.name not in exclude:
             verbose.append(f.verbose_name)
             title.append(f.name)
-    ws.append(["导入时务必将**第一行**和**第二行**删除之后再导入！如果有空值请填写 * 或者 -"])
+    if templates_tip_list or len(templates_tip_list) > 0:
+        ws.append(templates_tip_list)
     ws.append(verbose)
     ws.append(title)
-    # for field in meta.fields:
-    #     field
-    # excel_title = [field.verbose_name for field in meta.fields if field.name not in exclude]
-    # field_names = [field.name for field in meta.fields if field.name not in exclude]
-    # ws.append(excel_title)
-    # ws.append(field_names)
-    # ws.append(data)
     wb.save(response)
     return response

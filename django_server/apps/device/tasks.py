@@ -10,6 +10,7 @@ from django.db.models import Model, QuerySet
 
 from apps.device.models import Device, DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface, SnmpTemplate, DeviceARP
 from apps.device.api.serial import SnmpTemplateSerializer
+from apps.cron.models import CronJobSyncLog
 
 from tools.snmp.run import run
 from tools.snmp.common import arp_oids
@@ -50,7 +51,7 @@ model_dict: dict[str, Any] = {
 }
 
 
-def update_model(device: Device) -> list[dict]:
+def update_model(device: Device) -> tuple[bool, list[dict]]:
     """
     更新ip interface serial system 四个模型
     :param device: Device对象
@@ -58,7 +59,7 @@ def update_model(device: Device) -> list[dict]:
     """
     b, datas = start_snmp(device=device)
     if not b:
-        return datas
+        return b, datas
     for data in datas:
         for key, value in data.items():
             obj = model_dict[key]
@@ -71,7 +72,7 @@ def update_model(device: Device) -> list[dict]:
             obj.objects.bulk_create(objs=objs)
         device.is_sync = True
         device.save()
-    return [{"success": {"message": f"{device.ip} 更新完成！"}}]
+    return True, [{"success": {"message": f"{device.ip} 更新完成！"}}]
 
 
 @shared_task
@@ -89,7 +90,18 @@ def start_sync(*args, **kwargs) -> Task:
     with ThreadPoolExecutor(max_workers=POOL) as executor:
         res: Iterator[Future] = as_completed([executor.submit(update_model, device=d) for d in d_s])
         response = [i.result() for i in res]
-        return response
+        error: int = 0
+        success: int = 0
+        success_list: list[dict] = []
+        for r in response:
+            b, m = r
+            if not b:
+                error += 1
+            else:
+                success += 1
+                success_list.append(m)
+        CronJobSyncLog.objects.create(job="同步基础信息", data=success_list)
+        return {"error":f"失败了{error}台", "success": f"成功了{success}台"}
 
 
 """
@@ -116,6 +128,10 @@ def bulk_update_arp(objs: list[DeviceARP]) -> None:
     DeviceARP.objects.bulk_update(objs=objs, fields=['atPhysAddress', 'atNetAddress', 'update_time'])
 
 
+def handle_arp(new_datas: list[dict], queryset: QuerySet[DeviceARP]) -> None:
+    pass
+
+
 @shared_task
 def start_sync_arp(*args, **kwargs) -> Task:
     d_q: QuerySet[Device] = Device.objects.filter(is_sync=True).all()
@@ -130,6 +146,7 @@ def start_sync_arp(*args, **kwargs) -> Task:
         b, datas = res
         if not b:
             error_list.append(datas)
+            continue
         else:
             arp_list: list[dict] = datas[0].get('arp')
             if len(arp_list) == 0:
@@ -156,8 +173,6 @@ def start_sync_arp(*args, **kwargs) -> Task:
                     # bulk_update_arp(objs=is_exist_obj)
                     # success_list.append(datas)
                     pass
-
-
     return {"success": success_list, "fault_list": fault_list, "error_list": error_list}
 
 

@@ -61,11 +61,11 @@ const tableTitle = {
 // {
 //     "id": 50,
 //     "device_id": "63297486-d08d-467c-b31a-3b91e33459e8",
-//     "name": "浦西2F交换机",
-//     "ip": "10.254.11.2",
+//     "name": "2F交换机",
+//     "ip": "1.1.1.1",
 //     "sysDescr": "H3C Comware Platform Software, Software Version 7.1.070, Release 6318P01\r\nH3C S5130S-52P-EI\r\nCopyright (c) 2004-2020 New H3C Technologies Co., Ltd. All rights reserved.",
 //     "sysUpTime": "326:0:53:39.48",
-//     "sysName": "ZWY_2F_IRF"
+//     "sysName": "2F_IRF"
 // }
 
 

@@ -56,7 +56,7 @@ const deviceRouters = [
         name: 'deviceIp',
         component: () => import('@/views/device/ip.vue'),
         meta: {
-          title: 'IP管理',
+          title: '设备IP管理',
         },
       },
       {

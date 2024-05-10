@@ -71,13 +71,13 @@ const tableTitle = {
 // {
 //     "id": 427,
 //     "device_id": "63297486-d08d-467c-b31a-3b91e33459e8",
-//     "name": "浦西2F交换机",
-//     "ip": "10.254.11.2",
-//     "ipAdEntAddr": "10.254.11.2",
+//     "name": "2F交换机",
+//     "ip": "1.1.1.2",
+//     "ipAdEntAddr": "1.1.1.2",
 //     "ipAdEntIfIndex": 638,
 //     "ipAdEntNetMask": "255.255.255.0",
 //     "ifName": "Vlan-interface126",
-//     "ifAlias": "IDF_MAN_NEW"
+//     "ifAlias": "MAN_NEW"
 // }
 
 

@@ -125,6 +125,7 @@ class ExportImportMixin:
     exclude_import_fields: list[str] = []
     export_models: list[QuerySet[Model]] = []
     templates_model: Model = None
+    templates_tip_list: list = []
 
     # @action(methods=['get'], detail=True)
     # def export_excel(self, request: Request, *args, **kwargs) -> HttpResponse:
@@ -178,7 +179,10 @@ class ExportImportMixin:
         :return:
         """
         obj: QuerySet[Model] = self.get_queryset()
-        response: HttpResponse = api_export_templates(model=obj[0], exclude=self.exclude_import_fields)
+        if len(self.templates_tip_list) == 0:
+            self.templates_tip_list = None
+        response: HttpResponse = api_export_templates(model=obj[0], exclude=self.exclude_import_fields,
+                                                      templates_tip_list=self.templates_tip_list)
         return response
 
     @action(methods=['post'], detail=False)
