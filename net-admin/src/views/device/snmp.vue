@@ -7,7 +7,6 @@
             <el-empty description="没有数据，请先添加SNMP模板或刷新页面" v-if="!isData" style="height: 100%;" />
             <el-scrollbar v-else>
                 <el-table :data="device_snmp.data" border table-layout="auto" style="width: 100%">
-                    <!-- <el-table-column type="selection" width="50" /> -->
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
                     </el-table-column>
                     <el-table-column label="操作" align="center" width="150">
@@ -31,7 +30,7 @@
             </el-scrollbar>
         </div>
         <div class="page-container">
-            <el-pagination v-model:current-page="pages.page" v-model:page-size="pages.page_size"
+            <el-pagination v-model:current-page="device_snmp.page" v-model:page-size="device_snmp.page_size"
                 :page-sizes="[20, 40, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
                 :total="device_snmp.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
@@ -105,7 +104,7 @@ import { ElMessage } from 'element-plus';
 
 
 const stores = useDeviceStore();
-const { device_snmp, pages } = storeToRefs(stores);
+const { device_snmp } = storeToRefs(stores);
 
 const isData = computed(() => {
     return device_snmp.value.data.length > 0 ? true : false;
