@@ -13,7 +13,7 @@ from django.db.models import QuerySet, Manager, Model
 from django.http import HttpResponse
 
 from public.response import ResponseOK, ResponseError
-from public.mixins import ModelViewSet, ReadOnlyModelViewSet, ExportImportMixin
+from public.mixins import ModelViewSet, ReadOnlyModelViewSet, ExportMixin, ExportTemplateMixin
 
 from apps.device.models import Device, SnmpTemplate, DeviceCompany, DeviceSystem, DeviceIP, DeviceSerial, \
     DeviceInterface, DeviceARP
@@ -25,7 +25,7 @@ from apps.device.api.serial import (DeviceSerializer, SnmpTemplateSerializer, De
 from utils.export_excel import api_export_templates
 
 
-class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
+class DeviceInterfaceViewSet(ExportMixin, ReadOnlyModelViewSet):
     queryset = DeviceInterface.objects.all().order_by('id')
     serializer_class = DeviceInterfaceSerializer
     exclude_export_fields: list[str] = ['id', 'device_id']
@@ -45,7 +45,7 @@ class DeviceInterfaceViewSet(ExportImportMixin, ReadOnlyModelViewSet):
         return ResponseOK(message="查询成功！", data=serializer.data)
 
 
-class DeviceSerialViewSet(ExportImportMixin, ReadOnlyModelViewSet):
+class DeviceSerialViewSet(ExportMixin, ReadOnlyModelViewSet):
     queryset = DeviceSerial.objects.all().order_by('id')
     serializer_class = DeviceSerialSerializer
     filterset_fields = ['device_id', 'name', 'ip']
@@ -62,7 +62,7 @@ class DeviceSerialViewSet(ExportImportMixin, ReadOnlyModelViewSet):
         return ResponseOK(message="查询成功！", data=serializer.data)
 
 
-class DeviceIPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
+class DeviceIPViewSet(ExportMixin, ReadOnlyModelViewSet):
     queryset = DeviceIP.objects.all().order_by('id')
     serializer_class = DeviceIPSerializer
     filterset_fields = ['device_id', 'name', 'ip', 'ipAdEntAddr', 'ifName']
@@ -79,7 +79,7 @@ class DeviceIPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
         return ResponseOK(message="查询成功！", data=serializer.data)
 
 
-class DeviceSystemViewSet(ExportImportMixin, ReadOnlyModelViewSet):
+class DeviceSystemViewSet(ExportMixin, ReadOnlyModelViewSet):
     queryset = DeviceSystem.objects.all().order_by('id')
     serializer_class = DeviceSystemSerializer
     exclude_export_fields: list[str] = ['id', 'device_id']
@@ -107,7 +107,7 @@ class DeviceCompanyViewSet(ModelViewSet):
     serializer_class = DeviceCompanySerializer
 
 
-class DeviceARPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
+class DeviceARPViewSet(ExportMixin, ReadOnlyModelViewSet):
     queryset = DeviceARP.objects.all().order_by('id')
     serializer_class = DeviceArpSerializer
     filterset_fields = ['device_id', 'name', 'ip', 'ifName', 'atNetAddress']
@@ -124,7 +124,7 @@ class DeviceARPViewSet(ExportImportMixin, ReadOnlyModelViewSet):
         return ResponseOK(message="查询成功！", data=serializer.data)
 
 
-class DeviceViewSet(ExportImportMixin, ModelViewSet):
+class DeviceViewSet(ExportMixin, ExportTemplateMixin, ModelViewSet):
     queryset: QuerySet[Device] = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
     serializer_detail = DeviceDetailSerializer
@@ -134,7 +134,8 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
     templates_model = Device
     exclude_import_fields: list[str] = ['id', 'is_sync', 'create_time', 'update_time', 'device_id']
     filterset_fields = ['device_id', 'name', 'ip']
-    templates_tip_list = ["导入时务必将**第一行**和**第二行**删除之后再导入！snmp_id和company_id要和snmp模板，设备厂家的序号对应得上，否则同步失败如果有空值请填写 * 或者 -"]
+    templates_tip_list = [
+        "导入时务必将**第一行**和**第二行**删除之后再导入！snmp_id和company_id要和snmp模板，设备厂家的序号对应得上，否则同步失败如果有空值请填写 * 或者 -"]
 
     def perform_create(self, serializer: Serializer):
         serializer.save()
@@ -170,9 +171,8 @@ class DeviceViewSet(ExportImportMixin, ModelViewSet):
 
         return ResponseOK(message="更新成功!", data=serializer.data)
 
-
     @action(methods=['post'], detail=False)
-    def upload(self, request: Request, *args, **kwargs) -> Response:
+    def import_excel(self, request: Request, *args, **kwargs) -> Response:
         file: TemporaryUploadedFile = request.FILES.get('file')
         if not file:
             return ResponseError(message="添加失败,请上传文件。")

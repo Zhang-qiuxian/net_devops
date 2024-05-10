@@ -120,32 +120,9 @@ class ReadOnlyModelViewSet(RetrieveModelMixin,
     pass
 
 
-class ExportImportMixin:
+class ExportMixin:
     exclude_export_fields: list[str] = []
-    exclude_import_fields: list[str] = []
     export_models: list[QuerySet[Model]] = []
-    templates_model: Model = None
-    templates_tip_list: list = []
-
-    # @action(methods=['get'], detail=True)
-    # def export_excel(self, request: Request, *args, **kwargs) -> HttpResponse:
-    #     """
-    #     将单个模型导出为excel,如果export_models为空则优先导出本model
-    #     :param request:
-    #     :param args:
-    #     :param kwargs:
-    #     :return:
-    #     """
-    #     pk: str | int = kwargs.get('pk')
-    #     obj: QuerySet[Model] = self.get_queryset().filter(pk=pk)
-    #     if not obj:
-    #         return ResponseError(message="没有数据可以导出！")
-    #     if not self.export_models:
-    #         response: HttpResponse = api_export_models(models=[obj], exclude=self.exclude_export)
-    #         return response
-    #     models: list[QuerySet[Model]] = [m.objects.all().order_by('id') for m in self.export_models]
-    #     response: HttpResponse = api_export_models(models=[*models, obj], exclude=self.exclude_export)
-    #     return response
 
     @action(methods=['get'], detail=False)
     def export_excel(self, request: Request, *args, **kwargs) -> HttpResponse:
@@ -168,6 +145,11 @@ class ExportImportMixin:
         response: HttpResponse = api_export_models(models=[*models, obj], exclude=self.exclude_export_fields)
         return response
 
+
+class ExportTemplateMixin:
+    exclude_import_fields: list[str] = []
+    templates_tip_list: list | None = []
+
     @action(methods=['get'], detail=False)
     def export_excel_templates(self, request: Request, *args, **kwargs) -> HttpResponse:
         """
@@ -185,8 +167,15 @@ class ExportImportMixin:
                                                       templates_tip_list=self.templates_tip_list)
         return response
 
+
+class ImportMixin:
+
     @action(methods=['post'], detail=False)
     def import_excel(self, request: Request, *args, **kwargs) -> Response:
         #TODO:导入功能还未实现
 
         raise NotImplementedError("功能还没未实现")
+
+
+class ExportImportSet(ExportTemplateMixin, ImportMixin):
+    pass

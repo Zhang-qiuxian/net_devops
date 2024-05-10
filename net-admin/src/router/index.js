@@ -75,6 +75,14 @@ const deviceRouters = [
           title: '系统信息',
         },
       },
+      {
+        path: 'device-arp',
+        name: 'deviceArp',
+        component: () => import('@/views/device/arp.vue'),
+        meta: {
+          title: '设备arp管理',
+        },
+      },
     ]
   }
 ]

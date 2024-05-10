@@ -24,6 +24,8 @@ import {
   updateOneSnmpApi,
   deleteOneDeiveApi,
   deleteOneSnmpApi,
+  getAllArpApi,
+  getOneArpApi,
 
 } from '@/api/device/index.js'
 
@@ -71,13 +73,13 @@ export const useDeviceStore = defineStore('device', () => {
     page: 1,
     page_size: 20
   })
-
-  const pages = ref({
-    page: 1,
-    page_size: 20,
+  const device_arp = ref({
+    total: 0,
+    data: [],
     page: 1,
     page_size: 20
   })
+
 
   // const changePage = (page) => { { page: device_info.value.page, page_size: device_info.value.page_size }.page = page }
   // 查询
@@ -138,7 +140,6 @@ export const useDeviceStore = defineStore('device', () => {
     }).catch(err => {
       return false
     })
-
   }
 
   const getCompany = async () => {
@@ -149,7 +150,16 @@ export const useDeviceStore = defineStore('device', () => {
     }).catch(err => {
       return false
     })
+  }
 
+  const getArp = async () => {
+    return await getAllArpApi({ page: device_arp.value.page, page_size: device_arp.value.page_size }).then(res => {
+      device_arp.value.total = res.total
+      device_arp.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
   }
 
   // 新增
@@ -163,10 +173,10 @@ export const useDeviceStore = defineStore('device', () => {
   // 删除
   const deleteSnmp = async (id) => deleteOneSnmpApi(id)
   const deleteDevice = async (id) => deleteOneDeiveApi(id)
+
   return {
-    pages,
-    device_info, device_snmp, device_interface, device_ip, device_system, device_serial, device_company,
-    getDeviceInfo, getSnmp, getInterface, getIp, getSystem, getSerial, getCompany,
+    device_info, device_snmp, device_interface, device_ip, device_system, device_serial, device_company, device_arp,
+    getDeviceInfo, getSnmp, getInterface, getIp, getSystem, getSerial, getCompany, getArp,
     addSnmp, addDevice,
     updateSnmp, updateDevice,
     deleteSnmp, deleteDevice
@@ -181,7 +191,10 @@ export const useDeviceStore = defineStore('device', () => {
     persist: [
       {
         key: setLocalStore('device'),
-        paths: ['device_info', 'device_snmp', 'device_interface', 'device_ip', 'device_system', 'device_serial', 'device_company', 'pages']
+        paths: ['device_info', 'device_snmp', 'device_interface',
+          'device_ip', 'device_system', 'device_serial',
+          'device_company', 'device_arp'
+        ]
       }
     ],
   })

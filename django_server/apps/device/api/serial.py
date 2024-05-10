@@ -41,7 +41,7 @@ class DeviceIPSerializer(ModelSerializer):
 class DeviceArpSerializer(ModelSerializer):
     class Meta:
         model = DeviceARP
-        exclude = ["id"]
+        fields = '__all__'
 
 
 class DeviceSerialSerializer(ModelSerializer):

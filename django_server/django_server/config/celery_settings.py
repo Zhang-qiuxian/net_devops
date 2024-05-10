@@ -26,9 +26,9 @@ DJANGO_CELERY_BEAT_TZ_AWARE = False
 CELERY_RESULT_BACKEND = "django-db"  # Celery 任务执行结果保存到 django数据库中
 
 # celery内容等消息的格式设置，默认json
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json', 'pickle']
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_RESULT_SERIALIZER = 'pickle'
 
 # 为任务设置超时时间，单位秒。超时即中止，执行下个任务。
 CELERY_TASK_TIME_LIMIT = 500

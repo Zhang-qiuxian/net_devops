@@ -2,7 +2,7 @@
     <div class="container">
         <div class="from-container">
             <div class="from-button">
-                <el-button @click="exportExcel('device/info/export_excel_templates/')">导入设备模板</el-button>
+                <el-button @click="exportExcel('device/info/export_excel_templates/')">导出设备模板</el-button>
             </div>
             <div class="from-button">
                 <el-button type="primary" @click="dialogUploadVisible = true">批量导入设备</el-button>
@@ -162,7 +162,7 @@ const isData = computed(() => {
 // 上传文件
 const dialogUploadVisible = ref(false)
 
-const uploadUrl = ref(import.meta.env.VITE_API_URL + "device/info/upload/")
+const uploadUrl = ref(import.meta.env.VITE_API_URL + "device/info/import_excel/")
 
 const handleUpload = (response, files, uploadFiles) => {
     if (response.code == 200) {
@@ -176,7 +176,9 @@ const handleUpload = (response, files, uploadFiles) => {
             setTimeout(() => {
                 ElNotification({
                     title: '导入失败',
-                    message: `'name:${item.name},ip:${item.ip}'`,
+                    message: `
+                    name: ${item.name}
+                    ip: ${item.ip}`,
                     type: 'error',
                     duration: 0
                 })

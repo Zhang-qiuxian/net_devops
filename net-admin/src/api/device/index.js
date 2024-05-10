@@ -7,6 +7,7 @@ const systemApi = "device/system/"
 const serialApi = "device/serial/"
 const companyApi = "device/company/"
 const snmpApi = "device/snmp/"
+const arpApi = "device/arp/"
 
 // 查询列表
 export const getAllDeiveApi = async (params) => {
@@ -37,6 +38,10 @@ export const getAllSnmpApi = async (params) => {
     return await instance.get(snmpApi, { params })
 }
 
+export const getAllArpApi = async (params) => {
+    return await instance.get(arpApi, { params })
+}
+
 // 查询单个
 export const getOneDeiveApi = async (id) => {
     return await instance.get(`${infoApi}${id}/`)
@@ -64,6 +69,10 @@ export const getOneCompanyApi = async (id) => {
 
 export const getOneSnmpApi = async (id) => {
     return await instance.get(`${snmpApi}${id}/`)
+}
+
+export const getOneArpApi = async (id) => {
+    return await instance.get(`${arpApi}${id}/`)
 }
 
 // 新增
