@@ -132,6 +132,7 @@ class DeviceARP(models.Model):
     ifName = models.CharField(max_length=32, verbose_name="接口名称", db_comment="接口名称")
     ifAlias = models.CharField(max_length=32, verbose_name="接口别名", db_comment="接口别名")
     ifOperStatus = models.IntegerField(default=1, verbose_name="接口当前的状态", db_comment="接口当前的状态")
+    is_active = models.BooleanField(default=1, verbose_name="是否在线", db_comment="是否在线")
     update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间", db_comment="更新时间")
 
     def __str__(self):
