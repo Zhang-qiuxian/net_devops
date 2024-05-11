@@ -71,10 +71,14 @@ instance.interceptors.response.use(
         console.log(error);
         if (error.message.indexOf('timeout') != -1) {
             ElMessage.error('网络超时');
+            localStorage.clear()
         } else if (error.message == 'Network Error') {
             ElMessage.error('网络连接错误');
             localStorage.clear()
-        } else {
+        }else if (error.message =='Request failed with status code 404') {
+            ElMessage.error('数据不存在');
+            localStorage.clear()
+        }  else {
             // if (error.response.data) this.$message({ type: 'error', message: '接口路径找不到' });
             // else ElMessage.error('接口路径找不到');
             // else this.$message({ type: 'error', message: '接口路径找不到' });

@@ -23,19 +23,21 @@ POOL = 50
 """
 
 
-def start_snmp(device: Device, oids: list[dict] = None) -> tuple[bool, list[dict]]:
+def start_snmp(device: Device, snmps: list[dict] = None, oids: list[dict] = None) -> tuple[bool, list[dict]]:
     """
     运行snmp的启动函数
+    :param snmps: snmp模板列表
     :param device: Device模型对象
     :param oids: 需要获取的oids列表
     :return: 返回一个元组，第一个值是布尔值标识是否完成，第二个值是获取到的数据
     """
-    snmp = SnmpTemplate.objects.filter(id=device.snmp_id).first()
-    if not snmp:
+    if snmps is None or len(snmps) == 0:
+        return False, [{"success": {"message": f"{device.ip} SNMP模板未配置！"}}]
+    snmp = [s for s in snmps if s['id'] == device.snmp_id]
+    if len(snmp) == 0:
         return False, [{"success": {"message": f"{device.ip} SNMP模板关联失败！"}}]
-    s_data: dict = SnmpTemplateSerializer(snmp).data
     del_key: list[str] = ['id', 'name']
-    s_data: dict = {k: v for k, v in s_data.items() if k not in del_key}
+    s_data: dict = {k: v for k, v in snmp[0].items() if k not in del_key}
     s_data['hostname'] = device.ip
     s_data['oids'] = oids
     return run(**s_data)
@@ -52,13 +54,14 @@ model_dict: dict[str, Any] = {
 }
 
 
-def update_model(device: Device) -> tuple[bool, list[dict]]:
+def update_model(device: Device, snmps: list[dict]) -> tuple[bool, list[dict]]:
     """
     更新ip interface serial system 四个模型
     :param device: Device对象
     :return: 返回完成消息
     """
-    b, datas = start_snmp(device=device)
+
+    b, datas = start_snmp(device=device, snmps=snmps, oids=None)
     if not b:
         return b, datas
     for data in datas:
@@ -70,14 +73,14 @@ def update_model(device: Device) -> tuple[bool, list[dict]]:
             else:
                 objs: list[Model] = [obj(**d, device_id=device.device_id, name=device.name, ip=device.ip) for d in
                                      value]
-            obj.objects.bulk_create(objs=objs)
+            obj.objects.bulk_create(objs=objs, batch_size=2000)
         device.is_sync = True
         device.save()
     return True, [{"success": {"message": f"{device.ip} 更新完成！"}}]
 
 
 @shared_task
-def start_sync(*args, **kwargs) -> Task:
+def start_sync(*args, **kwargs) -> Task | dict:
     """
     同步ip interface serial system
     :param args:
@@ -87,9 +90,11 @@ def start_sync(*args, **kwargs) -> Task:
     d_s: QuerySet[Device] = Device.objects.filter(is_sync=False).all()
     if len(d_s) == 0:
         return {"success": True, "message": "所有设备都已同步！"}
-
+    snmp = SnmpTemplate.objects.all()
+    s_data: dict = SnmpTemplateSerializer(snmp, many=True).data
     with ThreadPoolExecutor(max_workers=POOL) as executor:
-        res: Iterator[Future] = as_completed([executor.submit(update_model, device=d) for d in d_s])
+        res: Iterator[Future] = as_completed(
+            [executor.submit(update_model, **{"device": d, "snmps": s_data}) for d in d_s])
         response = [i.result() for i in res]
         error: int = 0
         success: int = 0
@@ -102,7 +107,7 @@ def start_sync(*args, **kwargs) -> Task:
                 success += 1
                 success_list.append(m)
         CronJobSyncLog.objects.create(job="同步基础信息", data=success_list)
-        return {"error": f"失败了{error}台", "success": f"成功了{success}台"}
+        return {"success": True, "message": f"成功了{success}台,失败了{error}台"}
 
 
 """
@@ -110,7 +115,7 @@ def start_sync(*args, **kwargs) -> Task:
 """
 
 
-def update_arp(device: Device) -> tuple[bool, list[dict]]:
+def update_arp(device: Device, snmps: list[dict]) -> tuple[bool, list[dict]]:
     """
     更新arp的启动函数
     :param device:
@@ -125,8 +130,8 @@ def update_arp(device: Device) -> tuple[bool, list[dict]]:
     'name': 'test'
     }]
     """
-    b, datas = start_snmp(device=device, oids=arp_oids)
-    datas[0].update({"ip": device.ip, "device_id": device.device_id, "name": device.name})
+    b, datas = start_snmp(device=device, snmps=snmps, oids=arp_oids)
+    datas[0].update({"ip": device.ip, "device_id": device.device_id.__str__(), "name": device.name})
     return b, datas
 
 
@@ -134,64 +139,49 @@ def bulk_create_arp(objs: list[DeviceARP]) -> None:
     DeviceARP.objects.bulk_create(objs)
 
 
-def bulk_update_arp(objs: list[DeviceARP]) -> None:
-    fields: list[str] = ['atPhysAddress', 'atNetAddress', 'update_time']
+def bulk_update_arp(objs: list[DeviceARP], fields: list[str]) -> None:
     DeviceARP.objects.bulk_update(objs=objs, fields=fields)
 
 
-def handle_arp(new_datas: list[dict], queryset: list[DeviceARP]) -> None:
-    error_list: list[dict] = []
-    success_list: list[dict] = []
-    update_interface_list: list[DeviceARP] = []
-    update_mac_list: list[DeviceARP] = []
-    update_active_list: list[DeviceARP] = []
-    create_list: list[DeviceARP] = []
-
-    arps: list[dict] | None = new_datas[0].get('arp', None)
-    if arps is None or len(arps) == 0:
-        error_list.append(new_datas[0])
-        return
-    ip: str = arps[0].get('ip')
-    device_id: str = arps[0].get('device_id')
-    name: str = arps[0].get('name')
-    for q in queryset:
-        for i, a in enumerate(arps):
-            if q.atNetAddress == a['atNetAddress'] and q.atPhysAddress == a['atPhysAddress']:
-                q.atIfIndex = a['atIfIndex']
-                q.ifName = a['ifName']
-                q.ifAlias = a['ifAlias']
-                q.ifOperStatus = a['ifOperStatus']
-                q.is_active = True
-                q.update_time = datetime.now()
-                update_interface_list.append(q)
-                arps.pop(i)
-            elif q.atNetAddress == a['atNetAddress'] and q.atPhysAddress != a['atPhysAddress']:
-                q.atIfIndex = a['atIfIndex']
-                q.ifName = a['ifName']
-                q.ifAlias = a['ifAlias']
-                q.atPhysAddress = a['atPhysAddress']
-                q.ifOperStatus = a['ifOperStatus']
-                q.is_active = True
-                q.update_time = datetime.now()
-                update_mac_list.append(q)
-                arps.pop(i)
-            else:
-                update_active_list.append(q)
-                arps.pop(i)
-    if len(arps) > 0:
-        create_list = [DeviceARP(**a, ip=ip, name=name, device_id=device_id) for a in arps]
+# def handel_arp(datas: list[dict], queryset: list[DeviceARP], update_models: list[DeviceARP],
+#                update_status: list[DeviceARP], create_models: list[dict]):
+#     new_datas: list[dict] = datas
+#     for q in queryset:
+#         for di, a in enumerate(new_datas):
+#             if q.atNetAddress == a['atNetAddress']:
+#                 q.atPhysAddress = a['atPhysAddress']
+#                 q.atIfIndex = a['atIfIndex']
+#                 q.ifName = a['ifName']
+#                 q.ifAlias = a['ifAlias']
+#                 q.ifOperStatus = a['ifOperStatus']
+#                 q.is_active = True
+#                 q.update_time = datetime.now()
+#                 new_datas.pop(di)
+#                 update_models.append(q)
+#             else:
+#                 q.is_active = False
+#                 q.update_time = datetime.now()
+#                 update_status.append(q)
+#     if len(new_datas) > 0:
+#         create_models += new_datas
 
 
 @shared_task
-def start_sync_arp(*args, **kwargs) -> Task:
+def start_sync_arp(*args, **kwargs) -> Task | dict:
     d_q: QuerySet[Device] = Device.objects.filter(is_sync=True).all()
     a_q: QuerySet[DeviceARP] = DeviceARP.objects.all()
+    snmp = SnmpTemplate.objects.all()
+    s_data: dict = SnmpTemplateSerializer(snmp, many=True).data
     with ThreadPoolExecutor(max_workers=POOL) as executor:
-        res: Iterator[Future] = as_completed([executor.submit(update_arp, device=d) for d in d_q])
+        res: Iterator[Future] = as_completed(
+            [executor.submit(update_arp, **{"device": d, "snmps": s_data}) for d in d_q])
         response: list[tuple] = [i.result() for i in res]
     fault_list: list[dict] = []
     error_list: list[dict] = []
     success_list: list[dict] = []
+    update_models: list[DeviceARP] = []
+    update_status: list[DeviceARP] = []
+    create_models: list[dict] = []
     for res in response:
         b, datas = res
         if not b:
@@ -210,19 +200,39 @@ def start_sync_arp(*args, **kwargs) -> Task:
                     bulk_create_arp(objs=objs)
                     success_list.append(datas)
                 else:
-                    # is_exist_ip: list[str] = [i.ip for i in aq]
-                    # new_ip_obj: list[DeviceARP] = []
-                    # is_exist_obj: list[DeviceARP] = []
-                    # for a_obj in aq:
-                    #     if a_obj.ip in is_exist_ip:
-                    #         is_exist_obj.append(DeviceARP(**a_i))
-                    #     else:
-                    #         new_ip_obj.append(DeviceARP(**a_i))
-                    # bulk_create_arp(objs=new_ip_obj)
-                    # bulk_update_arp(objs=is_exist_obj)
-                    # success_list.append(datas)
-                    pass
-    return {"success": success_list, "fault_list": fault_list, "error_list": error_list}
+                    for q in aq:
+                        for di, a in enumerate(arp_list):
+                            if q.atNetAddress == a['atNetAddress']:
+                                q.atPhysAddress = a['atPhysAddress']
+                                q.atIfIndex = a['atIfIndex']
+                                q.ifName = a['ifName']
+                                q.ifAlias = a['ifAlias']
+                                q.ifOperStatus = a['ifOperStatus']
+                                q.is_active = True
+                                q.update_time = datetime.now()
+                                arp_list.pop(di)
+                                update_models.append(q)
+                            else:
+                                q.is_active = False
+                                q.update_time = datetime.now()
+                                update_status.append(q)
+                    if len(arp_list) > 0:
+                        create_models = arp_list
+                    if len(update_models) > 0:
+                        fields: list[str] = ['atIfIndex', 'atPhysAddress', 'atNetAddress', 'ifName', 'ifAlias',
+                                             'ifOperStatus', 'is_active', 'update_time']
+                        bulk_update_arp(objs=update_models, fields=fields)
+                    if len(update_status) > 0:
+                        fields: list[str] = ['is_active', 'update_time']
+                        bulk_update_arp(objs=update_status, fields=fields)
+                    if len(create_models) > 0:
+                        objs: list[DeviceARP] = [DeviceARP(**a, device_id=device_id, name=name, ip=ip) for a in
+                                                 create_models]
+                        bulk_create_arp(objs=objs)
+                    success_list.append(datas)
+        CronJobSyncLog.objects.create(job="更新ARP", data=success_list)
+    return {"success": True,
+            "message": f"成功了{len(success_list)}台,失败了{len(error_list)}台,未获取到{len(fault_list)}台"}
 
 
 if __name__ == '__main__':

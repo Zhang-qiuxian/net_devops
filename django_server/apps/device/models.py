@@ -14,7 +14,7 @@ class Device(models.Model):
     hostname = models.CharField(unique=True, max_length=32, verbose_name="主机名", db_comment="主机名")
     ip = models.GenericIPAddressField(unique=True, verbose_name="设备ip", db_comment="设备ip")
     login = models.CharField(max_length=32, verbose_name="登录方式", db_comment="登录方式")
-    url = models.CharField(default='-', max_length=128, blank=True, null=True, verbose_name="网址", db_comment="网址")
+    url = models.CharField(default='-', max_length=255, blank=True, null=True, verbose_name="网址", db_comment="网址")
     username = models.CharField(max_length=32, verbose_name="账号", db_comment="账号")
     password = models.CharField(max_length=64, verbose_name="密码", db_comment="密码")
     remark = models.TextField(default='-', blank=True, null=True, verbose_name="备注", db_comment="备注")
@@ -153,9 +153,9 @@ class DeviceSystem(models.Model):
     device_id = models.UUIDField(editable=False, verbose_name="设备id", db_comment="设备id")
     name = models.CharField(max_length=32, verbose_name="设备名称", db_comment="设备名称")
     ip = models.GenericIPAddressField(verbose_name="设备ip", db_comment="设备ip")
-    sysDescr = models.CharField(max_length=128, verbose_name="系统的文字描述", db_comment="系统的文字描述")
+    sysDescr = models.TextField( verbose_name="系统的文字描述", db_comment="系统的文字描述")
     sysUpTime = models.CharField(max_length=32, verbose_name="运行的时间", db_comment="运行的时间")
-    sysName = models.CharField(max_length=128, verbose_name="hostname", db_comment="hostname")
+    sysName = models.CharField(max_length=255, verbose_name="hostname", db_comment="hostname")
 
     def __str__(self):
         return self.sysName
