@@ -1,6 +1,6 @@
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'dj_db_conn_pool.backends.postgresql',
         'NAME': 'net_devops',
         'USER': 'zhangqiuxian',
         'PASSWORD': 'Admin@1234',
