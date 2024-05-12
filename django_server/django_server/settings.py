@@ -16,7 +16,7 @@ from .config.log import *
 from .config.drf import *
 from .config.celery_settings import *
 from .config.cors import *
-from .config.db import *
+from .config.db import DATABASES
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'django_server.wsgi.application'
 #         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
-
+# DATABASES = DATABASES
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
@@ -133,7 +133,6 @@ MEDIA_ROOT = BASE_DIR.joinpath("media")
 UPLOAD_PATH = 'upload/'
 # 访问媒体文件的路由
 MEDIA_URL = '/media/'
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

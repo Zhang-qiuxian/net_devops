@@ -20,6 +20,12 @@
                             <el-tag type="danger" v-else>未启用</el-tag>
                         </template>
                     </el-table-column>
+                    <el-table-column label="IP在线状态" prop="is_active" align="center">
+                        <template #default="scope">
+                            <el-tag type="success" v-if="scope.row.is_active == true">在线</el-tag>
+                            <el-tag type="danger" v-else>离线</el-tag>
+                        </template>
+                    </el-table-column>
                     <el-table-column label="更新时间" prop="update_time" align="center">
                     </el-table-column>
                 </el-table>

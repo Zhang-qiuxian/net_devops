@@ -1,19 +1,17 @@
-from typing import Callable, Iterator
+from typing import Callable, Iterator, Any
 from concurrent.futures import ThreadPoolExecutor, as_completed, Future
 
 ThreadPool: int = 50
 
 
-def start_thread(data: list[dict]) -> str:
+def start_thread(fn: Callable, data: list[Any], /, *args, **kwargs) -> list[Any]:
     """
-    开启线程池函数
-    :param func:需要多线程的函数
-    :param data:传递的参数
+    开启线程池函数，第一个是需要开启线程池的函数，其它参数按位置传参
+    :param fn: 运行的函数
+    :param data:需要开启线程池的列表
     :return:
     """
     with ThreadPoolExecutor(max_workers=ThreadPool) as p:
-        res: Iterator[Future] = as_completed([p.submit(item['func'], **item['kwargs']) for item in data])
-        response_data = [i.result() for i in res]
+        res: Iterator[Future] = as_completed([p.submit(__fn=fn, *args, *kwargs) for item in data])
+        response_data = as_completed([i.result() for i in res])
         return response_data
-
-

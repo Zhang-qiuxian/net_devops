@@ -56,9 +56,6 @@ class SnmpRunner:
             setattr(self, keyword, value)
 
 
-# scan_list: list[str] = ['ip', 'interface', 'system', 'serial']
-
-
 def run(*args, **kwargs) -> tuple[bool, list[dict[str, list | str]]]:
     result: list[dict] = []
     oids = kwargs.get('oids', None)
@@ -97,10 +94,10 @@ if __name__ == '__main__':
     # s.run()
     for i in range(3):
         t1 = time.perf_counter()
-        temp: dict = {'version': 2, 'community': 'zwy_123', 'security_username': 'user', 'auth_password': 'pass',
+        temp: dict = {'version': 2, 'community': 'admin1234', 'security_username': 'user', 'auth_password': 'pass',
                       'auth_protocol': 'MD5', 'security_level': 'noAuthNoPriv', 'privacy_protocol': 'DES',
-                      'privacy_password': 'otherPass', 'context': 'context', 'hostname': '10.254.11.249'}
-        d,r = run(**temp, oids=arp_oids)
+                      'privacy_password': 'otherPass', 'context': 'context', 'hostname': '10.10.10.1'}
+        d, r = run(**temp, oids=arp_oids)
         print(r)
         print(time.perf_counter() - t1)
         time.sleep(3)

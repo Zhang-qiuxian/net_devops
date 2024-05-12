@@ -82,6 +82,7 @@ class DeviceInterface(models.Model):
     ifName = models.CharField(max_length=128, verbose_name="接口名", db_comment="接口名")
     ifAlias = models.CharField(max_length=128, verbose_name="接口别名", db_comment="接口别名")
     ifHighSpeed = models.IntegerField(verbose_name="接口当前带宽", db_comment="接口当前带宽")
+    update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间", db_comment="更新时间")
 
     def __str__(self):
         return self.ifDescr
@@ -107,6 +108,7 @@ class DeviceIP(models.Model):
     ifName = models.CharField(max_length=128, verbose_name="接口名", db_comment="接口名")
     ifAlias = models.CharField(max_length=128, verbose_name="接口别名", db_comment="接口别名")
     ifOperStatus = models.IntegerField(default=1, verbose_name="接口当前的状态", db_comment="接口当前的状态")
+    update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间", db_comment="更新时间")
 
     def __str__(self):
         return self.ipAdEntAddr
@@ -156,6 +158,7 @@ class DeviceSystem(models.Model):
     sysDescr = models.TextField(verbose_name="系统的文字描述", db_comment="系统的文字描述")
     sysUpTime = models.CharField(max_length=128, verbose_name="运行的时间", db_comment="运行的时间")
     sysName = models.CharField(max_length=255, verbose_name="hostname", db_comment="hostname")
+    update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间", db_comment="更新时间")
 
     def __str__(self):
         return self.sysName
@@ -180,6 +183,7 @@ class DeviceSerial(models.Model):
     entPhysicalSerialNum = models.CharField(max_length=128, verbose_name="序列号", db_comment="序列号")
     entPhysicalSoftwareRev = models.CharField(max_length=128, verbose_name="软件版本号", db_comment="软件版本号")
     entPhysicalModelName = models.CharField(max_length=128, verbose_name="模型名称", db_comment="模型名称")
+    update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间", db_comment="更新时间")
 
     def __str__(self):
         return self.entPhysicalName
