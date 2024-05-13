@@ -6,7 +6,6 @@
             </div>
             <div class="from-button">
                 <el-button type="primary" @click="dialogUploadVisible = true">批量导入设备</el-button>
-                <!-- <el-button type="primary" @click="importExcel('device/info/import_excel/')">批量导入设备</el-button> -->
             </div>
             <div class="from-button">
                 <el-button type="success" @click="drawer = true">添加设备</el-button>
@@ -14,15 +13,17 @@
             <div class="from-button">
                 <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
             </div>
-            <!-- <el-button type="primary" @click="importExcel('device/info/import_excel/')">批量导入设备</el-button> -->
-            <!-- <el-button type="success" @click="drawer = true">添加设备</el-button> -->
+            <div class="from-button">
+                <el-button type="info" @click="deleteSelect">删除设备</el-button>
+            </div>
 
         </div>
         <!-- 表格 -->
         <div class="table-container">
             <el-empty description="没有数据，请先添加设备或刷新页面" v-if="!isData" style="height: 100%;" />
             <el-scrollbar v-else>
-                <el-table :data="device_info.data" border table-layout="auto" style="width: 100%">
+                <el-table :data="device_info.data" border table-layout="auto" style="width: 100%" ref="multipleTableRef"
+                    @selection-change="handleSelectionChange">
                     <el-table-column type="selection" width="50" />
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
                     </el-table-column>
@@ -346,12 +347,7 @@ const editDevice = async (formEl) => {
     })
 }
 
-// const handleEdit = (index, row) => {
-//     console.log(index, row)
-// }
-// const handleDelete = (index, row) => {
-//     console.log(index, row)
-// }
+
 // 处理分页
 const handleSizeChange = (val) => {
     device_info.page_size = val
@@ -389,8 +385,36 @@ const handleClose = (done) => {
 function cancelClick() {
     drawer.value = false
 }
+const multipleTableRef = ref()
+const multipleSelection = ref([])
+const deleteSelect = () => {
+    if (multipleSelection.value.length == 0) {
+        ElMessage.error('请选择要删除的设备')
+        return
+    }
+    console.log(multipleSelection.value);
+    ElMessageBox.confirm('此操作将永久删除该设备, 是否继续?')
+        .then(() => {
+            let device_ids = []
+            multipleSelection.value.forEach((item) => {
+                device_ids.push(item.device_id)
+            })
+            console.log(device_ids);
+            stores.deleteDevice(device_ids).then((res) => {
+                console.log(res);
+                ElMessage.success('删除成功')
+                stores.getDeviceInfo()
+            }).catch(res => {
+                console.log(res);
+                ElMessage.error('删除失败')
+            }) 
+        })
+}
 
-
+const handleSelectionChange = (val) => {
+    console.log(val);
+    multipleSelection.value = val
+}
 
 onMounted(() => {
     stores.getDeviceInfo()

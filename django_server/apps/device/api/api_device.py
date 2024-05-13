@@ -13,7 +13,7 @@ from django.db.models import QuerySet, Manager, Model
 from django.http import HttpResponse
 
 from public.response import ResponseOK, ResponseError
-from public.mixins import ModelViewSet, ReadOnlyModelViewSet, ExportMixin, ExportTemplateMixin
+from public.mixins import ModelViewSet, ReadOnlyModelViewSet, ExportMixin, ExportTemplateMixin, CreateModelMixin
 
 from apps.device.models import Device, SnmpTemplate, DeviceCompany, DeviceSystem, DeviceIP, DeviceSerial, \
     DeviceInterface, DeviceARP
@@ -124,7 +124,7 @@ class DeviceARPViewSet(ExportMixin, ReadOnlyModelViewSet):
         return ResponseOK(message="查询成功！", data=serializer.data)
 
 
-class DeviceViewSet(ExportMixin, ExportTemplateMixin, ModelViewSet):
+class DeviceViewSet(ExportMixin, ExportTemplateMixin, ReadOnlyModelViewSet, CreateModelMixin):
     queryset: QuerySet[Device] = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
     serializer_detail = DeviceDetailSerializer
@@ -170,6 +170,22 @@ class DeviceViewSet(ExportMixin, ExportTemplateMixin, ModelViewSet):
             instance._prefetched_objects_cache = {}
 
         return ResponseOK(message="更新成功!", data=serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def delete(self, request: Request, *args, **kwargs):
+        """
+       根据device_id列表删除数据
+       """
+        data: dict = request.data
+        device_ids: list = data.get('device_ids', [])
+        if len(device_ids) == 0:
+            return ResponseError(message="请传入设备id")
+        instance = self.queryset.filter(device_id__in=device_ids)
+        instance.delete()
+        delete_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface,DeviceARP]
+        for model in delete_models:
+            model.objects.filter(device_id__in=device_ids).delete()
+        return ResponseOK(message="删除成功!")
 
     @action(methods=['post'], detail=False)
     def import_excel(self, request: Request, *args, **kwargs) -> Response:
