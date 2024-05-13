@@ -96,14 +96,38 @@ const cronRouters = [
     redirect: Layout,
     children: [
       {
-        path: 'cron-info',
-        name: 'cronInfo',
-        component: () => import('@/views/cron/info.vue'),
+        path: 'cron-periodic',
+        name: 'cronPeriodic',
+        component: () => import('@/views/cron/periodic.vue'),
         meta: {
           title: '任务管理',
-          // icon: 'Platform'
         },
       },
+      {
+        path: 'cron-clocked',
+        name: 'cronClocked',
+        component: () => import('@/views/cron/clocked.vue'),
+        meta: {
+          title: '定时任务',
+        },
+      },
+      {
+        path: 'cron-interval',
+        name: 'cronInterval',
+        component: () => import('@/views/cron/interval.vue'),
+        meta: {
+          title: '周期任务',
+        },
+      },
+      {
+        path: 'cron-crontab',
+        name: 'cronCrontab',
+        component: () => import('@/views/cron/crontab.vue'),
+        meta: {
+          title: 'crontab计划任务',
+        },
+      },
+      
     ]
   }
 ]

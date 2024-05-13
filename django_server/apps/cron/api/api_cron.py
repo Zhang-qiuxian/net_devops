@@ -2,7 +2,7 @@ from public.mixins import ModelViewSet
 
 from django_celery_beat.models import ClockedSchedule, CrontabSchedule, IntervalSchedule, PeriodicTask, PeriodicTasks, \
     SolarSchedule
-from apps.cron.serial import CrontabScheduleSerializer, IntervalScheduleSerializer, SolarScheduleSerializer, \
+from apps.cron.serial import CrontabScheduleSerializer, IntervalScheduleSerializer, \
     PeriodicTasksSerializer, ClockedScheduleSerializer, PeriodicTaskSerializer
 
 
@@ -26,11 +26,6 @@ class PeriodicTaskAPI(ModelViewSet):
     serializer_class = PeriodicTaskSerializer
 
 
-class CronSolarSchedulesAPI(ModelViewSet):
-    queryset = SolarSchedule.objects.all()
-    serializer_class = SolarScheduleSerializer
-
-
 class PeriodicTasksAPI(ModelViewSet):
     queryset = PeriodicTasks.objects.all()
     serializer_class = PeriodicTasksSerializer
@@ -39,5 +34,5 @@ class PeriodicTasksAPI(ModelViewSet):
 clock_schedule = ClockedScheduleAPI
 interval_schedule = IntervalScheduleAPI
 periodic_task = PeriodicTaskAPI
-cron_solar_schedules = CronSolarSchedulesAPI
+crontab_schedules = CrontabScheduleAPI
 periodic_tasks = PeriodicTasksAPI

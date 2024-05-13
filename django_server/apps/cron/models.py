@@ -1,4 +1,5 @@
 from django.db import models
+from django_celery_beat.models import CrontabSchedule, PeriodicTask
 
 
 # Create your models here.

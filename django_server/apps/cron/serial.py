@@ -1,7 +1,8 @@
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer,CharField
 
 from django_celery_beat.models import ClockedSchedule, CrontabSchedule, IntervalSchedule, PeriodicTask, PeriodicTasks, \
     SolarSchedule
+from timezone_field import TimeZoneField
 
 from django_celery_results.models import TaskResult, ChordCounter, GroupResult
 
@@ -13,6 +14,7 @@ class ClockedScheduleSerializer(ModelSerializer):
 
 
 class CrontabScheduleSerializer(ModelSerializer):
+    timezone = CharField()
     class Meta:
         model = CrontabSchedule
         fields = '__all__'
