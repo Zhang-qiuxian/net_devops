@@ -14,7 +14,7 @@
                 <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
             </div>
             <div class="from-button">
-                <el-button type="info" @click="deleteSelect">删除设备</el-button>
+                <el-button type="danger" @click="deleteSelect">删除设备</el-button>
             </div>
 
         </div>
@@ -393,7 +393,7 @@ const deleteSelect = () => {
         return
     }
     console.log(multipleSelection.value);
-    ElMessageBox.confirm('此操作将永久删除该设备, 是否继续?')
+    ElMessageBox.confirm('此操作将永久删除该设备以及SNMP同步的信息, 是否继续?')
         .then(() => {
             let device_ids = []
             multipleSelection.value.forEach((item) => {
@@ -401,18 +401,15 @@ const deleteSelect = () => {
             })
             console.log(device_ids);
             stores.deleteDevice(device_ids).then((res) => {
-                console.log(res);
                 ElMessage.success('删除成功')
-                stores.getDeviceInfo()
+                stores.refreshAll()
             }).catch(res => {
-                console.log(res);
                 ElMessage.error('删除失败')
-            }) 
+            })
         })
 }
 
 const handleSelectionChange = (val) => {
-    console.log(val);
     multipleSelection.value = val
 }
 

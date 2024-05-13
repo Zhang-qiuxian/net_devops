@@ -203,7 +203,7 @@ class DeviceViewSet(ExportMixin, ExportTemplateMixin, ReadOnlyModelViewSet, Crea
             case 'xls':
                 df = pandas.read_excel(io_file, engine='openpyxl')
             case 'csv':
-                df = pandas.read_csv(file.read())
+                df = pandas.read_csv(io_file)
         d_d: list[dict] = df.to_dict(orient='records')
         if len(d_d) == 0:
             return ResponseError(message="添加失败！请检查模板文件格式是否错误！")

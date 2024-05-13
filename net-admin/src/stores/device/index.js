@@ -174,12 +174,22 @@ export const useDeviceStore = defineStore('device', () => {
   const deleteSnmp = async (id) => deleteSnmpApi(id)
   const deleteDevice = async (data) => deleteDeiveApi({device_ids:data})
 
+  const refreshAll=()=>{
+    getDeviceInfo()
+    getInterface()
+    getIp()
+    getSystem()
+    getSerial()
+    getArp()
+  }
+
   return {
     device_info, device_snmp, device_interface, device_ip, device_system, device_serial, device_company, device_arp,
     getDeviceInfo, getSnmp, getInterface, getIp, getSystem, getSerial, getCompany, getArp,
     addSnmp, addDevice,
     updateSnmp, updateDevice,
-    deleteSnmp, deleteDevice
+    deleteSnmp, deleteDevice,
+    refreshAll
   }
 },
   {
