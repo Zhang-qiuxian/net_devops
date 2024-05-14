@@ -1,15 +1,10 @@
 <template>
     <div class="container">
-        <div class="from-container">
-            <div class="from-button">
-                <el-button type="success" @click="drawer = true">添加定时任务</el-button>
-            </div>
-        </div>
         <!-- 表格 -->
         <div class="table-container">
             <el-empty description="没有数据，请先添加定时任务" v-if="!isData" style="height: 100%;" />
             <el-scrollbar v-else>
-                <el-table :data="cron_interval.data" border table-layout="auto" style="width: 100%"
+                <el-table :data="cron_result.data" border table-layout="auto" style="width: 100%"
                     ref="multipleTableRef" @selection-change="handleSelectionChange">
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
                     </el-table-column>
@@ -35,13 +30,13 @@
         </div>
         <!-- 分页 -->
         <div class="page-container">
-            <el-pagination v-model:current-page="cron_interval.page" v-model:page-size="cron_interval.page_size"
+            <el-pagination v-model:current-page="cron_result.page" v-model:page-size="cron_result.page_size"
                 :page-sizes="[20, 40, 50, 100]" layout="total, sizes, prev, pager, next, jumper"
-                :total="cron_interval.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+                :total="cron_result.total" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
         </div>
     </div>
     <!-- 添加定时任务 -->
-    <el-drawer v-model="drawer" direction="rtl">
+    <!-- <el-drawer v-model="drawer" direction="rtl">
         <template #header>
             <h4>添加定时任务</h4>
         </template>
@@ -73,22 +68,15 @@
                 </div>
             </div>
         </template>
-    </el-drawer>
+    </el-drawer> -->
     <!-- 修改设备弹窗 -->
-    <el-dialog v-model="dialogTableVisible" title="修改定时任务信息" :width="600">
+    <!-- <el-dialog v-model="dialogTableVisible" title="修改定时任务信息" :width="600">
         <el-form ref="ruleFormRef" style="max-width: 600px" :model="editForm" :rules="rules" label-width="auto"
             status-icon>
             <el-row>
-                <el-col :span="24" v-for="(v, k) in ruleFields" :key="k">
+                <el-col :span="12" v-for="(v, k) in ruleFields" :key="k">
                     <el-form-item :label="v" :prop="k">
                         <el-input v-model="editForm[k]" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                    <el-form-item prop="period" label="单位">
-                        <el-select v-model="editForm.period">
-                            <el-option v-for="(v, k) in selectPeriod" :key="k" :label="v" :value="k" />
-                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -96,13 +84,13 @@
                 <el-col>
                     <el-form-item>
                         <el-button @click="closeClick">关闭</el-button>
-                        <el-button type="primary" @click="editInterval(ruleFormRef)">提交</el-button>
+                        <el-button type="primary" @click="editDevice(ruleFormRef)">提交</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
 
         </el-form>
-    </el-dialog>
+    </el-dialog> -->
 
 </template>
 <script setup>
@@ -113,10 +101,10 @@ import { ElLoading } from 'element-plus'
 
 
 const stores = useCrontore();
-const { cron_interval } = storeToRefs(stores);
+const { cron_result } = storeToRefs(stores);
 
 const isData = computed(() => {
-    return cron_interval.value.data.length > 0 ? true : false;
+    return cron_result.value.data.length > 0 ? true : false;
 })
 
 
@@ -129,7 +117,7 @@ const drawer = ref(false)
 const ruleFormRef = ref()
 
 const ruleForm = reactive({
-    every: 1,
+    clocked_time: 1,
     period: "minutes",
 
 })
@@ -152,7 +140,7 @@ const selectPeriod = ref({
 })
 
 const rules = reactive({
-    every: [{ required: true, message: '必填项', trigger: 'blur' },],
+    clocked_time: [{ required: true, message: '必填项', trigger: 'blur' },],
     period: [{ required: true, message: '必选项', trigger: 'blur' },],
 })
 
@@ -161,10 +149,10 @@ async function confirmClick(formEl) {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            stores.addInterval(ruleForm).then((res) => {
+            stores.addResult(ruleForm).then((res) => {
                 // console.log(res);
                 if (res) {
-                    stores.getInterval();
+                    stores.getResult();
                     ElMessage.success('添加成功')
                     ruleFormRef.value.resetFields()
                     drawer.value = false
@@ -190,16 +178,24 @@ const handleEdit = (row) => {
     console.log(row)
     dialogTableVisible.value = true
     // ruleFormRef.value.resetFields()
-    editForm.id = row.id
-    editForm.every = row.every
-    editForm.period = row.period
+    editForm.device_id = row.device_id
+    editForm.name = row.name
+    editForm.description = row.description
+    editForm.hostname = row.hostname
+    editForm.ip = row.ip
+    editForm.login = row.login
+    editForm.url = row.url
+    editForm.username = row.username
+    editForm.password = row.password
+    editForm.snmp_id = row.snmp_id
+    editForm.company_id = row.company_id
 
 }
 
 const handleDelete = (row) => {
-    stores.deleteInterval(row.id).then(() => {
+    stores.deleteResult(row.id).then(() => {
         ElMessage.success('删除成功')
-        stores.getInterval();
+        stores.getResult();
     })
 }
 const closeClick = () => {
@@ -207,12 +203,12 @@ const closeClick = () => {
     dialogTableVisible.value = false
 }
 
-const editInterval = async (formEl) => {
+const editResult = async (formEl) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            stores.updateInterval(editForm.id, editForm).then(() => {
-                stores.getInterval();
+            stores.updateResult(editForm.id, editForm).then(() => {
+                stores.getResult();
                 ElMessage.success('修改成功')
                 ruleFormRef.value.resetFields()
                 dialogTableVisible.value = false
@@ -226,13 +222,13 @@ const editInterval = async (formEl) => {
 
 // 处理分页
 const handleSizeChange = (val) => {
-    cron_interval.page_size = val
-    stores.getInterval();
+    cron_result.page_size = val
+    stores.getResult();
     // loading.close()
 }
 const handleCurrentChange = (val) => {
-    cron_interval.page = val
-    stores.getInterval();
+    cron_result.page = val
+    stores.getResult();
     // loading.close()
 }
 // 控制表格字段
@@ -256,7 +252,7 @@ function cancelClick() {
 }
 
 onMounted(() => {
-    stores.getInterval()
+    stores.getResult()
 })
 
 

@@ -7,32 +7,32 @@ from apps.cron.serial import CrontabScheduleSerializer, IntervalScheduleSerializ
 
 
 class ClockedScheduleAPI(ModelViewSet):
-    queryset = ClockedSchedule.objects.all()
+    queryset = ClockedSchedule.objects.all().order_by('id')
     serializer_class = ClockedScheduleSerializer
 
 
 class IntervalScheduleAPI(ModelViewSet):
-    queryset = IntervalSchedule.objects.all()
+    queryset = IntervalSchedule.objects.all().order_by('id')
     serializer_class = IntervalScheduleSerializer
 
 
 class CrontabScheduleAPI(ModelViewSet):
-    queryset = CrontabSchedule.objects.all()
+    queryset = CrontabSchedule.objects.all().order_by('id')
     serializer_class = CrontabScheduleSerializer
 
 
 class PeriodicTaskAPI(ModelViewSet):
-    queryset = PeriodicTask.objects.all()
+    queryset = PeriodicTask.objects.all().order_by('id')
     serializer_class = PeriodicTaskSerializer
 
 
-class PeriodicTasksAPI(ModelViewSet):
-    queryset = PeriodicTasks.objects.all()
-    serializer_class = PeriodicTasksSerializer
+# class PeriodicTasksAPI(ModelViewSet):
+#     queryset = PeriodicTasks.objects.all()
+#     serializer_class = PeriodicTasksSerializer
 
 
 clock_schedule = ClockedScheduleAPI
 interval_schedule = IntervalScheduleAPI
 periodic_task = PeriodicTaskAPI
 crontab_schedules = CrontabScheduleAPI
-periodic_tasks = PeriodicTasksAPI
+# periodic_tasks = PeriodicTasksAPI

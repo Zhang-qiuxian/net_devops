@@ -49,9 +49,9 @@ export const getCronCrontabDetailApi = async (id) => {
 }
 
 // 删除
-export const deleteCronResultApi = async (id) => {
-    return instance.delete(`${cronResult}${id}/`);
-}
+// export const deleteCronResultApi = async (id) => {
+//     return instance.delete(`${cronResult}${id}/`);
+// }
 
 export const deleteCronClockApi = async (id) => {
     return instance.delete(`${cronClock}${id}/`);
@@ -70,9 +70,9 @@ export const deleteCronCrontabApi = async (id) => {
 }
 
 // 创建
-export const createCronResultApi = async (data) => {
-    return instance.post(cronResult, data);
-}
+// export const createCronResultApi = async (data) => {
+//     return instance.post(cronResult, data);
+// }
 
 export const createCronClockApi = async (data) => {
     return instance.post(cronClock, data);
@@ -91,9 +91,9 @@ export const createCronCrontabApi = async (data) => {
 }
 
 // 更新
-export const updateCronResultApi = async (id, data) => {
-    return instance.put(`${cronResult}${id}/`, data);
-}
+// export const updateCronResultApi = async (id, data) => {
+//     return instance.put(`${cronResult}${id}/`, data);
+// }
 
 export const updateCronClockApi = async (id, data) => {
     return instance.put(`${cronClock}${id}/`, data);
