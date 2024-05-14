@@ -5,6 +5,7 @@ const cronClock = "/cron/clock/";
 const cronInterval = "/cron/interval/";
 const cronCrontab = "/cron/crontab/";
 const cronPeriodic = "/cron/periodic/";
+const cronTasks = "/cron/periodic/tasks/";
 
 // 获取列表
 export const getCronResultApi = async (params) => {
@@ -25,6 +26,10 @@ export const getCronPeriodicApi = async (params) => {
 
 export const getCronCrontabApi = async (params) => {
     return instance.get(cronCrontab, { params });
+}
+
+export const getCronTasksApi = async () => {
+    return instance.get(cronTasks);
 }
 
 // 获取详情

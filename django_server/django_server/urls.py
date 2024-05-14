@@ -32,8 +32,6 @@ from .urls_api import router, api_url
 
 class TestApiView(APIView):
     def get(self, request):
-        # Device.objects.create(ip='10.10.10.1', description='test', name='test', login='ssh', username='root',
-        #                       password='root')
         return Response({"code": 200, "message": "ok"})
 
 

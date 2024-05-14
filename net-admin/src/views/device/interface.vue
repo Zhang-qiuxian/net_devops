@@ -90,9 +90,15 @@ function confirmClick() {
             // catch error
         })
 }
+const loading = ElLoading.service({
+    lock: true,
+    text: '正在加载',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
 
 onMounted(() => {
     stores.getInterface();
+    loading.close()
 })
 
 

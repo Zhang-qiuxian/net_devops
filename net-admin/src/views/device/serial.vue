@@ -71,10 +71,14 @@ const tableTitle = {
 //     "entPhysicalModelName": "SFP-GE-SX-MM850-D"
 // }
 
-
+const loading = ElLoading.service({
+    lock: true,
+    text: '正在加载',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
 onMounted(() => {
     stores.getSerial();
-    stores.getSerial().then(res => { console.log(res) });
+    loading.close()
 })
 
 

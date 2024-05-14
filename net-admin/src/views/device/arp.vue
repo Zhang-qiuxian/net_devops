@@ -89,8 +89,16 @@ const tableTitle = {
 //     "update_time": "2024-05-10 14:56:37"
 // }
 
+const loading = ElLoading.service({
+    lock: true,
+    text: '正在加载',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
+
+
 onMounted(() => {
     stores.getArp();
+    loading.close();
 })
 
 

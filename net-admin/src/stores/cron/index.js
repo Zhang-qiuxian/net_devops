@@ -27,6 +27,7 @@ import {
     updateCronIntervalApi,
     updateCronPeriodicApi,
     updateCronCrontabApi,
+    getCronTasksApi
 
 } from '@/api/cron/index.js'
 
@@ -58,10 +59,7 @@ export const useCrontore = defineStore('cron', () => {
         page_size: 20
     })
     const cron_tasks = ref({
-        total: 0,
-        data: [],
-        page: 1,
-        page_size: 20
+        tasks: [],
     })
     const cron_result = ref({
         total: 0,
@@ -122,6 +120,11 @@ export const useCrontore = defineStore('cron', () => {
         })
     }
 
+    const getTasks = async () => {
+        return await getCronTasksApi().then(res => {
+            cron_tasks.value.tasks = res.tasks
+        })
+    }
 
     // 新增
     const addClocked = async (data) => createCronClockApi(data)
@@ -141,8 +144,13 @@ export const useCrontore = defineStore('cron', () => {
     const deleteInterval = async (id) => deleteCronIntervalApi(id)
     const deletePeriodic = async (id) => deleteCronPeriodicApi(id)
 
-    // const refreshAll = () => {
-    // }
+    const refreshAll = () => {
+        getClocked()
+        getInterval()
+        getCrontab()
+        getPeriodic()
+        getTasks()
+    }
 
     return {
         cron_clocked, cron_crontab, cron_interval, cron_periodic, cron_tasks, cron_result,
@@ -150,7 +158,7 @@ export const useCrontore = defineStore('cron', () => {
         addClocked, addCrontab, addInterval, addPeriodic,
         updateClocked, updateCrontab, updateInterval, updatePeriodic,
         deleteClocked, deleteCrontab, deleteInterval, deletePeriodic,
-        // refreshAll
+        getTasks,refreshAll
     }
 },
     {

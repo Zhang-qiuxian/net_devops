@@ -2,19 +2,16 @@
     <div class="container">
         <div class="from-container">
             <div class="from-button">
-                <el-button @click="exportExcel('device/info/export_excel_templates/')">导出设备模板</el-button>
+                <el-button type="success">启动任务</el-button>
             </div>
             <div class="from-button">
-                <el-button type="primary" @click="dialogUploadVisible = true">批量导入设备</el-button>
+                <el-button type="warning">停止任务</el-button>
             </div>
             <div class="from-button">
-                <el-button type="success" @click="drawer = true">添加设备</el-button>
+                <el-button type="primary" @click="drawer = true">添加任务</el-button>
             </div>
             <div class="from-button">
-                <el-button type="info" @click="exportExcel('device/info/export_excel/')">导出设备</el-button>
-            </div>
-            <div class="from-button">
-                <el-button type="danger" @click="deleteSelect">删除设备</el-button>
+                <el-button type="danger" @click="deleteSelect">删除任务</el-button>
             </div>
 
         </div>
@@ -44,7 +41,7 @@
                             <el-button size="small" @click="handleEdit(scope.row)">
                                 <span>编辑</span>
                             </el-button>
-                            <el-button size="small" type="danger" @click="handleDelete(scope.$index, scope.row)">
+                            <el-button size="small" type="danger" @click="handleInfo(scope.row)">
                                 <span>详情</span>
                             </el-button>
                         </template>
@@ -78,24 +75,7 @@
                                     <el-input v-model="ruleForm[k]" />
                                 </el-form-item>
                             </el-col>
-                            <el-col :span="12">
-                                <el-form-item prop="snmp_id" label="SNMP模板">
-                                    <el-select v-model="ruleForm.snmp_id">
-                                        <el-option v-for="item in snmpOptions" :key="item.value" :label="item.label"
-                                            :value="item.value" />
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
-                            <el-col :span="12">
-                                <el-form-item prop="company_id" label="设备厂家">
-                                    <el-select v-model="ruleForm.company_id">
-                                        <el-option v-for="item in companyOptions" :key="item.value" :label="item.label"
-                                            :value="item.value" />
-                                    </el-select>
-                                </el-form-item>
-                            </el-col>
                         </el-row>
-
                         <el-form-item>
                             <el-button @click="cancelClick">关闭</el-button>
                             <el-button type="primary" @click="confirmClick(ruleFormRef)">提交</el-button>
@@ -110,25 +90,16 @@
         <el-form ref="ruleFormRef" style="max-width: 600px" :model="editForm" :rules="rules" label-width="auto"
             status-icon>
             <el-row>
+                <el-col :span="12">
+                    <el-form-item prop="task" label="任务">
+                        <el-select v-model="editForm.task">
+                            <el-option v-for="item in tasksOptions" :key="item" :label="item" :value="item" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
                 <el-col :span="12" v-for="(v, k) in ruleFields" :key="k">
                     <el-form-item :label="v" :prop="k">
                         <el-input v-model="editForm[k]" />
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item prop="snmp_id" label="SNMP模板">
-                        <el-select v-model="editForm.snmp_id">
-                            <el-option v-for="item in snmpOptions" :key="item.value" :label="item.label"
-                                :value="item.value" />
-                        </el-select>
-                    </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                    <el-form-item prop="company_id" label="设备厂家">
-                        <el-select v-model="editForm.company_id">
-                            <el-option v-for="item in companyOptions" :key="item.value" :label="item.label"
-                                :value="item.value" />
-                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -136,14 +107,25 @@
                 <el-col>
                     <el-form-item>
                         <el-button @click="closeClick">关闭</el-button>
-                        <el-button type="primary" @click="editDevice(ruleFormRef)">提交</el-button>
+                        <el-button type="primary" @click="editPeriodic(ruleFormRef)">提交</el-button>
                     </el-form-item>
                 </el-col>
             </el-row>
 
         </el-form>
     </el-dialog>
-
+    <!-- 详细信息弹窗 -->
+    <el-dialog v-model="centerDialogVisible" title="Warning" width="500" align-center>
+        <span>Open the dialog from the center from the screen</span>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="centerDialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="centerDialogVisible = false">
+                    Confirm
+                </el-button>
+            </div>
+        </template>
+    </el-dialog>
 </template>
 <script setup>
 import { useCrontore } from '@/stores/cron/index.js';
@@ -160,39 +142,7 @@ const isData = computed(() => {
     return cron_periodic.value.data.length > 0 ? true : false;
 })
 
-// 上传文件
-const dialogUploadVisible = ref(false)
 
-const uploadUrl = ref(import.meta.env.VITE_API_URL + "device/info/import_excel/")
-
-const handleUpload = (response, files, uploadFiles) => {
-    if (response.code == 200) {
-        ElMessage.success(response.message)
-        dialogUploadVisible.value = false
-        stores.getPeriodic()
-    } else {
-        ElMessage.error(response.message)
-        dialogUploadVisible.value = false
-        for (let item of response.data) {
-            setTimeout(() => {
-                ElNotification({
-                    title: '导入失败',
-                    message: `
-                    name: ${item.name}
-                    ip: ${item.ip}`,
-                    type: 'error',
-                    duration: 0
-                })
-            }, 500)
-        }
-    }
-    //   ElMessage.warning(
-    //     `The limit is 3, you selected ${files.length} files this time, add up to ${
-    //       files.length + uploadFiles.length
-    //     } totally`
-    //   )
-    console.log(response, files, uploadFiles);
-}
 
 // 抽屉
 const drawer = ref(false)
@@ -201,41 +151,44 @@ const drawer = ref(false)
 const ruleFormRef = ref()
 
 const ruleForm = reactive({
-    name: "",
-    description: "",
-    hostname: "",
-    ip: "",
-    login: "ssh",
-    url: "-",
-    username: "root",
-    password: "root",
-    snmp_id: 1,
-    company_id: 1,
+    "name": "-",
+    "description": "-",
+    "task": "任务",
+    "args": "[]",
+    "kwargs": "{}",
+    "queue": null,
+    "exchange": null,
+    "routing_key": null,
+    "headers": "{}",
+    "priority": 255,
+    "expires": "",
+    "expire_seconds": 1,
+    "one_off": false,
+    "start_time": "",
+    "enabled": true,
+    "interval": null,
+    "crontab": null,
+    "solar": null,
+    "clocked": null
 })
 
 const editForm = reactive({})
 
 // 控制表单渲染
 const ruleFields = {
-    "id": "ID",
+    // "id": "ID",
     "name": "任务名称",
     "description": "任务描述",
-    "task": "任务函数",
-    "args": "args参数",
-    "kwargs": "kwargs参数",
-    // "queue": null,
-    // "exchange": null,
-    // "routing_key": null,
+    // "task": "任务",
+    "args": "位置参数",
+    "kwargs": "关键字参数",
     "headers": "请求头",
     "priority": "优先级",
-    "expires": "到期",
-    "expire_seconds": "到期时间",
+    "expires": "过期时间",
+    "expire_seconds": "过期时间间隔",
     "one_off": "一次性任务",
     "start_time": "开始运行时间",
     "enabled": "任务状态",
-    "last_run_at": "最后运行时间",
-    "total_run_count": "任务运行次数",
-    "date_changed": "最后改变时间",
     "interval": "间隔任务",
     "crontab": "crontab任务",
     // "solar": null,
@@ -245,17 +198,8 @@ const ruleFields = {
 
 
 
-const snmpOptions = computed(() => {
-    return device_snmp.value.data.map((item) => {
-        return { label: item.name, value: item.id }
-    })
-})
+const tasksOptions = computed(() => cron_tasks.value.tasks)
 
-const companyOptions = computed(() => {
-    return device_company.value.data.map((item) => {
-        return { label: item.name, value: item.id }
-    })
-})
 
 
 
@@ -277,7 +221,7 @@ async function confirmClick(formEl) {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            stores.addDevice(ruleForm).then((res) => {
+            stores.addPeriodic(ruleForm).then((res) => {
                 // console.log(res);
                 if (res) {
                     stores.getPeriodic();
@@ -301,40 +245,48 @@ async function confirmClick(formEl) {
 
 // 修改表单
 const dialogTableVisible = ref(false)
+const centerDialogVisible = ref(false)
 
 const handleEdit = (row) => {
     console.log(row)
     dialogTableVisible.value = true
     // ruleFormRef.value.resetFields()
-    editForm.device_id = row.device_id
+    editForm.id = row.id
     editForm.name = row.name
     editForm.description = row.description
-    editForm.hostname = row.hostname
-    editForm.ip = row.ip
-    editForm.login = row.login
-    editForm.url = row.url
-    editForm.username = row.username
-    editForm.password = row.password
-    editForm.snmp_id = row.snmp_id
-    editForm.company_id = row.company_id
+    editForm.task = row.task
+    editForm.args = row.args
+    editForm.kwargs = row.kwargs
+    editForm.queue = row.queue
+    editForm.exchange = row.exchange
+    editForm.routing_key = row.routing_key
+    editForm.headers = row.headers
+    editForm.priority = row.priority
+    editForm.expires = row.expires
+    editForm.expire_seconds = row.expire_seconds
+    editForm.one_off = row.one_off
+    editForm.start_time = row.start_time
+    editForm.enabled = row.enabled
+    editForm.interval = row.interval
+    editForm.crontab = row.crontab
+    editForm.solar = row.solar
+    editForm.clocked = row.clocked
 
 }
-const handleDelete = (row) => {
-    stores.deleteDevice(row.id).then(() => {
-        ElMessage.success('删除成功')
-        stores.getPeriodic();
-    })
+const handleInfo = (row) => {
+    centerDialogVisible.value = !centerDialogVisible.value
+    ElMessage.success('点到我成功')
 }
 const closeClick = () => {
     ruleFormRef.value.resetFields()
     dialogTableVisible.value = false
 }
 
-const editDevice = async (formEl) => {
+const editPeriodic = async (formEl) => {
     if (!formEl) return
     await formEl.validate((valid, fields) => {
         if (valid) {
-            stores.updateDevice(editForm.device_id, editForm).then(() => {
+            stores.updatePeriodic(editForm.id, editForm).then(() => {
                 stores.getPeriodic();
                 ElMessage.success('修改成功')
                 ruleFormRef.value.resetFields()
@@ -363,7 +315,7 @@ const tableTitle = {
     "id": "ID",
     "name": "任务名称",
     "description": "任务描述",
-    "task": "任务函数",
+    "task": "任务",
     // "args": "args参数",
     // "kwargs": "kwargs参数",
     // "queue": null,
@@ -410,36 +362,29 @@ const tableTitle = {
 //     "clocked": null
 // }
 
-const handleClose = (done) => {
-    ElMessageBox.confirm('Are you sure you want to close this?')
-        .then(() => {
-            done()
-        })
-        .catch(() => {
-            // catch error
-        })
-}
+
 function cancelClick() {
     drawer.value = false
 }
+
 const multipleTableRef = ref()
 const multipleSelection = ref([])
 const deleteSelect = () => {
     if (multipleSelection.value.length == 0) {
-        ElMessage.error('请选择要删除的设备')
+        ElMessage.error('请选择要删除的任务')
         return
     }
     console.log(multipleSelection.value);
-    ElMessageBox.confirm('此操作将永久删除该设备以及SNMP同步的信息, 是否继续?')
+    ElMessageBox.confirm('此操作将永久删除该任务, 是否继续?')
         .then(() => {
-            let device_ids = []
+            let tasks_ids = []
             multipleSelection.value.forEach((item) => {
-                device_ids.push(item.device_id)
+                tasks_ids.push(item.id)
             })
-            console.log(device_ids);
-            stores.deleteDevice(device_ids).then((res) => {
+            console.log(tasks_ids);
+            stores.deletePeriodic(tasks_ids).then((res) => {
                 ElMessage.success('删除成功')
-                stores.refreshAll()
+                stores.getResult()
             }).catch(res => {
                 ElMessage.error('删除失败')
             })
@@ -449,9 +394,15 @@ const deleteSelect = () => {
 const handleSelectionChange = (val) => {
     multipleSelection.value = val
 }
+const loading = ElLoading.service({
+    lock: true,
+    text: '正在加载',
+    background: 'rgba(0, 0, 0, 0.7)',
+})
 
 onMounted(() => {
-    stores.getPeriodic()
+    stores.refreshAll()
+    loading.close()
 })
 
 

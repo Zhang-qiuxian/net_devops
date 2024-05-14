@@ -121,7 +121,6 @@ const isData = computed(() => {
 
 
 
-
 // 抽屉
 const drawer = ref(false)
 
@@ -255,8 +254,15 @@ function cancelClick() {
     drawer.value = false
 }
 
+const loading = ElLoading.service({
+    lock: true,
+    text: '正在加载',
+    background: 'rgba(0, 0, 0, 0.7)',
+})
+
 onMounted(() => {
     stores.getInterval()
+    loading.close()
 })
 
 

@@ -79,10 +79,15 @@ const tableTitle = {
 //     "ifName": "Vlan-interface126",
 //     "ifAlias": "MAN_NEW"
 // }
-
+const loading = ElLoading.service({
+    lock: true,
+    text: '正在加载',
+    background: 'rgba(0, 0, 0, 0.7)',
+  })
 
 onMounted(() => {
     stores.getIp();
+    loading.close();
 })
 
 
