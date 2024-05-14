@@ -2,16 +2,16 @@ import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import setLocalStore from '@/utils/setLocalStore'
 import {
-    getCronResultApi,
-    getCronClockApi,
-    getCronIntervalApi,
-    getCronPeriodicApi,
-    getCronCrontabApi,
-    getCronResultDetailApi,
-    getCronClockDetailApi,
-    getCronIntervalDetailApi,
-    getCronPeriodicDetailApi,
-    getCronCrontabDetailApi,
+    getResultApi,
+    getClockApi,
+    getIntervalApi,
+    getPeriodicApi,
+    getCrontabApi,
+    getResultDetailApi,
+    getClockDetailApi,
+    getIntervalDetailApi,
+    getPeriodicDetailApi,
+    getCrontabDetailApi,
     // deleteCronResultApi,
     deleteCronClockApi,
     deleteCronIntervalApi,
@@ -27,7 +27,7 @@ import {
     updateCronIntervalApi,
     updateCronPeriodicApi,
     updateCronCrontabApi,
-    getCronTasksApi
+    getTasksApi
 
 } from '@/api/cron/index.js'
 
@@ -71,7 +71,7 @@ export const useCrontore = defineStore('cron', () => {
 
     // 查询
     const getClocked = async () => {
-        return await getCronClockApi({ page: cron_clocked.value.page, page_size: cron_clocked.value.page_size }).then(res => {
+        return await getClockApi({ page: cron_clocked.value.page, page_size: cron_clocked.value.page_size }).then(res => {
             cron_clocked.value.total = res.total
             cron_clocked.value.data = res.data
             return true
@@ -81,7 +81,7 @@ export const useCrontore = defineStore('cron', () => {
     }
 
     const getCrontab = async () => {
-        return await getCronClockApi({ page: cron_crontab.value.page, page_size: cron_crontab.value.page_size }).then(res => {
+        return await getCrontabApi({ page: cron_crontab.value.page, page_size: cron_crontab.value.page_size }).then(res => {
             cron_crontab.value.total = res.total
             cron_crontab.value.data = res.data
             return true
@@ -91,7 +91,7 @@ export const useCrontore = defineStore('cron', () => {
     }
 
     const getInterval = async () => {
-        return await getCronIntervalApi({ page: cron_interval.value.page, page_size: cron_interval.value.page_size }).then(res => {
+        return await getIntervalApi({ page: cron_interval.value.page, page_size: cron_interval.value.page_size }).then(res => {
             cron_interval.value.total = res.total
             cron_interval.value.data = res.data
             return true
@@ -101,7 +101,7 @@ export const useCrontore = defineStore('cron', () => {
     }
 
     const getPeriodic = async () => {
-        return await getCronPeriodicApi({ page: cron_periodic.value.page, page_size: cron_periodic.value.page_size }).then(res => {
+        return await getPeriodicApi({ page: cron_periodic.value.page, page_size: cron_periodic.value.page_size }).then(res => {
             cron_periodic.value.total = res.total
             cron_periodic.value.data = res.data
             return true
@@ -111,7 +111,7 @@ export const useCrontore = defineStore('cron', () => {
     }
 
     const getResult = async () => {
-        return await getCronResultApi({ page: cron_result.value.page, page_size: cron_result.value.page_size }).then(res => {
+        return await getResultApi({ page: cron_result.value.page, page_size: cron_result.value.page_size }).then(res => {
             cron_result.value.total = res.total
             cron_result.value.data = res.data
             return true
@@ -121,7 +121,7 @@ export const useCrontore = defineStore('cron', () => {
     }
 
     const getTasks = async () => {
-        return await getCronTasksApi().then(res => {
+        return await getTasksApi().then(res => {
             cron_tasks.value.tasks = res.tasks
         })
     }

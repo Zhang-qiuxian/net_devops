@@ -1,118 +1,118 @@
 import instance from "../service";
 
-const cronResult = "/cron/task_result/";
-const cronClock = "/cron/clock/";
-const cronInterval = "/cron/interval/";
-const cronCrontab = "/cron/crontab/";
-const cronPeriodic = "/cron/periodic/";
-const cronTasks = "/cron/periodic/tasks/";
+const result = "/cron/task_result/";
+const clock = "/cron/clock/";
+const interval = "/cron/interval/";
+const crontab = "/cron/crontab/";
+const periodic = "/cron/periodic/";
+const tasks = "/cron/periodic/tasks/";
 
 // 获取列表
-export const getCronResultApi = async (params) => {
-    return instance.get(cronResult, { params });
+export const getResultApi = async (params) => {
+    return instance.get(result, { params });
 }
 
-export const getCronClockApi = async (params) => {
-    return instance.get(cronClock, { params });
+export const getClockApi = async (params) => {
+    return instance.get(clock, { params });
 }
 
-export const getCronIntervalApi = async (params) => {
-    return instance.get(cronInterval, { params });
+export const getIntervalApi = async (params) => {
+    return instance.get(interval, { params });
 }
 
-export const getCronPeriodicApi = async (params) => {
-    return instance.get(cronPeriodic, { params });
+export const getPeriodicApi = async (params) => {
+    return instance.get(periodic, { params });
 }
 
-export const getCronCrontabApi = async (params) => {
-    return instance.get(cronCrontab, { params });
+export const getCrontabApi = async (params) => {
+    return instance.get(crontab, { params });
 }
 
-export const getCronTasksApi = async () => {
-    return instance.get(cronTasks);
+export const getTasksApi = async () => {
+    return instance.get(tasks);
 }
 
 // 获取详情
-export const getCronResultDetailApi = async (id) => {
-    return instance.get(`${cronResult}${id}/`);
+export const getResultDetailApi = async (id) => {
+    return instance.get(`${result}${id}/`);
 }
 
-export const getCronClockDetailApi = async (id) => {
-    return instance.get(`${cronClock}${id}/`);
+export const getClockDetailApi = async (id) => {
+    return instance.get(`${clock}${id}/`);
 }
 
-export const getCronIntervalDetailApi = async (id) => {
-    return instance.get(`${cronInterval}${id}/`);
+export const getIntervalDetailApi = async (id) => {
+    return instance.get(`${interval}${id}/`);
 }
 
-export const getCronPeriodicDetailApi = async (id) => {
-    return instance.get(`${cronPeriodic}${id}/`);
+export const getPeriodicDetailApi = async (id) => {
+    return instance.get(`${periodic}${id}/`);
 }
 
-export const getCronCrontabDetailApi = async (id) => {
-    return instance.get(`${cronCrontab}${id}/`);
+export const getCrontabDetailApi = async (id) => {
+    return instance.get(`${crontab}${id}/`);
 }
 
 // 删除
 // export const deleteCronResultApi = async (id) => {
-//     return instance.delete(`${cronResult}${id}/`);
+//     return instance.delete(`${result}${id}/`);
 // }
 
 export const deleteCronClockApi = async (id) => {
-    return instance.delete(`${cronClock}${id}/`);
+    return instance.delete(`${clock}${id}/`);
 }
 
 export const deleteCronIntervalApi = async (id) => {
-    return instance.delete(`${cronInterval}${id}/`);
+    return instance.delete(`${interval}${id}/`);
 }
 
 export const deleteCronPeriodicApi = async (id) => {
-    return instance.delete(`${cronPeriodic}${id}/`);
+    return instance.delete(`${periodic}${id}/`);
 }
 
 export const deleteCronCrontabApi = async (id) => {
-    return instance.delete(`${cronCrontab}${id}/`);
+    return instance.delete(`${crontab}${id}/`);
 }
 
 // 创建
 // export const createCronResultApi = async (data) => {
-//     return instance.post(cronResult, data);
+//     return instance.post(result, data);
 // }
 
 export const createCronClockApi = async (data) => {
-    return instance.post(cronClock, data);
+    return instance.post(clock, data);
 }
 
 export const createCronIntervalApi = async (data) => {
-    return instance.post(cronInterval, data);
+    return instance.post(interval, data);
 }
 
 export const createCronPeriodicApi = async (data) => {
-    return instance.post(cronPeriodic, data);
+    return instance.post(periodic, data);
 }
 
 export const createCronCrontabApi = async (data) => {
-    return instance.post(cronCrontab, data);
+    return instance.post(crontab, data);
 }
 
 // 更新
 // export const updateCronResultApi = async (id, data) => {
-//     return instance.put(`${cronResult}${id}/`, data);
+//     return instance.put(`${result}${id}/`, data);
 // }
 
 export const updateCronClockApi = async (id, data) => {
-    return instance.put(`${cronClock}${id}/`, data);
+    return instance.put(`${clock}${id}/`, data);
 }
 
 export const updateCronIntervalApi = async (id, data) => {
-    return instance.put(`${cronInterval}${id}/`, data);
+    return instance.put(`${interval}${id}/`, data);
 }
 
 export const updateCronPeriodicApi = async (id, data) => {
-    return instance.put(`${cronPeriodic}${id}/`, data);
+    return instance.put(`${periodic}${id}/`, data);
 }
 
 export const updateCronCrontabApi = async (id, data) => {
-    return instance.put(`${cronCrontab}${id}/`, data);
+    return instance.put(`${crontab}${id}/`, data);
 }
 

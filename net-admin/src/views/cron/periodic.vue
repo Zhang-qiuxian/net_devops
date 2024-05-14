@@ -63,16 +63,76 @@
         </template>
         <template #default>
             <div class="form-drawer">
-                <div class="form-text">
-                    <el-text type="danger">注意定时任务类型只需要选择其中一种</el-text>
-                </div>
                 <div class="form-content">
                     <el-form ref="ruleFormRef" style="max-width: 600px" :model="ruleForm" :rules="rules"
                         label-width="auto" status-icon>
+                        <!-- 填写任务信息 -->
                         <el-row :gutter="20" style="margin:0px;">
+                            <el-col :span="24">
+                                <el-form-item prop="task" label="选择任务">
+                                    <el-select v-model="ruleForm.task">
+                                        <el-option v-for="item in tasksOptions" :key="item" :label="item"
+                                            :value="item" />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
                             <el-col :span="12" v-for="(v, k) in ruleFields">
                                 <el-form-item :prop="k" :key="k" :label="v">
                                     <el-input v-model="ruleForm[k]" />
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="24">
+                                <el-form-item :prop="start_time" label="开始时间">
+                                    <el-date-picker v-model="ruleForm.start_time" type="datetime" placeholder="时间和日期"
+                                        format="YYYY/MM/DD HH:mm:ss" />
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <!-- 选择任务功能 -->
+                        <el-row>
+                            <el-col :span="24">
+                                <div class="form-text">
+                                    <el-text type="danger">注意定时任务类型只需要选择其中一种,选择对应任务类型的ID。</el-text>
+                                </div>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item prop="interval" label="间隔任务">
+                                    <el-select v-model="editForm.interval">
+                                        <el-option v-for="item in intervalOptions" :key="item.id" :label="item.id"
+                                            :value="item.id" />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item prop="clocked" label="定时任务">
+                                    <el-select v-model="editForm.clocked">
+                                        <el-option v-for="item in clockedOptions" :key="item.id" :label="item.id"
+                                            :value="item.id" />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="8">
+                                <el-form-item prop="crontab" label="crontab任务">
+                                    <el-select v-model="editForm.crontab">
+                                        <el-option v-for="item in crontabOptions" :key="item.id" :label="item.id"
+                                            :value="item.id" />
+                                    </el-select>
+                                </el-form-item>
+                            </el-col>
+                        </el-row>
+                        <!-- 开启任务 -->
+                        <el-row>
+                            <el-col :span="12">
+                                <el-form-item :prop="enabled">
+                                    <el-switch v-model="ruleForm.enabled" size="large" active-text="开启任务"
+                                        inactive-text="关闭任务"
+                                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
+                                </el-form-item>
+                            </el-col>
+                            <el-col :span="12">
+                                <el-form-item prop="one_off" label="单次任务？">
+                                    <el-switch v-model="ruleForm.one_off" size="large" active-text="是" inactive-text="否"
+                                        style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
                                 </el-form-item>
                             </el-col>
                         </el-row>
@@ -85,13 +145,14 @@
             </div>
         </template>
     </el-drawer>
-    <!-- 修改设备弹窗 -->
+    <!-- 修改任务弹窗 -->
     <el-dialog v-model="dialogTableVisible" title="修改定时任务信息" :width="600">
         <el-form ref="ruleFormRef" style="max-width: 600px" :model="editForm" :rules="rules" label-width="auto"
             status-icon>
+            <!-- 填写任务信息 -->
             <el-row>
-                <el-col :span="12">
-                    <el-form-item prop="task" label="任务">
+                <el-col :span="24">
+                    <el-form-item prop="task" label="选择任务">
                         <el-select v-model="editForm.task">
                             <el-option v-for="item in tasksOptions" :key="item" :label="item" :value="item" />
                         </el-select>
@@ -100,6 +161,48 @@
                 <el-col :span="12" v-for="(v, k) in ruleFields" :key="k">
                     <el-form-item :label="v" :prop="k">
                         <el-input v-model="editForm[k]" />
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <!-- 选择任务功能 -->
+            <el-row>
+                <el-col :span="8">
+                    <el-form-item prop="interval" label="间隔任务">
+                        <el-select v-model="editForm.interval">
+                            <el-option v-for="item in intervalOptions" :key="item.id" :label="item.id"
+                                :value="item.id" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="clocked" label="定时任务">
+                        <el-select v-model="editForm.clocked">
+                            <el-option v-for="item in clockedOptions" :key="item.id" :label="item.id"
+                                :value="item.id" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+                <el-col :span="8">
+                    <el-form-item prop="crontab" label="crontab任务">
+                        <el-select v-model="editForm.crontab">
+                            <el-option v-for="item in crontabOptions" :key="item.id" :label="item.id"
+                                :value="item.id" />
+                        </el-select>
+                    </el-form-item>
+                </el-col>
+            </el-row>
+            <!-- 开启任务 -->
+            <el-row>
+                <el-col :span="12">
+                    <el-form-item :prop="enabled" label="任务状态">
+                        <el-switch v-model="editForm.enabled" size="large" active-text="开启任务" inactive-text="关闭任务"
+                            style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
+                    </el-form-item>
+                </el-col>
+                <el-col :span="12">
+                    <el-form-item prop="one_off" label="单次任务？">
+                        <el-switch v-model="editForm.one_off" size="large" active-text="是" inactive-text="否"
+                            style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -131,7 +234,6 @@
 import { useCrontore } from '@/stores/cron/index.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, computed, reactive } from 'vue'
-import { exportExcel } from '@/api/export-import';
 import { ElLoading } from 'element-plus'
 
 
@@ -151,20 +253,20 @@ const drawer = ref(false)
 const ruleFormRef = ref()
 
 const ruleForm = reactive({
-    "name": "-",
-    "description": "-",
-    "task": "任务",
+    "name": "",
+    "description": "",
+    "task": "",
     "args": "[]",
     "kwargs": "{}",
     "queue": null,
     "exchange": null,
     "routing_key": null,
     "headers": "{}",
-    "priority": 255,
-    "expires": "",
-    "expire_seconds": 1,
+    "priority": null,
+    "expires": null,
+    "expire_seconds": null,
     "one_off": false,
-    "start_time": "",
+    "start_time": null,
     "enabled": true,
     "interval": null,
     "crontab": null,
@@ -179,42 +281,25 @@ const ruleFields = {
     // "id": "ID",
     "name": "任务名称",
     "description": "任务描述",
-    // "task": "任务",
     "args": "位置参数",
     "kwargs": "关键字参数",
-    "headers": "请求头",
-    "priority": "优先级",
+    // "start_time": "开始运行时间",
     "expires": "过期时间",
-    "expire_seconds": "过期时间间隔",
-    "one_off": "一次性任务",
-    "start_time": "开始运行时间",
-    "enabled": "任务状态",
-    "interval": "间隔任务",
-    "crontab": "crontab任务",
-    // "solar": null,
-    "clocked": "定时任务"
-
 }
 
-
-
 const tasksOptions = computed(() => cron_tasks.value.tasks)
-
-
-
+const intervalOptions = computed(() => cron_interval.value.data)
+const clockedOptions = computed(() => cron_clocked.value.data)
+const crontabOptions = computed(() => cron_crontab.value.data)
 
 
 const rules = reactive({
-    name: [{ required: true, message: '必选项', trigger: 'blur' },],
-    description: [{ required: true, message: '必选项', trigger: 'blur' },],
-    hostname: [{ required: true, message: '必填项', trigger: 'blur', },],
-    ip: [{ required: true, message: '必填项', trigger: 'blur', },],
-    login: [{ required: true, message: '必填项', trigger: 'blur', },],
-    url: [{ required: true, message: '必填项', trigger: 'blur', },],
-    username: [{ required: true, message: '必填项', trigger: 'blur', },],
-    password: [{ required: true, message: '必填项', trigger: 'blur', },],
-    snmp_id: [{ required: true, message: '必选项', trigger: 'blur', },],
-    company_id: [{ required: true, message: '必选项', trigger: 'blur', },],
+    name: [{ required: true, message: '必填项', trigger: 'blur' },],
+    description: [{ required: true, message: '必填项', trigger: 'blur' },],
+    task: [{ required: true, message: '必填项', trigger: 'blur', },],
+    enabled: [{ required: true, message: '必选项', trigger: 'blur', },],
+    one_off: [{ required: true, message: '必选项', trigger: 'blur', },],
+    start_time: [{ required: true, message: '必选项', trigger: 'blur', },],
 })
 // 添加表单
 async function confirmClick(formEl) {
@@ -248,7 +333,6 @@ const dialogTableVisible = ref(false)
 const centerDialogVisible = ref(false)
 
 const handleEdit = (row) => {
-    console.log(row)
     dialogTableVisible.value = true
     // ruleFormRef.value.resetFields()
     editForm.id = row.id
@@ -269,7 +353,6 @@ const handleEdit = (row) => {
     editForm.enabled = row.enabled
     editForm.interval = row.interval
     editForm.crontab = row.crontab
-    editForm.solar = row.solar
     editForm.clocked = row.clocked
 
 }
