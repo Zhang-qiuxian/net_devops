@@ -82,8 +82,8 @@
                                 </el-form-item>
                             </el-col>
                             <el-col :span="24">
-                                <el-form-item :prop="start_time" label="开始时间">
-                                    <el-date-picker v-model="ruleForm.start_time" type="datetime" placeholder="时间和日期"
+                                <el-form-item prop="expires" label="过期时间">
+                                    <el-date-picker v-model="ruleForm.expires" type="datetime" placeholder="时间和日期"
                                         format="YYYY/MM/DD HH:mm:ss" />
                                 </el-form-item>
                             </el-col>
@@ -123,7 +123,7 @@
                         <!-- 开启任务 -->
                         <el-row>
                             <el-col :span="12">
-                                <el-form-item :prop="enabled">
+                                <el-form-item prop="enabled">
                                     <el-switch v-model="ruleForm.enabled" size="large" active-text="开启任务"
                                         inactive-text="关闭任务"
                                         style="--el-switch-on-color: #13ce66; --el-switch-off-color: #ff4949" />
@@ -284,7 +284,7 @@ const ruleFields = {
     "args": "位置参数",
     "kwargs": "关键字参数",
     // "start_time": "开始运行时间",
-    "expires": "过期时间",
+    // "expires": "过期时间",
 }
 
 const tasksOptions = computed(() => cron_tasks.value.tasks)
@@ -448,6 +448,7 @@ const tableTitle = {
 
 function cancelClick() {
     drawer.value = false
+    ruleFormRef.value.resetFields()
 }
 
 const multipleTableRef = ref()

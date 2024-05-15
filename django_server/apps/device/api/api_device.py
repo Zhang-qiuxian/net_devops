@@ -22,7 +22,9 @@ from apps.device.api.serial import (DeviceSerializer, SnmpTemplateSerializer, De
                                     DeviceSerialSerializer, DeviceInterfaceSerializer, DeviceExportSerializer,
                                     DeviceArpSerializer)
 
-from utils.export_excel import api_export_templates
+
+# from rest_framework.filters import SearchFilter, OrderingFilter
+# from django_filters.rest_framework import DjangoFilterBackend
 
 
 class DeviceInterfaceViewSet(ExportMixin, ReadOnlyModelViewSet):
@@ -110,6 +112,8 @@ class DeviceCompanyViewSet(ModelViewSet):
 class DeviceARPViewSet(ExportMixin, ReadOnlyModelViewSet):
     queryset = DeviceARP.objects.all().order_by('id')
     serializer_class = DeviceArpSerializer
+    search_fields: list[str] = ['atPhysAddress', 'atNetAddress']
+    # 导入导出相关
     filterset_fields = ['device_id', 'name', 'ip', 'ifName', 'atNetAddress']
     exclude_export_fields: list[str] = ['id', 'device_id']
 
@@ -182,7 +186,7 @@ class DeviceViewSet(ExportMixin, ExportTemplateMixin, ReadOnlyModelViewSet, Crea
             return ResponseError(message="请传入设备id")
         instance = self.queryset.filter(device_id__in=device_ids)
         instance.delete()
-        delete_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface,DeviceARP]
+        delete_models: list[Model] = [DeviceIP, DeviceSystem, DeviceSerial, DeviceInterface, DeviceARP]
         for model in delete_models:
             model.objects.filter(device_id__in=device_ids).delete()
         return ResponseOK(message="删除成功!")
