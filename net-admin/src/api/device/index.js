@@ -75,6 +75,33 @@ export const getArpDetailApi = async (id) => {
     return instance.get(`${arpApi}${id}/`)
 }
 
+// 模糊查询
+export const searchDeviceApi = async (params) => {
+    return instance.get(infoApi, { params })
+}
+
+export const searchInterfaceApi = async (params) => {
+    return instance.get(interfaceApi, { params })
+}
+
+export const searchSystemApi = async (params) => {
+    return instance.get(systemApi, { params })
+}
+
+export const searchSerialApi = async (params) => {
+    return instance.get(serialApi, { params })
+}
+
+export const searchIpApi = async (params) => {
+    return instance.get(ipApi, { params })
+}
+
+
+export const searchArpApi = async (params) => {
+    return instance.get(arpApi, { params })
+}
+
+
 // 新增
 export const createDeiveApi = async (data) => {
     return instance.post(infoApi, data)
@@ -102,7 +129,7 @@ export const updateSnmpApi = async (id, data) => {
 
 // 删除
 export const deleteDeiveApi = async (data) => {
-    return instance.post(`${infoApi}delete/`,data)
+    return instance.post(`${infoApi}delete/`, data)
 }
 
 export const deleteSnmpApi = async (id) => {

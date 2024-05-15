@@ -3,7 +3,6 @@ import { defineStore } from 'pinia'
 import setLocalStore from '@/utils/setLocalStore'
 import {
   getDeiveApi,
-  getDeiveDetailApi,
   createDeiveApi,
   getInterfaceApi,
   getInterfaceDetailApi,
@@ -14,10 +13,7 @@ import {
   getIplApi,
   getIpDetailApi,
   getCompanyApi,
-  getCompanyDetailApi,
-  createCompanyApi,
   getSnmpApi,
-  getSnmpDetailApi,
   createSnmpApi,
   createDeviceApi,
   updateDeiveApi,
@@ -26,6 +22,12 @@ import {
   deleteSnmpApi,
   getArpApi,
   getArpDetailApi,
+  searchArpApi,
+  searchInterfaceApi,
+  searchIpApi,
+  searchSerialApi,
+  searchSystemApi,
+
 
 } from '@/api/device/index.js'
 
@@ -81,7 +83,6 @@ export const useDeviceStore = defineStore('device', () => {
   })
 
 
-  // const changePage = (page) => { { page: device_info.value.page, page_size: device_info.value.page_size }.page = page }
   // 查询
   const getDeviceInfo = async () => {
     return await getDeiveApi({ page: device_info.value.page, page_size: device_info.value.page_size }).then(res => {
@@ -122,6 +123,7 @@ export const useDeviceStore = defineStore('device', () => {
       return false
     })
   }
+
   const getSystem = async () => {
     return await getSystemApi({ page: device_system.value.page, page_size: device_system.value.page_size }).then(res => {
       device_system.value.total = res.total
@@ -162,6 +164,103 @@ export const useDeviceStore = defineStore('device', () => {
     })
   }
 
+  // 详情
+  const getInterfaceDetail = async (id) => {
+    return await getInterfaceDetailApi(id).then(res => {
+      device_interface.value.total = res.total
+      device_interface.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+
+  const getIpDetail = async (id) => {
+    return await getIpDetailApi(id).then(res => {
+      device_ip.value.total = res.total
+      device_ip.value.data = res.data
+      return true
+    })
+  }
+
+  const getSystemDetail = async (id) => {
+    return await getSystemDetailApi(id).then(res => {
+      device_system.value.total = res.total
+      device_system.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+
+  const getSerialDetail = async (id) => {
+    return await getSerialDetailApi(id).then(res => {
+      device_serial.value.total = res.total
+      device_serial.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+
+  const getArpDetail = async (id) => {
+    return await getArpDetailApi(id).then(res => {
+      device_arp.value.total = res.total
+      device_arp.value.data = data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+
+  // 模糊查询
+
+  const searchInterface = async (params) => {
+    return await searchInterfaceApi(params).then(res => {
+      device_interface.value.total = res.total
+      device_interface.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+  const searchIp = async (params) => {
+    return await searchIpApi(params).then(res => {
+      device_ip.value.total = res.total
+      device_ip.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+  const searchSystem = async (params) => {
+    return await searchSystemApi(params).then(res => {
+      device_system.value.total = res.total
+      device_system.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+
+  const searchSerial = async (params) => {
+    return await searchSerialApi(params).then(res => {
+      device_serial.value.total = res.total
+      device_serial.value.data = res.data
+      return true
+    })
+  }
+
+  const searchArp = async (params) => {
+    return await searchArpApi(params).then(res => {
+      device_arp.value.total = res.total
+      device_arp.value.data = res.data
+      return true
+    }).catch(err => {
+      return false
+    })
+  }
+
   // 新增
   const addSnmp = async (data) => createSnmpApi(data)
   const addDevice = async (data) => createDeiveApi(data)
@@ -172,9 +271,9 @@ export const useDeviceStore = defineStore('device', () => {
 
   // 删除
   const deleteSnmp = async (id) => deleteSnmpApi(id)
-  const deleteDevice = async (data) => deleteDeiveApi({device_ids:data})
+  const deleteDevice = async (data) => deleteDeiveApi({ device_ids: data })
 
-  const refreshAll=()=>{
+  const refreshAll = () => {
     getDeviceInfo()
     getInterface()
     getIp()
@@ -189,6 +288,8 @@ export const useDeviceStore = defineStore('device', () => {
     addSnmp, addDevice,
     updateSnmp, updateDevice,
     deleteSnmp, deleteDevice,
+    getArpDetail, getInterfaceDetail, getIpDetail, getSystemDetail, getSerialDetail,
+    searchInterface, searchIp, searchSystem, searchSerial, searchArp,
     refreshAll
   }
 },

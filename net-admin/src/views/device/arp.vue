@@ -2,9 +2,10 @@
     <div class="container">
         <div class="from-container">
             <div class="from-left">
-                <el-text type="danger">设备ARP信息通过SNMP同步获取，暂不支持修改！</el-text>
+    
             </div>
             <div class="from-right">
+                <el-text type="danger">设备ARP信息通过SNMP同步获取，暂不支持修改！</el-text>
                 <el-button type="info" @click="exportExcel('device/arp/export_excel/')">导出arp信息</el-button>
             </div>
         </div>
@@ -46,7 +47,7 @@ import { exportExcel } from '@/api/export-import';
 
 
 const stores = useDeviceStore();
-const { device_arp } = storeToRefs(stores);
+const { device_arp, device_info } = storeToRefs(stores);
 
 const isData = computed(() => {
     return device_arp.value.data.length > 0 ? true : false;
@@ -75,27 +76,12 @@ const tableTitle = {
     // update_time: "更新时间"
 }
 
-// {
-//     "id": 1,
-//     "device_id": "2a2e69a8-65ed-4871-99e6-460b2df34915",
-//     "name": "6604",
-//     "ip": "1.1.1.1",
-//     "atIfIndex": 655,
-//     "atPhysAddress": "24:e9:b3:2c:46:53",
-//     "atNetAddress": "1.1.1.1",
-//     "ifName": "GigabitEthernet2/0/14",
-//     "ifAlias": "GigabitEthernet2/0/14 Interface",
-//     "ifOperStatus": 1,
-//     "update_time": "2024-05-10 14:56:37"
-// }
 
 const loading = ElLoading.service({
     lock: true,
     text: '正在加载',
     background: 'rgba(0, 0, 0, 0.7)',
-  })
-
-
+})
 onMounted(() => {
     stores.getArp();
     loading.close();
@@ -114,10 +100,21 @@ onMounted(() => {
 .from-container {
     height: 39px;
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     border-bottom: 1px solid #ccc;
     padding-right: 20px;
+    padding-left: 20px;
+
+    .from-left {
+        height: 100%;
+        line-height: 40px;
+
+        .el-form-item {
+            margin-bottom: 0px;
+
+        }
+    }
 }
 
 .table-container {
