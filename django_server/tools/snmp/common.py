@@ -156,26 +156,26 @@ arp_oids: list[dict[str:list[dict[str:str | list]]]] = [
                 "oid": "1.3.6.1.2.1.4.22.1.1",
                 "func": "接口索引",
                 "type": "int",
-                "index": [
-                    {
-                        "dept": "ifName",
-                        "oid": "1.3.6.1.2.1.31.1.1.1.1",
-                        "func": "接口名字",
-                        "type": "string"
-                    },
-                    {
-                        "dept": "ifAlias",
-                        "oid": "1.3.6.1.2.1.31.1.1.1.18",
-                        "func": "接口别名",
-                        "type": "string"
-                    },
-                    {
-                        "dept": "ifOperStatus",
-                        "oid": "1.3.6.1.2.1.2.2.1.8",
-                        "func": "接口运行状态",
-                        "type": "int"
-                    },
-                ]
+                # "index": [
+                #     {
+                #         "dept": "ifName",
+                #         "oid": "1.3.6.1.2.1.31.1.1.1.1",
+                #         "func": "接口名字",
+                #         "type": "string"
+                #     },
+                #     {
+                #         "dept": "ifAlias",
+                #         "oid": "1.3.6.1.2.1.31.1.1.1.18",
+                #         "func": "接口别名",
+                #         "type": "string"
+                #     },
+                #     {
+                #         "dept": "ifOperStatus",
+                #         "oid": "1.3.6.1.2.1.2.2.1.8",
+                #         "func": "接口运行状态",
+                #         "type": "int"
+                #     },
+                # ]
             },
             {
                 "dept": "ipNetToMediaNetAddress",
