@@ -16,10 +16,13 @@ import {
   getSnmpApi,
   createSnmpApi,
   createDeviceApi,
+  createCompanyApi,
   updateDeiveApi,
   updateSnmpApi,
+  updateCompanyApi,
   deleteDeiveApi,
   deleteSnmpApi,
+  deleteCompanyApi,
   getArpApi,
   getArpDetailApi,
   searchArpApi,
@@ -27,8 +30,6 @@ import {
   searchIpApi,
   searchSerialApi,
   searchSystemApi,
-
-
 } from '@/api/device/index.js'
 
 
@@ -264,14 +265,17 @@ export const useDeviceStore = defineStore('device', () => {
   // 新增
   const addSnmp = async (data) => createSnmpApi(data)
   const addDevice = async (data) => createDeiveApi(data)
+  const addCompany = async (data) => createCompanyApi(data)
 
   // 修改
   const updateSnmp = async (id, data) => updateSnmpApi(id, data)
   const updateDevice = async (id, data) => updateDeiveApi(id, data)
+  const updateCompany = async (id, data) => updateCompanyApi(id, data)
 
   // 删除
   const deleteSnmp = async (id) => deleteSnmpApi(id)
   const deleteDevice = async (data) => deleteDeiveApi({ device_ids: data })
+  const deleteCompany = async (id) => deleteCompanyApi(id)
 
   const refreshAll = () => {
     getDeviceInfo()
@@ -285,9 +289,9 @@ export const useDeviceStore = defineStore('device', () => {
   return {
     device_info, device_snmp, device_interface, device_ip, device_system, device_serial, device_company, device_arp,
     getDeviceInfo, getSnmp, getInterface, getIp, getSystem, getSerial, getCompany, getArp,
-    addSnmp, addDevice,
-    updateSnmp, updateDevice,
-    deleteSnmp, deleteDevice,
+    addSnmp, addDevice,addCompany,
+    updateSnmp, updateDevice,updateCompany,
+    deleteSnmp, deleteDevice,deleteCompany,
     getArpDetail, getInterfaceDetail, getIpDetail, getSystemDetail, getSerialDetail,
     searchInterface, searchIp, searchSystem, searchSerial, searchArp,
     refreshAll

@@ -22,9 +22,7 @@ from apps.device.api.serial import (DeviceSerializer, SnmpTemplateSerializer, De
                                     DeviceSerialSerializer, DeviceInterfaceSerializer, DeviceExportSerializer,
                                     DeviceArpSerializer)
 
-
-# from rest_framework.filters import SearchFilter, OrderingFilter
-# from django_filters.rest_framework import DjangoFilterBackend
+from ..tasks import start_sync_arp
 
 
 class DeviceInterfaceViewSet(ExportMixin, ReadOnlyModelViewSet):
@@ -112,9 +110,9 @@ class DeviceCompanyViewSet(ModelViewSet):
 class DeviceARPViewSet(ExportMixin, ReadOnlyModelViewSet):
     queryset = DeviceARP.objects.all().order_by('id')
     serializer_class = DeviceArpSerializer
-    search_fields: list[str] = ['atPhysAddress', 'atNetAddress']
+    search_fields: list[str] = ['ipNetToMediaPhysAddress', 'ipNetToMediaNetAddress']
     # 导入导出相关
-    filterset_fields = ['device_id', 'name', 'ip', 'ifName', 'atNetAddress']
+    filterset_fields = ['device_id', 'name', 'ip', 'ifName', 'ipNetToMediaPhysAddress']
     exclude_export_fields: list[str] = ['id', 'device_id']
 
     def retrieve(self, request: Request, *args, **kwargs) -> Response:
@@ -126,6 +124,11 @@ class DeviceARPViewSet(ExportMixin, ReadOnlyModelViewSet):
             return ResponseError(message="设备id不存在！")
         serializer = self.serializer_class(d, many=True)
         return ResponseOK(message="查询成功！", data=serializer.data)
+
+    @action(methods=['post'], detail=False)
+    def refresh(self, request: Request, *args, **kwargs) -> Response:
+        start_sync_arp.delay()
+        return ResponseOK(data="执行成功！请稍等一下再刷新页面！")
 
 
 class DeviceViewSet(ExportMixin, ExportTemplateMixin, ReadOnlyModelViewSet, CreateModelMixin):

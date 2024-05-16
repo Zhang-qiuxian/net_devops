@@ -2,15 +2,18 @@
     <div class="container">
         <div class="from-container">
             <div class="from-left">
-    
+                <div class="from-left">
+                    <el-text type="danger">手动刷新ARP，注意！点击后后台会自动刷新，每分钟限定刷新一次！</el-text>
+                    <el-button type="primary" round :icon="Refresh" @click="refreshARP">刷新ARP</el-button>
+                </div>
             </div>
             <div class="from-right">
-                <el-text type="danger">设备ARP信息通过SNMP同步获取，暂不支持修改！</el-text>
+                <el-text type="danger">设备ARP信息通过SNMP同步获取，暂不支持修改！30分钟同步一次！</el-text>
                 <el-button type="info" @click="exportExcel('device/arp/export_excel/')">导出arp信息</el-button>
             </div>
         </div>
         <div class="table-container">
-            <el-empty description="没有数据，请先添加设备或刷新页面" v-if="!isData" style="height: 100%;" />
+            <el-empty description="没有数据，请先手动同步或刷新页面。" v-if="!isData" style="height: 100%;" />
             <el-scrollbar v-else>
                 <el-table :data="device_arp.data" border table-layout="auto" style="width: 100%">
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
@@ -44,6 +47,11 @@ import { useDeviceStore } from '@/stores/device/index.js';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, computed, reactive } from 'vue'
 import { exportExcel } from '@/api/export-import';
+import { ElLoading } from 'element-plus';
+import { refreshArpApi } from '@/api/device/index.js';
+import {
+    Refresh,
+} from '@element-plus/icons-vue'
 
 
 const stores = useDeviceStore();
@@ -76,12 +84,21 @@ const tableTitle = {
     // update_time: "更新时间"
 }
 
+// 手动刷新ARP
+const refreshARP = () => { refreshArpApi().then(res => ElMessage.success(res)) }
+
+
+// 导出arp信息
+const exportExcelData = () => {
+    exportExcel('device/arp/export_excel/')
+}
 
 const loading = ElLoading.service({
     lock: true,
     text: '正在加载',
     background: 'rgba(0, 0, 0, 0.7)',
 })
+
 onMounted(() => {
     stores.getArp();
     loading.close();

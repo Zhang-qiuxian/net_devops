@@ -127,6 +127,10 @@ export const updateSnmpApi = async (id, data) => {
     return instance.put(`${snmpApi}${id}/`, data)
 }
 
+export const updateCompanyApi = async (id, data) => {
+    return instance.put(`${companyApi}${id}/`, data)
+}
+
 // 删除
 export const deleteDeiveApi = async (data) => {
     return instance.post(`${infoApi}delete/`, data)
@@ -134,4 +138,13 @@ export const deleteDeiveApi = async (data) => {
 
 export const deleteSnmpApi = async (id) => {
     return instance.delete(`${snmpApi}${id}/`)
+}
+
+export const deleteCompanyApi = async (id) => {
+    return instance.delete(`${companyApi}${id}/`)
+}
+
+// 刷新arp
+export const refreshArpApi = async () => {
+    return instance.post(`${arpApi}refresh/`)
 }
