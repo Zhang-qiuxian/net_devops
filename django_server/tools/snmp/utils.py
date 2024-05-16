@@ -117,6 +117,5 @@ ip_oids = [
                 temp_value: list = handel_result(data=v, data_type=data_type1)
                 temp_dict: dict = dict(zip(temp_index, temp_value))
                 t[dept1] = [temp_dict.get(index) for index in t[dept]]
-        # print(res)
     dt: list[dict] = handle_tojson(t)
     return dt

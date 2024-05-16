@@ -218,11 +218,11 @@ def start_sync_arp(*args, **kwargs) -> Task | dict:
                     for q in aq:
                         is_exist: bool = False
                         for di, a in enumerate(arp_list):
-                            if q.atNetAddress != a['atNetAddress']:
+                            if q.ipNetToMediaNetAddress != a['ipNetToMediaNetAddress']:
                                 continue
                             else:
-                                q.atPhysAddress = a['atPhysAddress']
-                                q.atIfIndex = a['atIfIndex']
+                                q.ipNetToMediaPhysAddress = a['ipNetToMediaPhysAddress']
+                                q.ipNetToMediaIfIndex = a['ipNetToMediaIfIndex']
                                 q.ifName = a['ifName']
                                 q.ifAlias = a['ifAlias']
                                 q.ifOperStatus = a['ifOperStatus']
@@ -241,8 +241,8 @@ def start_sync_arp(*args, **kwargs) -> Task | dict:
                                                          for a in arp_list]
                     success_list = success_list + datas
     if len(update_models) > 0:
-        fields: list[str] = ['atIfIndex', 'atPhysAddress', 'atNetAddress', 'ifName', 'ifAlias', 'ifOperStatus',
-                             'is_active', 'update_time']
+        fields: list[str] = ['ipNetToMediaIfIndex', 'ipNetToMediaIfIndex', 'ipNetToMediaNetAddress', 'ifName',
+                             'ifAlias', 'ifOperStatus','is_active', 'update_time']
         bulk_update(model=DeviceARP, objs=update_models, fields=fields)
     if len(update_status) > 0:
         fields: list[str] = ['is_active', 'update_time']

@@ -147,13 +147,13 @@ standard_oids: [list[dict[str:list[dict[str:str | list]]]]] = [
     }
 ]
 
-# arp oid
+# arp oid RFC1213-MIB
 arp_oids: list[dict[str:list[dict[str:str | list]]]] = [
     {
         'arp': [
             {
-                "dept": "atIfIndex",
-                "oid": "1.3.6.1.2.1.3.1.1.1",
+                "dept": "ipNetToMediaIfIndex",
+                "oid": "1.3.6.1.2.1.4.22.1.1",
                 "func": "接口索引",
                 "type": "int",
                 "index": [
@@ -178,14 +178,14 @@ arp_oids: list[dict[str:list[dict[str:str | list]]]] = [
                 ]
             },
             {
-                "dept": "atNetAddress",
-                "oid": "1.3.6.1.2.1.3.1.1.3",
+                "dept": "ipNetToMediaNetAddress",
+                "oid": "1.3.6.1.2.1.4.22.1.3",
                 "func": "IP地址",
                 "type": "string"
             },
             {
-                "dept": "atPhysAddress",
-                "oid": "1.3.6.1.2.1.3.1.1.2",
+                "dept": "ipNetToMediaPhysAddress",
+                "oid": "1.3.6.1.2.1.4.22.1.2",
                 "func": "MAC地址",
                 "type": "mac_address"
             },

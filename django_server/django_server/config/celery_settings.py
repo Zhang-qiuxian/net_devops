@@ -39,19 +39,14 @@ CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 
 
 CELERY_BEAT_SCHEDULE = {
-    # 'add': {
-    #     'task': 'apps.device.tasks.add',  # 任务
-    #     'schedule': timedelta(seconds=5),  # 每5秒执行add函数
-    #     'args': (11, 12)  # 运行参数
-    # },
-    'sync_device_base_info': {
+    '同步设备基本信息': {
         'task': 'apps.device.tasks.start_sync',  # 任务
-        'schedule': timedelta(seconds=30),  # 每30秒执行mul函数
+        'schedule': timedelta(minutes=1),  # 每1分钟执行函数
         # 'args': ()  # 运行参数
     },
-    'sync_device_arp': {
+    '同步arp信息': {
         'task': 'apps.device.tasks.start_sync_arp',  # 任务
-        'schedule': timedelta(seconds=40),  # 每10秒执行mul函数
+        'schedule': timedelta(minutes=30),  # 每10分钟执行函数
         # 'args': ()  # 运行参数
     },
 
