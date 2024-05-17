@@ -2,14 +2,15 @@
     <div class="container">
         <div class="from-container">
             <div class="from-left">
-                <div class="from-left">
+                <div class="from-refresh">
                     <el-text type="danger">手动刷新ARP，注意！点击后后台会自动刷新，每分钟限定刷新一次！</el-text>
-                    <el-button type="primary" round :icon="Refresh" @click="refreshARP">刷新ARP</el-button>
+                    <el-button type="primary" round :icon="Refresh" @click="refreshARP">更新ARP</el-button>
                 </div>
             </div>
             <div class="from-right">
                 <el-text type="danger">设备ARP信息通过SNMP同步获取，暂不支持修改！30分钟同步一次！</el-text>
                 <el-button type="info" @click="exportExcel('device/arp/export_excel/')">导出arp信息</el-button>
+                <el-button type="success" round :icon="RefreshRight" @click="refreshPage">刷新页面</el-button>
             </div>
         </div>
         <div class="table-container">
@@ -51,6 +52,7 @@ import { ElLoading } from 'element-plus';
 import { refreshArpApi } from '@/api/device/index.js';
 import {
     Refresh,
+    RefreshRight
 } from '@element-plus/icons-vue'
 
 
@@ -87,6 +89,9 @@ const tableTitle = {
 // 手动刷新ARP
 const refreshARP = () => { refreshArpApi().then(res => ElMessage.success(res)) }
 
+const refreshPage = () => {
+  window.location.reload();
+};
 
 // 导出arp信息
 const exportExcelData = () => {

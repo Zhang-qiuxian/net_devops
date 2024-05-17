@@ -18,7 +18,15 @@ def handle_tojson(data: dict[str, list]) -> list[dict]:
 
 def handle_mac(data: list[str]) -> list[str]:
     """处理mac地址"""
-    return [i.strip('"').replace(" ", ":").lower()[:-1] for i in data]
+    exclude: str = '!@#$%^&*()_+-=/[]{}'
+    result: list[str] = []
+    for i in data:
+        mac: str = i.strip('"').replace(" ", ":").lower()[:-1]
+        if any(char in mac for char in exclude):
+            result.append("mac解析异常")
+        else:
+            result.append(mac)
+    return result
 
 
 def handel_symbol_list(data: list[str]) -> list[str]:
@@ -52,7 +60,10 @@ def handel_result(data: Any = None, data_type: str = 'string') -> Any:
             case 'int':
                 return int(data)
             case 'mac_address':
-                return data.strip('"').replace(" ", ":").lower()[:-1]
+                mac: str = data.strip('"').replace(" ", ":").lower()[:-1]
+                if mac in [':']:
+                    return mac
+                return "mac解析异常"
 
 
 def start_snmp(**kwargs) -> list[dict] | list:

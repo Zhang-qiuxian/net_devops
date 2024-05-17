@@ -46,7 +46,7 @@ CELERY_BEAT_SCHEDULE = {
     },
     '同步arp信息': {
         'task': 'apps.device.tasks.start_sync_arp',  # 任务
-        'schedule': timedelta(minutes=30),  # 每10分钟执行函数
+        'schedule': timedelta(minutes=20),  # 每20分钟执行函数
         # 'args': ()  # 运行参数
     },
 

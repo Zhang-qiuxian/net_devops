@@ -19,7 +19,7 @@ from apps.cron.models import CronJobSyncLog
 from tools.snmp.run import run
 from tools.snmp.common import arp_oids
 
-POOL = 50
+POOL: int = 50
 
 """
 通用的启动函数
@@ -199,66 +199,66 @@ def start_sync_arp(*args, **kwargs) -> Task | dict:
     update_status: list[DeviceARP] = []
     create_models: list[DeviceARP] = []
 
-    def bulk_create_model(arp_list: list[dict], interface_objs: list[DeviceInterface], name: str, ip: str) -> None:
+    def bulk_create_model(_arp_list: dict[str:dict], _interface_map: dict[int:DeviceInterface], _name: str, _ip: str,
+                          _device_id: str) -> None:
         # 新建arp
-        for a in arp_list:
-            for interface in interface_objs:
-                if a["ipNetToMediaIfIndex"] != interface.ifIndex:
-                    continue
-                else:
-                    obj = DeviceARP(ifAlias=interface.ifAlias, ifName=interface.ifName,device_id=device_id, name=name, ip=ip, **a)
-                    create_models.append(obj)
+        for _, v in _arp_list.items():
+            inter_index: int = v['ipNetToMediaIfIndex']
+            obj = DeviceARP(ifAlias=_interface_map[inter_index].ifAlias, ifName=_interface_map[inter_index].ifName,
+                            device_id=_device_id, name=_name, ip=_ip, **v)
+            create_models.append(obj)
 
+    # 遍历每一个设备的值
     for res in response:
         b, datas = res
         if not b:
-            error_list = error_list + datas
+            error_list.extend(datas)
         else:
             arp_list: list[dict] = datas[0].get('arp')
             if len(arp_list) == 0:
-                fault_list = fault_list + datas
+                fault_list.extend(datas)
             else:
                 device_id: str = datas[0].get('device_id')
                 ip: str = datas[0].get('device_ip')
                 name: str = datas[0].get('device_name')
-                iq: list[DeviceInterface] = i_q.filter(device_id=device_id)
-                if len(iq) == 0:
+                # 根据device_id筛选出接口表
+                iq: QuerySet[DeviceInterface] = i_q.filter(device_id=device_id)
+                arp_map: dict[str:dict] = {a['ipNetToMediaNetAddress']: a for a in arp_list}  # 使用字典映射来加速查找
+                interface_map: dict[int:DeviceInterface] = {i.ifIndex: i for i in iq}  # 使用字典映射来加速查找
+                if not iq.exists():
                     fault_list.append({"message": "基础信息还未同步！", "data": datas})
                 else:
+                    # 在arp表中过滤出已存在的arp
                     aq: [DeviceARP] = a_q.filter(device_id=device_id)
-                    if len(aq) == 0:
-                        bulk_create_model(arp_list, iq, name=name, ip=ip)
-                        success_list = success_list + datas
+                    if not aq.exists():
+                        # 如果arp中不存在则直接创建arp模型对象
+                        bulk_create_model(arp_map, interface_map, _name=name, _ip=ip, _device_id=device_id)
+                        success_list.extend(datas)
                     else:
                         # 更新arp
                         for q in aq:
-                            is_exist: bool = False
-                            for di, a in enumerate(arp_list):
-                                if q.ipNetToMediaNetAddress != a['ipNetToMediaNetAddress']:
-                                    continue
-                                else:
-                                    q.ipNetToMediaPhysAddress = a['ipNetToMediaPhysAddress']
-                                    q.ipNetToMediaIfIndex = a['ipNetToMediaIfIndex']
-                                    for interface in iq:
-                                        if q.ipNetToMediaIfIndex != interface.ifIndex:
-                                            continue
-                                        else:
-                                            q.ifName = interface.ifName
-                                            q.ifAlias = interface.ifAlias
-                                            q.ifOperStatus = interface.ifOperStatus
-                                    q.is_active = True
-                                    q.update_time = datetime.now()
-                                    arp_list.pop(di)
-                                    update_models.append(q)
-                                    is_exist = True
-                            if not is_exist:
+                            ip_address = q.ipNetToMediaNetAddress
+                            if ip_address in arp_map:
+                                # 更新存在的ARP条目
+                                a = arp_map.pop(ip_address)  # 从映射中删除已处理的条目
+                                q.ipNetToMediaPhysAddress = a['ipNetToMediaPhysAddress']
+                                q.ipNetToMediaIfIndex = a['ipNetToMediaIfIndex']
+                                # 更新接口信息
+                                if q.ipNetToMediaIfIndex in interface_map:
+                                    q.ifName = interface_map[q.ipNetToMediaIfIndex].ifName
+                                    q.ifAlias = interface_map[q.ipNetToMediaIfIndex].ifAlias
+                                    q.ifOperStatus = interface_map[q.ipNetToMediaIfIndex].ifOperStatus
+                                q.is_active = True
+                                q.update_time = datetime.now()
+                                update_models.append(q)
+                            else:
+                                # 如果ARP条目不存在，则更新其状态为不活动
                                 q.is_active = False
                                 q.update_time = datetime.now()
                                 update_status.append(q)
-                                is_exist = False
-                        if len(arp_list) > 0:
-                            bulk_create_model(arp_list, iq, name=name, ip=ip)
-                        success_list = success_list + datas
+                        if arp_map:
+                            bulk_create_model(arp_map, interface_map, _name=name, _ip=ip, _device_id=device_id)
+                        success_list.extend(datas)
     if len(update_models) > 0:
         fields: list[str] = ['ipNetToMediaIfIndex', 'ipNetToMediaIfIndex', 'ipNetToMediaNetAddress', 'ifName',
                              'ifAlias', 'ifOperStatus', 'is_active', 'update_time']
@@ -268,8 +268,10 @@ def start_sync_arp(*args, **kwargs) -> Task | dict:
         bulk_update(model=DeviceARP, objs=update_status, fields=fields)
     if len(create_models) > 0:
         bulk_create(model=DeviceARP, objs=create_models)
-    CronJobSyncLog.objects.create(job="更新ARP", data={"success": success_list, "error": error_list, "fault": fault_list})
-    return {"success": True, "message": f"成功了{len(success_list)}台,失败了{len(error_list)}台,未获取到{len(fault_list)}台"}
+    CronJobSyncLog.objects.create(job="更新ARP",
+                                  data={"success": success_list, "error": error_list, "fault": fault_list})
+    return {"success": True,
+            "message": f"成功了{len(success_list)}台,失败了{len(error_list)}台,未获取到{len(fault_list)}台"}
 
 
 if __name__ == '__main__':

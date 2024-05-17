@@ -403,6 +403,7 @@ const deleteSelect = () => {
             stores.deleteDevice(device_ids).then((res) => {
                 ElMessage.success('删除成功')
                 stores.refreshAll()
+                window.location.reload();
             }).catch(res => {
                 ElMessage.error('删除失败')
             })
@@ -417,7 +418,7 @@ const loading = ElLoading.service({
     lock: true,
     text: '正在加载',
     background: 'rgba(0, 0, 0, 0.7)',
-  })
+})
 
 onMounted(() => {
     stores.getDeviceInfo()
