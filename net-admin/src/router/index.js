@@ -12,11 +12,11 @@ const deviceRouters = [
     redirect: Layout,
     children: [
       {
-        path: 'device-preview',
-        name: 'devicePreview',
-        component: () => import('@/views/device/preview.vue'),
+        path: 'device-search',
+        name: 'deviceSearch',
+        component: () => import('@/views/device/search.vue'),
         meta: {
-          title: '设备预览',
+          title: 'ARP检索',
         },
       },
       {

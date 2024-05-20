@@ -20,8 +20,8 @@ REST_FRAMEWORK = {
     "DATETIME_FORMAT": "%Y-%m-%d %H:%M:%S",
     # 过滤器默认后端
     'DEFAULT_FILTER_BACKENDS': [
-        'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
+        'rest_framework.filters.SearchFilter',
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
     # 接口文档
