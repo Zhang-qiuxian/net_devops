@@ -95,39 +95,54 @@ const cronRouters = [
     },
     redirect: Layout,
     children: [
+      // {
+      //   path: 'cron-periodic',
+      //   name: 'cronPeriodic',
+      //   component: () => import('@/views/cron/periodic.vue'),
+      //   meta: {
+      //     title: '任务管理',
+      //   },
+      // },
+      // {
+      //   path: 'cron-clocked',
+      //   name: 'cronClocked',
+      //   component: () => import('@/views/cron/clocked.vue'),
+      //   meta: {
+      //     title: '定时任务',
+      //   },
+      // },
+      // {
+      //   path: 'cron-interval',
+      //   name: 'cronInterval',
+      //   component: () => import('@/views/cron/interval.vue'),
+      //   meta: {
+      //     title: '周期任务',
+      //   },
+      // },
+      // {
+      //   path: 'cron-crontab',
+      //   name: 'cronCrontab',
+      //   component: () => import('@/views/cron/crontab.vue'),
+      //   meta: {
+      //     title: 'crontab计划任务',
+      //   },
+      // },
       {
-        path: 'cron-periodic',
-        name: 'cronPeriodic',
-        component: () => import('@/views/cron/periodic.vue'),
+        path: 'cron-logs',
+        name: 'cronLogs',
+        component: () => import('@/views/cron/logs.vue'),
         meta: {
-          title: '任务管理',
+          title: '后台任务日志',
         },
       },
       {
-        path: 'cron-clocked',
-        name: 'cronClocked',
-        component: () => import('@/views/cron/clocked.vue'),
+        path: 'cron-result',
+        name: 'cronResult',
+        component: () => import('@/views/cron/result.vue'),
         meta: {
-          title: '定时任务',
+          title: '任务执行结果',
         },
       },
-      {
-        path: 'cron-interval',
-        name: 'cronInterval',
-        component: () => import('@/views/cron/interval.vue'),
-        meta: {
-          title: '周期任务',
-        },
-      },
-      {
-        path: 'cron-crontab',
-        name: 'cronCrontab',
-        component: () => import('@/views/cron/crontab.vue'),
-        meta: {
-          title: 'crontab计划任务',
-        },
-      },
-      
     ]
   }
 ]

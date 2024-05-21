@@ -27,7 +27,8 @@ import {
     updateCronIntervalApi,
     updateCronPeriodicApi,
     updateCronCrontabApi,
-    getTasksApi
+    getTasksApi,
+    getLogsApi
 
 } from '@/api/cron/index.js'
 
@@ -67,6 +68,13 @@ export const useCrontore = defineStore('cron', () => {
         page: 1,
         page_size: 20
     })
+    const cron_logs = ref({
+        total: 0,
+        data: [],
+        page: 1,
+        page_size: 20
+    })
+
 
 
     // 查询
@@ -126,6 +134,16 @@ export const useCrontore = defineStore('cron', () => {
         })
     }
 
+    const getLogs = async () => {
+        return await getLogsApi({ page: cron_logs.value.page, page_size: cron_logs.value.page_size }).then(res => {
+            cron_logs.value.total = res.total
+            cron_logs.value.data = res.data
+            return true
+        }).catch(err => {
+            return false
+        })
+    }
+
     // 新增
     const addClocked = async (data) => createCronClockApi(data)
     const addCrontab = async (data) => createCronCrontabApi(data)
@@ -153,12 +171,12 @@ export const useCrontore = defineStore('cron', () => {
     }
 
     return {
-        cron_clocked, cron_crontab, cron_interval, cron_periodic, cron_tasks, cron_result,
-        getClocked, getCrontab, getInterval, getPeriodic, getResult,
+        cron_clocked, cron_crontab, cron_interval, cron_periodic, cron_tasks, cron_result,cron_logs,
+        getClocked, getCrontab, getInterval, getPeriodic, getResult,getTasks,getLogs,
         addClocked, addCrontab, addInterval, addPeriodic,
         updateClocked, updateCrontab, updateInterval, updatePeriodic,
         deleteClocked, deleteCrontab, deleteInterval, deletePeriodic,
-        getTasks,refreshAll
+        refreshAll
     }
 },
     {
@@ -170,7 +188,7 @@ export const useCrontore = defineStore('cron', () => {
         persist: [
             {
                 key: setLocalStore('cron'),
-                paths: ['cron_clocked', 'cron_crontab', 'cron_interval', 'cron_periodic', 'cron_tasks', 'cron_result']
+                paths: ['cron_clocked', 'cron_crontab', 'cron_interval', 'cron_periodic', 'cron_tasks', 'cron_result','cron_logs']
             }
         ],
     })

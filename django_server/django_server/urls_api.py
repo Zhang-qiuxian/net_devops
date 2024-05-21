@@ -5,7 +5,7 @@ from rest_framework.routers import SimpleRouter
 from apps.device.api.api_device import device, device_snmp_templates, device_company, device_ip, device_serial, \
     device_system, device_interface, device_arp
 from apps.cron.api.api_cron import clock_schedule, interval_schedule, periodic_task, crontab_schedules
-from apps.cron.api.api_cron_result import task_result
+from apps.cron.api.api_cron_result import task_result,cron_log_result
 
 router = SimpleRouter()
 # device
@@ -24,6 +24,7 @@ router.register(prefix="cron/interval", viewset=interval_schedule, basename="cro
 router.register(prefix="cron/crontab", viewset=crontab_schedules, basename="cron-crontab")
 router.register(prefix="cron/periodic", viewset=periodic_task, basename="cron-periodic")
 router.register(prefix="cron/task_result", viewset=task_result, basename="task_result")
+router.register(prefix="cron/logs", viewset=cron_log_result, basename="cron_logs")
 
 api_url = [
     # path('device/', include(router.urls)),

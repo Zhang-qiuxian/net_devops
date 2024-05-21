@@ -1,14 +1,12 @@
-import base64, pickle
+import base64
+import pickle
 from typing import Any
 
+from django_celery_beat.models import ClockedSchedule, CrontabSchedule, IntervalSchedule, PeriodicTask, PeriodicTasks
+from django_celery_results.models import TaskResult
 from rest_framework.fields import SerializerMethodField
 from rest_framework.serializers import ModelSerializer, CharField
-
-from django_celery_beat.models import ClockedSchedule, CrontabSchedule, IntervalSchedule, PeriodicTask, PeriodicTasks, \
-    SolarSchedule
-from timezone_field import TimeZoneField
-
-from django_celery_results.models import TaskResult, ChordCounter, GroupResult
+from apps.cron.models import CronJobSyncLog
 
 
 class ClockedScheduleSerializer(ModelSerializer):
@@ -62,3 +60,8 @@ class TaskResultSerializer(ModelSerializer):
         model = TaskResult
         fields = '__all__'
 
+
+class CronJobSyncLogSerializer(ModelSerializer):
+    class Meta:
+        model = CronJobSyncLog
+        fields = '__all__'

@@ -131,7 +131,7 @@ class DeviceARPViewSet(ExportMixin, ReadOnlyModelViewSet):
         return ResponseOK(data="执行成功！请稍等一下再刷新页面！")
 
 
-class DeviceViewSet(ExportMixin, ExportTemplateMixin, ReadOnlyModelViewSet, CreateModelMixin):
+class DeviceViewSet(ExportMixin, ExportTemplateMixin,ModelViewSet):
     queryset: QuerySet[Device] = Device.objects.all().order_by('id')
     serializer_class = DeviceSerializer
     serializer_detail = DeviceDetailSerializer

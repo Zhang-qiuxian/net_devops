@@ -191,7 +191,7 @@ const handleUpload = (response, files, uploadFiles) => {
     //       files.length + uploadFiles.length
     //     } totally`
     //   )
-    console.log(response, files, uploadFiles);
+    // console.log(response, files, uploadFiles);
 }
 
 // 抽屉
@@ -290,12 +290,12 @@ async function confirmClick(formEl) {
                 }
 
             }).catch((err) => {
-                console.log(err);
+                // console.log(err);
                 ElMessage.error('添加失败')
             })
 
         } else {
-            console.log('error submit!', fields)
+            // console.log('error submit!', fields)
         }
     })
 }
@@ -304,7 +304,7 @@ async function confirmClick(formEl) {
 const dialogTableVisible = ref(false)
 
 const handleEdit = (row) => {
-    console.log(row)
+    // console.log(row)
     dialogTableVisible.value = true
     // ruleFormRef.value.resetFields()
     editForm.device_id = row.device_id
@@ -342,7 +342,7 @@ const editDevice = async (formEl) => {
                 dialogTableVisible.value = false
             })
         } else {
-            console.log('error submit!', fields)
+            // console.log('error submit!', fields)
         }
     })
 }
@@ -392,14 +392,14 @@ const deleteSelect = () => {
         ElMessage.error('请选择要删除的设备')
         return
     }
-    console.log(multipleSelection.value);
+    // console.log(multipleSelection.value);
     ElMessageBox.confirm('此操作将永久删除该设备以及SNMP同步的信息, 是否继续?')
         .then(() => {
             let device_ids = []
             multipleSelection.value.forEach((item) => {
                 device_ids.push(item.device_id)
             })
-            console.log(device_ids);
+            // console.log(device_ids);
             stores.deleteDevice(device_ids).then((res) => {
                 ElMessage.success('删除成功')
                 stores.refreshAll()

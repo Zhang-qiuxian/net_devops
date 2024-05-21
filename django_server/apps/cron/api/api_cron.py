@@ -3,10 +3,9 @@ from rest_framework.response import Response
 
 from public.mixins import ModelViewSet
 
-from django_celery_beat.models import ClockedSchedule, CrontabSchedule, IntervalSchedule, PeriodicTask, PeriodicTasks, \
-    SolarSchedule
+from django_celery_beat.models import ClockedSchedule, CrontabSchedule, IntervalSchedule, PeriodicTask
 from apps.cron.serial import CrontabScheduleSerializer, IntervalScheduleSerializer, \
-    PeriodicTasksSerializer, ClockedScheduleSerializer, PeriodicTaskSerializer
+    ClockedScheduleSerializer, PeriodicTaskSerializer
 from rest_framework.decorators import action
 
 from public.response import ResponseOK

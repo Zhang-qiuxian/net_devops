@@ -158,7 +158,7 @@ def start_sync(*args, **kwargs) -> Task | dict:
     """
     d_q: QuerySet[Device] = Device.objects.filter(is_sync=False).all()
     if len(d_q) == 0:
-        return {"success": True, "message": "所有设备都已同步！"}
+        return {"job": "更新基础信息",  "message": "所有设备都已同步！"}
     response: list[tuple[bool, list[dict]]] = start_thread_pool(create_base_model, d_q)
     error_count: int = 0
     success_count: int = 0
@@ -169,7 +169,7 @@ def start_sync(*args, **kwargs) -> Task | dict:
         else:
             success_count += 1
     CronJobSyncLog.objects.create(job="同步基础信息", data=response)
-    return {"success": True, "message": f"成功了{success_count}台,失败了{error_count}台。"}
+    return {"job": "更新基础信息", "message": f"成功了{success_count}台,失败了{error_count}台。"}
 
 
 """
@@ -270,7 +270,7 @@ def start_sync_arp(*args, **kwargs) -> Task | dict:
         bulk_create(model=DeviceARP, objs=create_models)
     CronJobSyncLog.objects.create(job="更新ARP",
                                   data={"success": success_list, "error": error_list, "fault": fault_list})
-    return {"success": True,
+    return {"job": "更新ARP",
             "message": f"成功了{len(success_list)}台,失败了{len(error_list)}台,未获取到{len(fault_list)}台"}
 
 

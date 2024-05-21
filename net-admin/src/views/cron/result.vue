@@ -1,18 +1,36 @@
 <template>
     <div class="container">
         <div class="from-container">
-            <div class="from-left">
-                <el-text type="danger">定时任务详情</el-text>
-            </div>
-            <div class="from-right">
+            <!-- <div class="from-left">
+                <el-text type="danger">后台任务详情</el-text>
+            </div> -->
+            <!-- <div class="from-right">
                 <el-button type="info" @click="exportExcel('device/system/export_excel/')">导出系统信息</el-button>
-            </div>
+            </div> -->
+            <el-button type="success" round :icon="RefreshRight" @click="refreshPage">刷新页面</el-button>
         </div>
         <div class="table-container">
             <el-empty description="没有数据，请先添加定时任务或检查定时任务是否在运行。" v-if="!isData" style="height: 100%;" />
             <el-scrollbar v-else>
                 <el-table :data="cron_result.data" border table-layout="auto" style="width: 100%">
                     <el-table-column :label="v" :prop="k" v-for="(v, k) in tableTitle" :key="k" align="center">
+                    </el-table-column>
+                    <el-table-column label="任务完成情况" prop="status" align="center">
+                        <template #default="scope">
+                            <el-tag type="success" v-if="scope.row.status == 'SUCCESS'">成功</el-tag>
+                            <el-tag type="warning" v-else-if="scope.row.status == 'STARTED'">正在运行</el-tag>
+                            <el-tag type="danger" v-else>失败</el-tag>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="执行结果" prop="result" align="center">
+                        <template #default="scope">
+                           {{ scope.row.result.job }}:{{ scope.row.result.message }}
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="操作" align="center">
+                        <template #default="scope">
+                            <el-button type="primary" @click="handleInfo(scope.row)">详情</el-button>
+                        </template>
                     </el-table-column>
                 </el-table>
             </el-scrollbar>
@@ -48,24 +66,56 @@ const handleCurrentChange = (val) => {
     cron_result.page = val
     stores.getResult();
 }
+
+const refreshPage = () => {
+  window.location.reload();
+};
+
+
+
+// 导出
+const handleExport = () => {
+    exportExcel(cron_result.value.data, tableTitle, '定时任务结果')
+}
+
 // 控制表格字段
 const tableTitle = {
     id: "序号",
-    name: "设备名称",
-    ip: "设备ip",
-    sysName: "设备名称",
-    sysUpTime: "系统启动时间",
-    sysDescr: "系统描述",
+    task_id: "任务ID",
+    // periodic_task_name: "定时任务名称",
+    // task_name: "任务名称",
+    // task_args: "任务参数",
+    // task_kwargs: "任务参数",
+    // status: "任务状态",
+    // worker: "执行者",
+    content_type: "内容类型",
+    content_encoding: "内容编码",
+    date_created: "创建时间",
+    date_done: "完成时间",
+    traceback: "错误信息",
 }
 
 // {
-//     "id": 50,
-//     "device_id": "63297486-d08d-467c-b31a-3b91e33459e8",
-//     "name": "2F交换机",
-//     "ip": "1.1.1.1",
-//     "sysDescr": "H3C Comware Platform Software, Software Version 7.1.070, Release 6318P01\r\n",
-//     "sysUpTime": "326:0:53:39.48",
-//     "sysName": "2F_IRF"
+//     "id": 786,
+//     "result": {
+//         "success": true,
+//         "message": "成功了0台,失败了45台。"
+//     },
+//     "meta": {
+//         "children": []
+//     },
+//     "task_id": "74d75e48-c167-4d38-987a-23a3b240f7c6",
+//     "periodic_task_name": null,
+//     "task_name": null,
+//     "task_args": null,
+//     "task_kwargs": null,
+//     "status": "SUCCESS",
+//     "worker": null,
+//     "content_type": "application/x-python-serialize",
+//     "content_encoding": "binary",
+//     "date_created": "2024-05-21 09:41:47",
+//     "date_done": "2024-05-21 09:41:51",
+//     "traceback": null
 // }
 
 const loading = ElLoading.service({

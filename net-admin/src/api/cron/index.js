@@ -6,6 +6,7 @@ const interval = "/cron/interval/";
 const crontab = "/cron/crontab/";
 const periodic = "/cron/periodic/";
 const tasks = "/cron/periodic/tasks/";
+const logs = "/cron/logs/";
 
 // 获取列表
 export const getResultApi = async (params) => {
@@ -32,6 +33,10 @@ export const getTasksApi = async () => {
     return instance.get(tasks);
 }
 
+export const getLogsApi = async (params) => {
+    return instance.get(logs, { params });
+}
+
 // 获取详情
 export const getResultDetailApi = async (id) => {
     return instance.get(`${result}${id}/`);
@@ -51,6 +56,10 @@ export const getPeriodicDetailApi = async (id) => {
 
 export const getCrontabDetailApi = async (id) => {
     return instance.get(`${crontab}${id}/`);
+}
+
+export const getCronLogsDetailApi = async (id) => {
+    return instance.get(`${logs}${id}/`);
 }
 
 // 删除

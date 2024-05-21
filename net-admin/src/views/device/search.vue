@@ -10,7 +10,8 @@
                                 <el-input v-model="searchForm.ipNetToMediaNetAddress" placeholder="请输入IP地址" />
                             </el-form-item>
                             <el-form-item label="查找MAC地址" prop="ipNetToMediaPhysAddress">
-                                <el-input v-model="searchForm.ipNetToMediaPhysAddress" placeholder="格式:xx:xx:xx:xx,请输入MAC地址" />
+                                <el-input v-model="searchForm.ipNetToMediaPhysAddress"
+                                    placeholder="格式:xx:xx:xx:xx,请输入MAC地址" />
                             </el-form-item>
                             <el-form-item>
                                 <!-- <el-button type="primary" @click="submitForm(formRef)">查询</el-button> -->
@@ -50,6 +51,11 @@
                 <el-table-column label="更新时间" prop="update_time" align="center">
                 </el-table-column>
             </el-table>
+            <div class="page-container">
+                <el-pagination v-model:current-page="searchForm.page" v-model:page-size="searchForm.page_size"
+                    :page-sizes="[10, 20, 50, 100]" layout="total, sizes, prev, pager, next, jumper" :total="total"
+                    @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+            </div>
         </el-card>
     </div>
 </template>
@@ -58,11 +64,8 @@
 import { onMounted, ref, computed, reactive, watch } from 'vue'
 import { searchArpApi } from '@/api/device/index.js'
 
-
-
-
-
 const formRef = ref()
+
 const resetForm = (formEl) => {
     if (!formEl) return
     formEl.resetFields()
@@ -71,10 +74,27 @@ const resetForm = (formEl) => {
 const searchData = ref([])
 const total = ref(0)
 
+const pages = ref({
+    page: 1,
+    page_size: 10,
+})
+
 const searchForm = reactive({
     ipNetToMediaNetAddress: '',
     ipNetToMediaPhysAddress: '',
+    page: 1,
+    page_size: 10,
 })
+
+// 处理分页
+const handleSizeChange = (val) => {
+    searchForm.page_size = val
+}
+const handleCurrentChange = (val) => {
+    searchForm.page = val
+}
+
+
 
 const isData = computed(() => {
     return searchData.value.length > 0 ? true : false;
@@ -95,7 +115,7 @@ const tableTitle = {
 
 watch(searchForm, (newVal, oldVal) => {
     if (newVal.ipNetToMediaNetAddress != '') {
-        searchData.value = searchArpApi({ search: newVal.ipNetToMediaNetAddress }).then(res => {
+        searchData.value = searchArpApi({ search: newVal.ipNetToMediaNetAddress, page: searchForm.page, page_size: searchForm.page_size }).then(res => {
             searchData.value = res.data
             total.value = res.total
         })

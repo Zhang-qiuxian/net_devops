@@ -5,6 +5,7 @@
                 <div class="from-refresh">
                     <el-text type="danger">手动刷新ARP，注意！点击后后台会自动刷新，每分钟限定刷新一次！</el-text>
                     <el-button type="primary" round :icon="Refresh" @click="refreshARP">更新ARP</el-button>
+                    <el-button type="success" round @click="toResult">查看任务执行结果</el-button>
                 </div>
             </div>
             <div class="from-right">
@@ -45,6 +46,7 @@
 </template>
 <script setup>
 import { useDeviceStore } from '@/stores/device/index.js';
+import { useSettingsStore } from '@/stores/settings/settings';
 import { storeToRefs } from 'pinia';
 import { onMounted, ref, computed, reactive } from 'vue'
 import { exportExcel } from '@/api/export-import';
@@ -54,6 +56,8 @@ import {
     Refresh,
     RefreshRight
 } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
+const router = useRouter()
 
 
 const stores = useDeviceStore();
@@ -90,12 +94,13 @@ const tableTitle = {
 const refreshARP = () => { refreshArpApi().then(res => ElMessage.success(res)) }
 
 const refreshPage = () => {
-  window.location.reload();
+    window.location.reload();
 };
 
-// 导出arp信息
-const exportExcelData = () => {
-    exportExcel('device/arp/export_excel/')
+
+const toResult = () => {
+    router.push({ name: 'cronResult' })
+    useSettingsStore().setDefaultActive('cron-result')
 }
 
 const loading = ElLoading.service({
