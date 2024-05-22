@@ -1,13 +1,4 @@
-# net-admin
-
-net_devops的前端项目
-
-## 建议的IDE设置
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## 项目结构
-```md
+.
 ├── index.html
 ├── jsconfig.json
 ├── package.json
@@ -67,30 +58,6 @@ net_devops的前端项目
 │       │   ├── snmp.vue
 │       │   └── system.vue
 │       └── NotFound.vue
+├── t.txt
 ├── vite.config.js
 └── yarn.lock
-```
-## 项目依赖下载
-
-```sh
-yarn
-```
-
-### 运行项目
-
-```sh
-yarn dev
-```
-
-### 编译项目
-在编译项目时需要修改`.env`文件中的ip地址
-
-```sh
-VITE_API_URL=http://127.0.0.1:8000/api/v1/
-```
-
-为你的后端地址，不然前端页面请求会报错
-
-```sh
-yarn build
-```
