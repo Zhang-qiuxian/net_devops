@@ -2,7 +2,6 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
 # C extensions
 *.so
 
@@ -170,3 +169,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
+
+!install.sh
