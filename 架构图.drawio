@@ -1,0 +1,58 @@
+<mxfile host="Electron" modified="2024-05-22T05:42:14.648Z" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/24.1.0 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="PrJfYISkLV35YowP9YVm" version="24.1.0" type="device">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel dx="1195" dy="686" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;strokeColor=#66FF66;strokeWidth=4;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="_h5PZpIOhMJaZEk3DKEp-2" target="_h5PZpIOhMJaZEk3DKEp-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-15" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;curved=1;startArrow=classic;startFill=1;strokeColor=#99FF99;dashed=1;strokeWidth=5;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="_h5PZpIOhMJaZEk3DKEp-2" target="_h5PZpIOhMJaZEk3DKEp-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-2" value="vue3 前端页面" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="250" y="130" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=4;strokeColor=#999900;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="_h5PZpIOhMJaZEk3DKEp-3" target="_h5PZpIOhMJaZEk3DKEp-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-11" value="celery定时启动snmp脚本" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="_h5PZpIOhMJaZEk3DKEp-8">
+          <mxGeometry x="0.037" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-3" value="Celery定时同步" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="250" y="545" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;startArrow=classic;startFill=1;strokeColor=#CCCC00;strokeWidth=4;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="_h5PZpIOhMJaZEk3DKEp-4" target="_h5PZpIOhMJaZEk3DKEp-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-10" value="celery从django数据库获取定时任务" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="_h5PZpIOhMJaZEk3DKEp-5">
+          <mxGeometry x="-0.1053" y="-2" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;startArrow=classic;startFill=1;strokeColor=#FF99FF;strokeWidth=4;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="_h5PZpIOhMJaZEk3DKEp-4" target="_h5PZpIOhMJaZEk3DKEp-7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-12" value="snmp获取到数据后存入数据库" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="_h5PZpIOhMJaZEk3DKEp-9">
+          <mxGeometry x="0.0148" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-4" value="django API" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="250" y="352" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-7" value="SNMP 抓取设备信息" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="520" y="420" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;startArrow=classic;startFill=1;strokeWidth=4;strokeColor=#99FF99;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="_h5PZpIOhMJaZEk3DKEp-13" target="_h5PZpIOhMJaZEk3DKEp-4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="_h5PZpIOhMJaZEk3DKEp-13" value="数据库" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="60" y="352" width="60" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
