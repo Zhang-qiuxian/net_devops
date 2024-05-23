@@ -19,7 +19,7 @@ from apps.cron.models import CronJobSyncLog
 from tools.snmp.run import run
 from tools.snmp.common import arp_oids
 
-POOL: int = 50
+POOL: int = 20
 
 """
 通用的启动函数
