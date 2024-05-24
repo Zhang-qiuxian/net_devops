@@ -3,7 +3,7 @@
         <div class="from-container">
             <div class="from-left">
                 <div class="from-refresh">
-                    <el-text type="danger">手动刷新ARP，注意！点击后后台会自动刷新，每分钟限定刷新一次！</el-text>
+                    <el-text type="danger">手动刷新ARP，注意！点击后后台会自动刷新，每10S限定刷新一次！</el-text>
                     <el-button type="primary" round :icon="Refresh" @click="refreshARP">更新ARP</el-button>
                     <el-button type="success" round @click="toResult">查看任务执行结果</el-button>
                 </div>
