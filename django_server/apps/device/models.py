@@ -133,7 +133,7 @@ class DeviceARP(models.Model):
     ipNetToMediaNetAddress = models.GenericIPAddressField(verbose_name="IP地址", db_comment="IP地址")
     ifName = models.CharField(blank=True, null=True, max_length=128, verbose_name="接口名", db_comment="接口名")
     ifAlias = models.CharField(blank=True, null=True, max_length=128, verbose_name="接口别名", db_comment="接口别名")
-    ifOperStatus = models.IntegerField(default=1, verbose_name="接口当前的状态", db_comment="接口当前的状态")
+    ifOperStatus = models.IntegerField(blank=True, null=True, verbose_name="接口当前的状态", db_comment="接口当前的状态")
     is_active = models.BooleanField(default=1, verbose_name="是否在线", db_comment="是否在线")
     update_time = models.DateTimeField(auto_now=True, verbose_name="更新时间", db_comment="更新时间")
 

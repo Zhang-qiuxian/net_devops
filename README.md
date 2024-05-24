@@ -13,13 +13,17 @@
 
 #### 安装教程
 
+1. 拉取项目代码
+```shell
+git clone https://gitee.com/Zhangqiuxian/net_devops.git
+```
 1.  前端安装教程
 
   参考net-admin/README.md
 
 2.  后端安装教程
 
-后端因为涉及到需要通过`SNMP`去采集设备信息，只能部署在`Linux`操作系统中。`SNMP`模块依赖`NET-SNMP`，请确保系统中支持。
+参考django_server/README.md
 
 ##### 版本要求
 
@@ -27,10 +31,6 @@
 Python >= 3.10
 Nodejs >= 18.20.3
 ```
-
-    1.  xxxx
-        2.  xxxx
-            3.  xxxx
 
 #### 使用说明
 
