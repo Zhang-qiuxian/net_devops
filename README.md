@@ -5,6 +5,7 @@
 目前已经实现的功能有采集设备的序列号、设备的接口信息、设备的IP配置信息、设备的系统版本、ARP信息。
 
 本人精力有限，登录页等后续功能还未完成。后续功能不定期更新。走过路过留个start❤。
+gitee主页： [链接](https://gitee.com/Zhangqiuxian) 	github主页 ：[链接](https://github.com/Zhang-qiuxian)   在线预览网址：[链接](https://120.79.17.3/)
 
 #### 软件架构
 软件架构说明

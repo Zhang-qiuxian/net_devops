@@ -48,7 +48,7 @@ git clone https://gitee.com/Zhangqiuxian/net_devops.git
   
   ```shell
   # Pyhton >= 3.10
-  cd net_devops/django_server/
+  cd django_server/
   python -m venv venv
   source venv/bin/activate
   pip install -i https://mirror.nju.edu.cn/pypi/web/simple -r requirements.txt
@@ -86,7 +86,7 @@ http://电脑IP:8000/swagger/
 - 启动定时任务
 
   ```shell
-  cd net_devops/django_server/
+  cd django_server/
   python -m venv venv
   source venv/bin/activate
   celery -A django_server beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
@@ -99,7 +99,7 @@ http://电脑IP:8000/swagger/
 - 启动celery
 
 ```shell
-cd net_devops/django_server/
+cd django_server/
 python -m venv venv
 source venv/bin/activate
 celery -A django_server worker -l INFO

@@ -32,12 +32,13 @@ VITE_API_URL=http://127.0.0.1:8000/api/v1/
 ```
 ### 安装依赖
 ```sh
+cd net-admin/
 yarn
 ```
 ### 运行项目
 
 ```sh
-yarn dev --host=$(hostname -I)
+yarn dev --host=服务器IP
 ```
 
 ### 编译项目
