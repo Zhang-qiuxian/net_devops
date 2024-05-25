@@ -75,7 +75,7 @@ git clone https://gitee.com/Zhangqiuxian/net_devops.git
 后端的接口文档地址
 
 ```http
-http://电脑IP:8000/swagger/
+http://电脑IP:8000/api/swagger/
 ```
 
 如看到以下界面就说明后端已启动
