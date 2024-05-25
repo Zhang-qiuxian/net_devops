@@ -59,7 +59,7 @@ const tableTitle = {
     id: "序号",
     name: "设备名称",
     ip: "设备ip",
-    ifIndex: "接口索引",
+    // ifIndex: "接口索引",
     ifName: "接口名称",
     ifDescr: "接口描述",
     // ifOperStatus: "接口状态",

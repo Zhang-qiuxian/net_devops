@@ -60,11 +60,11 @@ const tableTitle = {
     id: "序号",
     name: "设备名称",
     ip: "设备ip",
+    ipAdEntAddr: "IP地址",
+    ipAdEntNetMask: "子网掩码",
     ifName: "接口名称",
     ifAlias: "接口别名",
     // ipAdEntIfIndex: "接口索引",
-    ipAdEntAddr: "IP地址",
-    ipAdEntNetMask: "子网掩码",
     // ifOperStatus: "接口状态",
 }
 
