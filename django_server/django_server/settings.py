@@ -132,6 +132,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'
+Path.mkdir(BASE_DIR.parent.parent.joinpath('static'), exist_ok=True)
+STATIC_ROOT = BASE_DIR.parent/'static'
+STATICFILES_DIRS = [BASE_DIR.parent.parent/'static',]
+
 MEDIA_ROOT = BASE_DIR.joinpath("media")
 # 上传文件目录
 UPLOAD_PATH = 'upload/'

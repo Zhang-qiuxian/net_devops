@@ -1,5 +1,6 @@
 # 开发模式
 DEBUG = True
+# DEBUG = False
 
 # 语言和时区设置
 LANGUAGE_CODE = 'zh-Hans'
@@ -8,4 +9,4 @@ USE_I18N = True
 USE_TZ = False
 
 # 线程池任务数
-ThreadPool = 50
+ThreadPool = 20
