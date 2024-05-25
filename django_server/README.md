@@ -48,12 +48,15 @@ git clone https://gitee.com/Zhangqiuxian/net_devops.git
   
   ```shell
   # Pyhton >= 3.10
-  cd django_server/
-  python -m venv venv
-  source venv/bin/activate
+  python -m venv net_devops/venv
+  sudo groupadd net_devops
+  sudo useradd -s /bin/bash -g net_devops net_devops
+  sudo chown -R net_devops:net_devops net_devops/
+  cd net_devops/django_server/
+  source ../venv/bin/activate
   pip install -i https://mirror.nju.edu.cn/pypi/web/simple -r requirements.txt
   ```
-
+  
 - 数据库迁移
 
   ```shell

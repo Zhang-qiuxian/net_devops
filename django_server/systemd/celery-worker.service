@@ -1,0 +1,13 @@
+[Unit]
+Description=Celery Worker Service
+After=network.target
+
+[Service]
+ExecStart=/opt/project/net_devops/venv/bin/celery -A django_server worker -l INFO
+WorkingDirectory=/opt/project/net_devops/django_server
+User=net_devops
+Group=net_devops
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -17,6 +17,7 @@ from .config.drf import *
 from .config.celery_settings import *
 from .config.cors import *
 from .config.db import DATABASES
+from .config.ws import CHANNEL_LAYERS
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,15 +36,17 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
     # 'django.contrib.admin',
     # 'django.contrib.auth',
-    # 'django.contrib.contenttypes',
+    'django.contrib.contenttypes',
     # 'django.contrib.sessions',
     # 'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
     'drf_yasg',
+    'channels',
     'django_celery_results',
     'django_celery_beat',
     'apps.device.apps.DeviceConfig',
@@ -82,7 +85,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'django_server.wsgi.application'
+# WSGI_APPLICATION = 'django_server.wsgi.application'
+ASGI_APPLICATION = 'django_server.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

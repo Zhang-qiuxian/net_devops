@@ -1,0 +1,14 @@
+[Unit]
+Description=Celery Beat Service
+After=network.target
+
+[Service]
+ExecStart=/opt/project/net_devops/venv/bin/celery -A django_server beat -l INFO \
+    --scheduler django_celery_beat.schedulers:DatabaseScheduler
+WorkingDirectory=/opt/project/net_devops/django_server
+User=net_devops
+Group=net_devops
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

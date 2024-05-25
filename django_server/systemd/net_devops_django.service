@@ -1,0 +1,13 @@
+[Unit]
+Description=net_devops Django Service
+After=network.target
+
+[Service]
+ExecStart=/opt/project/net_devops/venv/bin/daphne -b 0.0.0.0  -p 8000 django_server.asgi:application
+WorkingDirectory=/opt/project/net_devops/django_server
+User=net_devops
+Group=net_devops
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
