@@ -31,10 +31,10 @@ git clone https://gitee.com/Zhangqiuxian/net_devops.git
 3. 一键安装教程
 
    > 在项目根目录上有 `install.sh` shell脚本。**请勿在生产环境中使用**，脚本适用于Ubuntu/Debian,最好提供一个干净的系统做测试。该脚本会在电脑上编译安装`Python 3.12.3`，`nodejs 22.2.0`还要确保服务器能联网。
-'''shell
+```shell
 chmod +x ./install.sh
 ./install 你的root密码
-'''
+```
 ##### 版本要求
 
 ```shell
