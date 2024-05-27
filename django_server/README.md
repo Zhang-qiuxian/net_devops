@@ -99,7 +99,7 @@ http://电脑IP:8000/api/swagger/
 
 ![image-20240524113459349](READE/asset/image-20240524113459349.png)
 
-- 启动celery
+- 启动celery(*不要使用root用户启动*)
 
 ```shell
 cd django_server/

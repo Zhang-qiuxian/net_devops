@@ -138,7 +138,7 @@ interface Vlanif20
             temp = self.client.recv(65535).decode()
             self.client.send(ENTER)
             time.sleep(0.5)
-            msg += temp
+            msg.join(temp)
             if re_exit(msg=temp, device_type=self.device_type):
                 self.client.close()
                 break
