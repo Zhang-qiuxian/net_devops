@@ -1,0 +1,1 @@
+nohup /project/net_devops/venv/bin/daphne -b 0.0.0.0  -p 8000 django_server.asgi:application >django_run.log 2>&1 &
