@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"sync"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
@@ -31,6 +32,15 @@ type DatabaseConfig struct {
 	Password string `mapstructure:"password" yaml:"password" json:"password"`
 	Name     string `mapstructure:"name" yaml:"name" json:"name"`
 	Type     string `mapstructure:"type" yaml:"type" json:"type"`
+}
+
+type Jwt struct {
+	JwtKey  string        `mapstructure:"jwt_key" yaml:"jwt_key" json:"jwt_key"`
+	ExpTime time.Duration `mapstructure:"exp_time" yaml:"exp_time" json:"exp_time"`
+	Issuer  string        `mapstructure:"issuer" yaml:"issuer" json:"issuer"`
+}
+
+type Zap struct {
 }
 
 var (
@@ -108,8 +118,8 @@ func createDefaultConfig(configPath string) error {
 			Port:     3306,
 			Username: "root",
 			Password: "password",
-			Name:     "db.sqlite3",
-			Type:     "sqlite3",
+			Name:     "net_devops.db",
+			Type:     "sqlite",
 		},
 	}
 

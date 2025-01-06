@@ -176,3 +176,8 @@ yarn-error.log*
 
 tmp
 **/tmp
+
+*.db
+**/*.db
+config.yaml
+**/config.yaml
