@@ -10,6 +10,7 @@ import (
 	"net-go/pkg/config"
 	"net-go/pkg/db"
 	"net-go/pkg/logger"
+	"net-go/utils"
 	"net/http"
 )
 
@@ -34,6 +35,9 @@ func main() {
 	if err != nil {
 		logger.ErrorLogger.Fatal("Failed to initialize database", zap.Error(err))
 	}
+
+	// 初始化校验器和翻译器
+	utils.InitValidator()
 
 	// 初始化 Gin
 	r := gin.Default()

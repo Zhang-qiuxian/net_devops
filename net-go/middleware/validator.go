@@ -15,7 +15,7 @@ var (
 	trans    ut.Translator
 )
 
-func init() {
+func init1() {
 	// 初始化校验器和翻译器
 	validate = validator.New()
 	zh := zh.New()
@@ -53,7 +53,7 @@ func HandleValidationError(c *gin.Context, err error) {
 	}
 
 	// 返回 JSON 响应
-	c.JSON(http.StatusBadRequest, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"message": "参数校验失败",
 		"errors":  errors,
 	})
